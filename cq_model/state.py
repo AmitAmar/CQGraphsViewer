@@ -10,7 +10,7 @@ class State:
     def __init__(self):
         self.state_id = None
         self.time = None
-        self.predecessor_states = list()
+        self.predecessor_states = None
         self.successor_states = list()
         self.parameters = list()
 
@@ -20,8 +20,8 @@ class State:
                f"successor_states = {self.successor_states},\n"\
                f"parameters = {self.parameters}"
 
-    def add_predecessor_state(self, pre_state):
-        self.predecessor_states.append(pre_state)
+    def set_predecessor_state(self, pre_state):
+        self.predecessor_states = pre_state
 
     def add_successor_state(self, successor_state):
         self.successor_states.append(successor_state)
