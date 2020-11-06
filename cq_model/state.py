@@ -1,11 +1,13 @@
-from utils.general_utils import auto_str
+from utils.general_utils import auto_str,auto_repr
 from collections import namedtuple
 
 Parameter = namedtuple('Parameter', ['name',
                                      'value',
                                      'quantity_space'])
 
+
 @auto_str
+@auto_repr
 class State:
     def __init__(self):
         self.state_id = None

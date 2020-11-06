@@ -5,12 +5,30 @@ def auto_str(cls):
     :return: class with __str__ function
     """
     def __str__(self):
-        return '%s(%s)' % (
-            type(self).__name__,
-            ', '.join('%s=%s' % item for item in vars(self).items())
-        )
+        return inner_default_str(self)
     cls.__str__ = __str__
     return cls
+
+
+def auto_repr(cls):
+    """
+    Generate a default __repr__ implementation for classes
+    :param cls: a python class
+    :return: class with __repr__ function
+    """
+    def __repr__(self):
+        return inner_default_str(self)
+
+    cls.__repr__ = __repr__
+    return cls
+
+
+def inner_default_str(self):
+    return '{type}({properties})'.format(
+            type=type(self).__name__,
+            properties=', '.join('{field_name}={field_value}'.format(
+                field_name=item[0], field_value=item[1]) for item in vars(self).items())
+        )
 
 
 def is_not_empty(string):

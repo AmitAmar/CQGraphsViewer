@@ -34,6 +34,7 @@ def parse_cq_states(raw_cq_output):
             init_time(current_state, raw_str)
             init_predecessor_state(current_state, raw_str)
             init_successor_states(current_state, raw_str)
+            init_parameters(current_state, raw_str)
             cq_states.append(current_state)
             print(current_state)
 
@@ -67,3 +68,7 @@ def init_successor_states(current_state, raw_str):
 
     for successor in successors:
         current_state.add_successor_state(int(successor))
+
+
+def init_parameters(current_state, raw_str):
+    pass
