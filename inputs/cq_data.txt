@@ -1,0 +1,70 @@
+State 0 	Time = 0
+ 	Predecessor states: none
+ 	Successor states:   3
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(0 inc)      	(0 full)
+ 	level   	(0 inc)      	(0 top inf)
+ 	pressure	(0 inc)      	(0 inf)
+ 	outflow 	(0 inc)      	(0 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	((0 inf) dec)	(minf 0 inf)
+State 1 	Time = 0
+ 	Predecessor states: none
+ 	Successor states:   none
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(0 std)      	(0 full)
+ 	level   	(0 std)      	(0 top inf)
+ 	pressure	(0 std)      	(0 inf)
+ 	outflow 	(0 std)      	(0 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	(0 std)      	(minf 0 inf)
+State 2 	Time = 0
+ 	Predecessor states: none
+ 	Successor states:   none
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(0 dec)      	(0 full)
+ 	level   	(0 dec)      	(0 top inf)
+ 	pressure	(0 dec)      	(0 inf)
+ 	outflow 	(0 dec)      	(0 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	((minf 0) inc)   (minf 0 inf)
+State 3 	Time = (0 1)
+ 	Predecessor states: 0
+ 	Successor states:   4 5 6
+ 	Parameter   Value        	Quantity Space
+ 	amount  	((0 full) inc)   (0 full)
+ 	level   	((0 top) inc)	(0 top inf)
+ 	pressure	((0 inf) inc)	(0 inf)
+ 	outflow 	((0 inf) inc)	(0 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	((0 inf) dec)	(minf 0 inf)
+State 4 	Time = 1
+ 	Predecessor states: 3
+ 	Successor states:   none
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(full std)   	(0 full)
+ 	level   	(top std)    	(0 top inf)
+ 	pressure	(P1 std)     	(0 P1 inf)
+ 	outflow 	(OF1 std)    	(0 OF1 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	(0 std)      	(minf 0 inf)
+State 5 	Time = 1
+ 	Predecessor states: 3
+ 	Successor states:   none
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(full inc)   	(0 full)
+ 	level   	(top inc)    	(0 top inf)
+ 	pressure	((0 inf) inc)	(0 inf)
+ 	outflow 	((0 inf) inc)	(0 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	((0 inf) dec)	(minf 0 inf)
+State 6 	Time = 1
+    Predecessor states: 3
+ 	Successor states:   none
+ 	Parameter   Value        	Quantity Space
+ 	amount  	(A1 std)     	(0 A1 full)
+ 	level   	(L1 std)     	(0 L1 top inf)
+ 	pressure	(P2 std)     	(0 P2 inf)
+ 	outflow 	(OF2 std)    	(0 OF2 inf)
+ 	inflow  	(if* std)    	(0 if* inf)
+ 	netflow 	(0 std)      	(minf 0 inf)
