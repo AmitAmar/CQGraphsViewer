@@ -1,6 +1,9 @@
 import re
 from utils.general_utils import is_not_empty
 from cq_model.state import State
+from gml_model.node import Node
+from gml_model.edge import Edge
+from gml_model.graph import Graph
 
 NONE_VALUE = 'none'
 
@@ -14,10 +17,15 @@ successor_states_pattern = re.compile(SUCCESSOR_STATES_PATTERN)
 
 
 def convert_to_gml(raw_cq_output):
+    graph = Graph()
+    cq_states = parse_cq_states(raw_cq_output)
+
+    return ""
+
+
+def parse_cq_states(raw_cq_output):
     cq_states = list()
-
     cq_states_raw = raw_cq_output.split("State")
-
     for raw_str in cq_states_raw:
         current_state = State()
         if is_not_empty(raw_str):
@@ -29,7 +37,7 @@ def convert_to_gml(raw_cq_output):
             cq_states.append(current_state)
             print(current_state)
 
-    return ""
+    return cq_states
 
 
 def init_id(current_state, raw_str):

@@ -18,7 +18,7 @@ def load_user_config():
     return user_preferences
 
 
-def init_results_directory(results_directory_path):
+def init_output_directory(results_directory_path):
     if not os.path.isdir(results_directory_path):
         os.makedirs(results_directory_path)
 
@@ -38,15 +38,15 @@ def write_results(results_dir, output_path, gml):
 def main():
     # Read configurations:
     user_preferences = load_user_config()
-    results_dir_path = user_preferences["RESULTS_DIRECTORY_PATH"]
     input_dir_path = user_preferences["INPUT_DIRECTORY_PATH"]
+    output_dir_path = user_preferences["OUTPUT_DIRECTORY_PATH"]
     cq_data_path = user_preferences["CQ_DATA_PATH"]
     gml_output_path = user_preferences["GML_OUTPUT_PATH"]
 
-    init_results_directory(results_dir_path)
+    init_output_directory(output_dir_path)
     raw_cq_data = read_data(input_dir_path, cq_data_path)
     gml = cq_formatter.convert_to_gml(raw_cq_data)
-    write_results(results_dir_path, gml_output_path, gml)
+    write_results(output_dir_path, gml_output_path, gml)
 
 
 if __name__ == '__main__':
