@@ -27,7 +27,7 @@ def default_str_inner(self):
     return '{type}({properties})'.format(
             type=type(self).__name__,
             properties=', '.join('{field_name}={field_value}'.format(
-                field_name=item[0], field_value=item[1]) for item in vars(self).items())
+                field_name=item[0].replace(type(self).__name__ + "_", ""), field_value=item[1]) for item in vars(self).items())
         )
 
 

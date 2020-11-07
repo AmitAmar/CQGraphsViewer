@@ -10,23 +10,42 @@ Parameter = namedtuple('Parameter', ['name',
 @auto_repr
 class State:
     def __init__(self):
-        self.state_id = None
-        self.time = None
-        self.predecessor_states = None
-        self.successor_states = list()
-        self.parameters = list()
-
-    def set_predecessor_state(self, pre_state):
-        self.predecessor_states = pre_state
+        self.__state_id = None
+        self.__time = None
+        self.__predecessor_state = None
+        self.__successor_states = list()
+        self.__parameters = list()
 
     def add_successor_state(self, successor_state):
-        self.successor_states.append(successor_state)
+        self.__successor_states.append(successor_state)
 
     def add_parameter(self, parameter):
-        self.parameters.append(parameter)
+        self.__parameters.append(parameter)
 
-    def set_time(self, time):
-        self.time = time
+    @property
+    def time(self):
+        return self.__time
 
-    def set_id(self, state_id):
-        self.state_id = state_id
+    @time.setter
+    def time(self, time):
+        self.__time = time
+
+    @property
+    def state_id(self):
+        return self.__state_id
+
+    @state_id.setter
+    def state_id(self, state_id):
+        self.__state_id = state_id
+
+    @property
+    def predecessor_state(self):
+        return self.__predecessor_state
+
+    @predecessor_state.setter
+    def predecessor_state(self, pre_state):
+        self.__predecessor_state = pre_state
+
+    @property
+    def parameters(self):
+        return self.__parameters

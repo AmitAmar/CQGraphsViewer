@@ -21,10 +21,19 @@ parameters_pattern = re.compile(PARAMETERS_PATTERN)
 
 
 def convert_to_gml(raw_cq_output):
-    graph = Graph()
     cq_states = parse_cq_states(raw_cq_output)
+    graph = convert_cq_states_into_gml_graph(cq_states)
 
     return ""
+
+
+def convert_cq_states_into_gml_graph(cq_states):
+    graph = Graph()
+
+    for state in cq_states:
+        graph.add_node(Node(state.state_id, state.time, state.parameters))
+
+    print(graph)
 
 
 def parse_cq_states(raw_cq_output):
@@ -48,19 +57,19 @@ def parse_cq_states(raw_cq_output):
 
 def init_id(current_state, raw_str):
     state_id = int(raw_str[0])
-    current_state.set_id(state_id)
+    current_state.state_id = state_id
 
 
 def init_time(current_state, raw_str):
     current_time = time_pattern.findall(raw_str)[0]
-    current_state.set_time(current_time)
+    current_state.time = current_time
 
 
 def init_predecessor_state(current_state, raw_str):
     pre_state = predecessor_state_pattern.findall(raw_str)[0]
 
     if pre_state.isnumeric():
-        current_state.set_predecessor_state(int(pre_state))
+        current_state.predecessor_state = int(pre_state)
 
 
 def init_successor_states(current_state, raw_str):
