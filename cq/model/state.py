@@ -46,3 +46,7 @@ class State:
     @property
     def parameters(self):
         return self.__parameters
+
+    @property
+    def successor_states(self):
+        return self.__successor_states

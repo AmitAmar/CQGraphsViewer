@@ -1,0 +1,96 @@
+graph [
+
+	node [
+		 id 0
+		 time 0
+		 amount	(0	inc)
+		 level	(0	inc)
+		 pressure	(0	inc)
+		 outflow	(0	inc)
+		 inflow	(if*	std)
+		 netflow	((0	inf)
+
+	]
+	node [
+		 id 1
+		 time 0
+		 amount	(0	std)
+		 level	(0	std)
+		 pressure	(0	std)
+		 outflow	(0	std)
+		 inflow	(if*	std)
+		 netflow	(0	std)
+
+	]
+	node [
+		 id 2
+		 time 0
+		 amount	(0	dec)
+		 level	(0	dec)
+		 pressure	(0	dec)
+		 outflow	(0	dec)
+		 inflow	(if*	std)
+		 netflow	((minf	0)
+
+	]
+	node [
+		 id 3
+		 time (0 1)
+		 amount	((0	full)
+		 level	((0	top)
+		 pressure	((0	inf)
+		 outflow	((0	inf)
+		 inflow	(if*	std)
+		 netflow	((0	inf)
+
+	]
+	node [
+		 id 4
+		 time 1
+		 amount	(full	std)
+		 level	(top	std)
+		 pressure	(P1	std)
+		 outflow	(OF1	std)
+		 inflow	(if*	std)
+		 netflow	(0	std)
+
+	]
+	node [
+		 id 5
+		 time 1
+		 amount	(full	inc)
+		 level	(top	inc)
+		 pressure	((0	inf)
+		 outflow	((0	inf)
+		 inflow	(if*	std)
+		 netflow	((0	inf)
+
+	]
+	node [
+		 id 6
+		 time 1
+		 amount	(A1	std)
+		 level	(L1	std)
+		 pressure	(P2	std)
+		 outflow	(OF2	std)
+		 inflow	(if*	std)
+		 netflow	(0	std)
+
+	]
+	edge [
+		 source 0
+		 target 3
+	]
+	edge [
+		 source 3
+		 target 4
+	]
+	edge [
+		 source 3
+		 target 5
+	]
+	edge [
+		 source 3
+		 target 6
+	]
+]

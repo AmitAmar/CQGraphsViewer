@@ -17,7 +17,10 @@ class Edge:
     def __str__(self):
         result = "\n\tedge [\n"
 
-        result += "\n]"
+        result += f"\t\t source {self.__source}\n"
+        result += f"\t\t target {self.__target}"
+
+        result += "\n\t]"
         return result
 
 
