@@ -1,0 +1,406 @@
+graph [
+
+	node [
+		 id 1
+		 time 0
+		 SS	(SS*	inc)
+		 AB	(AB*	std)
+		 AS	(AS*	inc)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	(PL*	inc)
+		 PLA	(PLA*	inc)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	((0	SV*)
+		 CO	((0	CO*)
+		 PVR	(PVR*	inc)
+		 PVRA	(PVRA*	inc)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	(EDV*	inc)
+		 EF	((0	EF*)
+		 IN	((0	IN*)
+		 INA	(INA*	inc)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 2
+		 time (0 1)
+		 SS	((SS*	INF)
+		 AB	(AB*	std)
+		 AS	((AS*	INF)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	((PL*	INF)
+		 PLA	((PLA*	INF)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	((0	SV*)
+		 CO	((0	CO*)
+		 PVR	((PVR*	INF)
+		 PVRA	((PVRA*	INF)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	((EDV*	INF)
+		 EF	((0	EF*)
+		 IN	((0	IN*)
+		 INA	((INA*	INF)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 3
+		 time 1
+		 SS	((SS*	INF)
+		 AB	(AB*	std)
+		 AS	((AS*	INF)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	((PL*	INF)
+		 PLA	((PLA*	INF)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	(SV*	inc)
+		 CO	((0	CO*)
+		 PVR	((PVR*	INF)
+		 PVRA	((PVRA*	INF)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	((EDV*	INF)
+		 EF	((0	EF*)
+		 IN	((0	IN*)
+		 INA	((INA*	INF)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 4
+		 time 1
+		 SS	(SS1	std)
+		 AB	(AB*	std)
+		 AS	(AS1	std)
+		 BB	(BB%	std)
+		 BS	(BS1	std)
+		 PL	(PL1	std)
+		 PLA	(PLA1	std)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	(HR1	std)
+		 HRA	(HRA1	std)
+		 HRX	(HRX*	std)
+		 SV	(SV*	std)
+		 CO	(CO1	std)
+		 PVR	(PVR1	std)
+		 PVRA	(PVRA1	std)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	(MSP*	std)
+		 MDP	(MDP*	std)
+		 DSS	(0	std)
+		 EDV	(EDV1	std)
+		 EF	(EF1	std)
+		 IN	(IN1	std)
+		 INA	(INA1	std)
+		 INB	(INB1	std)
+		 INC	(INC1	std)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 5
+		 time 1
+		 SS	(SS2	std)
+		 AB	(AB*	std)
+		 AS	(AS2	std)
+		 BB	(BB%	std)
+		 BS	(BS2	std)
+		 PL	(PL2	std)
+		 PLA	(PLA2	std)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	(HR2	std)
+		 HRA	(HRA2	std)
+		 HRX	(HRX*	std)
+		 SV	(SV1	std)
+		 CO	(CO2	std)
+		 PVR	(PVR2	std)
+		 PVRA	(PVRA2	std)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	(MSP*	std)
+		 MDP	(MDP*	std)
+		 DSS	(0	std)
+		 EDV	(EDV2	std)
+		 EF	(EF2	std)
+		 IN	(IN2	std)
+		 INA	(INA2	std)
+		 INB	(INB2	std)
+		 INC	(INC2	std)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 6
+		 time (1 2)
+		 SS	((SS*	INF)
+		 AB	(AB*	std)
+		 AS	((AS*	INF)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	((PL*	INF)
+		 PLA	((PLA*	INF)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	((SV*	INF)
+		 CO	((0	CO*)
+		 PVR	((PVR*	INF)
+		 PVRA	((PVRA*	INF)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	((EDV*	INF)
+		 EF	((0	EF*)
+		 IN	((0	IN*)
+		 INA	((INA*	INF)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 7
+		 time 2
+		 SS	((SS*	INF)
+		 AB	(AB*	std)
+		 AS	((AS*	INF)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	((PL*	INF)
+		 PLA	((PLA*	INF)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	((SV*	INF)
+		 CO	((0	CO*)
+		 PVR	((PVR*	INF)
+		 PVRA	((PVRA*	INF)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	((EDV*	INF)
+		 EF	(EF*	inc)
+		 IN	(IN*	inc)
+		 INA	((INA*	INF)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 8
+		 time 2
+		 SS	(SS3	std)
+		 AB	(AB*	std)
+		 AS	(AS3	std)
+		 BB	(BB%	std)
+		 BS	(BS3	std)
+		 PL	(PL3	std)
+		 PLA	(PLA3	std)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	(HR3	std)
+		 HRA	(HRA3	std)
+		 HRX	(HRX*	std)
+		 SV	(SV2	std)
+		 CO	(CO3	std)
+		 PVR	(PVR3	std)
+		 PVRA	(PVRA3	std)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	(MSP*	std)
+		 MDP	(MDP*	std)
+		 DSS	(0	std)
+		 EDV	(EDV3	std)
+		 EF	(EF*	std)
+		 IN	(IN*	std)
+		 INA	(INA3	std)
+		 INB	(INB3	std)
+		 INC	(INC3	std)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 9
+		 time 2
+		 SS	(SS4	std)
+		 AB	(AB*	std)
+		 AS	(AS4	std)
+		 BB	(BB%	std)
+		 BS	(BS4	std)
+		 PL	(PL4	std)
+		 PLA	(PLA4	std)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	(HR4	std)
+		 HRA	(HRA4	std)
+		 HRX	(HRX*	std)
+		 SV	(SV3	std)
+		 CO	(CO4	std)
+		 PVR	(PVR4	std)
+		 PVRA	(PVRA4	std)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	(MSP*	std)
+		 MDP	(MDP*	std)
+		 DSS	(0	std)
+		 EDV	(EDV4	std)
+		 EF	(EF3	std)
+		 IN	(IN3	std)
+		 INA	(INA4	std)
+		 INB	(INB4	std)
+		 INC	(INC4	std)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 1
+		 time (2 3)
+		 SS	((SS*	INF)
+		 AB	(AB*	std)
+		 AS	((AS*	INF)
+		 BB	(BB%	std)
+		 BS	((0	BS*)
+		 PL	((PL*	INF)
+		 PLA	((PLA*	INF)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	((0	HR*)
+		 HRA	((0	HRA*)
+		 HRX	(HRX*	std)
+		 SV	((SV*	INF)
+		 CO	((0	CO*)
+		 PVR	((PVR*	INF)
+		 PVRA	((PVRA*	INF)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	((0	MSP*)
+		 MDP	((0	MDP*)
+		 DSS	((0	INF)
+		 EDV	((EDV*	INF)
+		 EF	((EF*	INF)
+		 IN	((IN*	INF)
+		 INA	((INA*	INF)
+		 INB	((0	INB*)
+		 INC	((0	INC*)
+		 INX	(INX*	std)
+
+	]
+	node [
+		 id 1
+		 time 3
+		 SS	(SS5	std)
+		 AB	(AB*	std)
+		 AS	(AS5	std)
+		 BB	(BB%	std)
+		 BS	(BS5	std)
+		 PL	(PL5	std)
+		 PLA	(PLA5	std)
+		 BV	(BV*	std)
+		 SC	(SC*	std)
+		 HR	(HR5	std)
+		 HRA	(HRA5	std)
+		 HRX	(HRX*	std)
+		 SV	(SV4	std)
+		 CO	(CO5	std)
+		 PVR	(PVR5	std)
+		 PVRA	(PVRA5	std)
+		 PVRX	(PVRX*	std)
+		 MSFP	(MSFP*	std)
+		 MSP	(MSP*	std)
+		 MDP	(MDP*	std)
+		 DSS	(0	std)
+		 EDV	(EDV5	std)
+		 EF	(EF4	std)
+		 IN	(IN4	std)
+		 INA	(INA5	std)
+		 INB	(INB5	std)
+		 INC	(INC5	std)
+		 INX	(INX*	std)
+
+	]
+	edge [
+		 source 1
+		 target 2
+	]
+	edge [
+		 source 2
+		 target 3
+	]
+	edge [
+		 source 2
+		 target 4
+	]
+	edge [
+		 source 2
+		 target 5
+	]
+	edge [
+		 source 3
+		 target 6
+	]
+	edge [
+		 source 6
+		 target 7
+	]
+	edge [
+		 source 6
+		 target 8
+	]
+	edge [
+		 source 6
+		 target 9
+	]
+	edge [
+		 source 7
+		 target 10
+	]
+	edge [
+		 source 1
+		 target 11
+	]
+]
