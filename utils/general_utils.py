@@ -1,3 +1,6 @@
+import os
+
+
 def auto_str(cls):
     """
     Generate a default __str__ implementation for classes
@@ -34,3 +37,9 @@ def default_str_inner(self):
 def is_not_empty(string):
     return string is not None and len(string) > 0
 
+
+def read_data(input_dir_path, input_cq_path):
+    with open(os.path.join(input_dir_path,input_cq_path)) as in_file:
+        data = in_file.read()
+
+    return data

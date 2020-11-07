@@ -6,6 +6,7 @@
 import os
 import cq_formatter
 from configparser import ConfigParser
+from utils.general_utils import read_data
 
 CONFIG_FILE_PATH = "conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
@@ -21,13 +22,6 @@ def load_user_config():
 def init_output_directory(results_directory_path):
     if not os.path.isdir(results_directory_path):
         os.makedirs(results_directory_path)
-
-
-def read_data(input_dir_path, input_cq_path):
-    with open(os.path.join(input_dir_path,input_cq_path)) as in_file:
-        data = in_file.read()
-
-    return data
 
 
 def write_results(results_dir, output_path, gml):
