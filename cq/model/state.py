@@ -1,10 +1,5 @@
 from utils.general_utils import auto_str,auto_repr
-from collections import namedtuple
-
-Parameter = namedtuple('Parameter', ['name',
-                                     'value',
-                                     'quantity_space'])
-
+from .parameter import Parameter
 
 @auto_str
 @auto_repr
@@ -20,6 +15,8 @@ class State:
         self.__successor_states.append(successor_state)
 
     def add_parameter(self, parameter):
+        if not isinstance(parameter, Parameter):
+            raise TypeError("Expected to Parameter instance, actual type :" + type(parameter))
         self.__parameters.append(parameter)
 
     @property

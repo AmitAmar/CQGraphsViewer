@@ -1,94 +1,17 @@
 import re
 from utils.general_utils import is_not_empty
-from cq_model.state import State
 from gml_model.node import Node
-from gml_model.edge import Edge
 from gml_model.graph import Graph
-
-CQ_STATE_PREFIX = "State"
-
-NONE_VALUE = 'none'
-
-TIME_PATTERN = "Time\s*=\s(.*)\n"
-PREDECESSOR_STATE_PATTERN = "Predecessor states\s*:\s(.*)\n"
-SUCCESSOR_STATES_PATTERN = "Successor states\s*:\s(.*)\n"
-PARAMETERS_PATTERN = "Quantity Space((?:\n(?:.|\n)*))"
-
-time_pattern = re.compile(TIME_PATTERN)
-predecessor_state_pattern = re.compile(PREDECESSOR_STATE_PATTERN)
-successor_states_pattern = re.compile(SUCCESSOR_STATES_PATTERN)
-parameters_pattern = re.compile(PARAMETERS_PATTERN)
+from cq.parser.cq_parser import *
 
 
-def convert_to_gml(raw_cq_output):
-    cq_states = parse_cq_states(raw_cq_output)
-    graph = convert_cq_states_into_gml_graph(cq_states)
-
-    return ""
-
-
-def convert_cq_states_into_gml_graph(cq_states):
+def convert_cq_to_gml(raw_cq_output):
     graph = Graph()
+    cq_states = parse_cq_states(raw_cq_output)
 
     for state in cq_states:
         graph.add_node(Node(state.state_id, state.time, state.parameters))
 
     print(graph)
 
-
-def parse_cq_states(raw_cq_output):
-    cq_states = list()
-    cq_states_raw = raw_cq_output.split(CQ_STATE_PREFIX)
-
-    for raw_str in cq_states_raw:
-        raw_str = raw_str.strip()
-        if is_not_empty(raw_str):
-            current_state = State()
-            init_id(current_state, raw_str)
-            init_time(current_state, raw_str)
-            init_predecessor_state(current_state, raw_str)
-            init_successor_states(current_state, raw_str)
-            init_parameters(current_state, raw_str)
-            cq_states.append(current_state)
-            print(current_state)
-
-    return cq_states
-
-
-def init_id(current_state, raw_str):
-    state_id = int(raw_str[0])
-    current_state.state_id = state_id
-
-
-def init_time(current_state, raw_str):
-    current_time = time_pattern.findall(raw_str)[0]
-    current_state.time = current_time
-
-
-def init_predecessor_state(current_state, raw_str):
-    pre_state = predecessor_state_pattern.findall(raw_str)[0]
-
-    if pre_state.isnumeric():
-        current_state.predecessor_state = int(pre_state)
-
-
-def init_successor_states(current_state, raw_str):
-    raw_successors = successor_states_pattern.findall(raw_str)[0].strip()
-
-    if raw_successors == NONE_VALUE:
-        return
-
-    successors = raw_successors.split()
-
-    for successor in successors:
-        current_state.add_successor_state(int(successor))
-
-
-def init_parameters(current_state, raw_str):
-    raw_successors = parameters_pattern.findall(raw_str)
-    parameters = raw_successors[0].split("\n")
-
-    for param in parameters:
-        param = param.strip()
-        if is_not_empty(param):
-            current_state.add_parameter(param)
+    return ""

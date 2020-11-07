@@ -15,8 +15,9 @@ class Edge:
         return self.__target
 
     def __str__(self):
-        result = ""
+        result = "\n\tedge [\n"
 
+        result += "\n]"
         return result
 
 

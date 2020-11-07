@@ -45,7 +45,7 @@ def main():
 
     init_output_directory(output_dir_path)
     raw_cq_data = read_data(input_dir_path, cq_data_path)
-    gml = cq_formatter.convert_to_gml(raw_cq_data)
+    gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
     write_results(output_dir_path, gml_output_path, gml)
 
 
