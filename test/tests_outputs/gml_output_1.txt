@@ -3,78 +3,78 @@ graph [
 	node [
 		 id 0
 		 time 0
-		 amount	(0	inc)
-		 level	(0	inc)
-		 pressure	(0	inc)
-		 outflow	(0	inc)
-		 inflow	(if*	std)
-		 netflow	((0	inf)
+		 amount	(0 inc)	(0 full)
+		 level	(0 inc)	(0 top inf)
+		 pressure	(0 inc)	(0 inf)
+		 outflow	(0 inc)	(0 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	((0 inf) dec)	(minf 0 inf)
 
 	]
 	node [
 		 id 1
 		 time 0
-		 amount	(0	std)
-		 level	(0	std)
-		 pressure	(0	std)
-		 outflow	(0	std)
-		 inflow	(if*	std)
-		 netflow	(0	std)
+		 amount	(0 std)	(0 full)
+		 level	(0 std)	(0 top inf)
+		 pressure	(0 std)	(0 inf)
+		 outflow	(0 std)	(0 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	(0 std)	(minf 0 inf)
 
 	]
 	node [
 		 id 2
 		 time 0
-		 amount	(0	dec)
-		 level	(0	dec)
-		 pressure	(0	dec)
-		 outflow	(0	dec)
-		 inflow	(if*	std)
-		 netflow	((minf	0)
+		 amount	(0 dec)	(0 full)
+		 level	(0 dec)	(0 top inf)
+		 pressure	(0 dec)	(0 inf)
+		 outflow	(0 dec)	(0 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	((minf 0) inc)	(minf 0 inf)
 
 	]
 	node [
 		 id 3
 		 time (0 1)
-		 amount	((0	full)
-		 level	((0	top)
-		 pressure	((0	inf)
-		 outflow	((0	inf)
-		 inflow	(if*	std)
-		 netflow	((0	inf)
+		 amount	((0 full) inc)	(0 full)
+		 level	((0 top) inc)	(0 top inf)
+		 pressure	((0 inf) inc)	(0 inf)
+		 outflow	((0 inf) inc)	(0 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	((0 inf) dec)	(minf 0 inf)
 
 	]
 	node [
 		 id 4
 		 time 1
-		 amount	(full	std)
-		 level	(top	std)
-		 pressure	(P1	std)
-		 outflow	(OF1	std)
-		 inflow	(if*	std)
-		 netflow	(0	std)
+		 amount	(full std)	(0 full)
+		 level	(top std)	(0 top inf)
+		 pressure	(P1 std)	(0 P1 inf)
+		 outflow	(OF1 std)	(0 OF1 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	(0 std)	(minf 0 inf)
 
 	]
 	node [
 		 id 5
 		 time 1
-		 amount	(full	inc)
-		 level	(top	inc)
-		 pressure	((0	inf)
-		 outflow	((0	inf)
-		 inflow	(if*	std)
-		 netflow	((0	inf)
+		 amount	(full inc)	(0 full)
+		 level	(top inc)	(0 top inf)
+		 pressure	((0 inf) inc)	(0 inf)
+		 outflow	((0 inf) inc)	(0 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	((0 inf) dec)	(minf 0 inf)
 
 	]
 	node [
 		 id 6
 		 time 1
-		 amount	(A1	std)
-		 level	(L1	std)
-		 pressure	(P2	std)
-		 outflow	(OF2	std)
-		 inflow	(if*	std)
-		 netflow	(0	std)
+		 amount	(A1 std)	(0 A1 full)
+		 level	(L1 std)	(0 L1 top inf)
+		 pressure	(P2 std)	(0 P2 inf)
+		 outflow	(OF2 std)	(0 OF2 inf)
+		 inflow	(if* std)	(0 if* inf)
+		 netflow	(0 std)	(minf 0 inf)
 
 	]
 	edge [
