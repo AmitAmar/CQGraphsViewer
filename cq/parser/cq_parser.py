@@ -11,11 +11,13 @@ TIME_PATTERN = "Time\s*=\s(.*)\n"
 PREDECESSOR_STATE_PATTERN = "Predecessor states\s*:\s(.*)\n"
 SUCCESSOR_STATES_PATTERN = "Successor states\s*:\s(.*)\n"
 PARAMETERS_PATTERN = "Quantity Space((?:\n(?:.|\n)*))"
+SINGLE_PARAMETER_PATTERN = "(\w*)\s*(\(.*\))\s*(\(.*\))"
 
 time_pattern = re.compile(TIME_PATTERN)
 predecessor_state_pattern = re.compile(PREDECESSOR_STATE_PATTERN)
 successor_states_pattern = re.compile(SUCCESSOR_STATES_PATTERN)
 parameters_pattern = re.compile(PARAMETERS_PATTERN)
+single_parameter_pattern = re.compile(SINGLE_PARAMETER_PATTERN)
 
 
 def parse_cq_states(raw_cq_output):
@@ -72,7 +74,7 @@ def init_parameters(current_state, raw_str):
     for param in parameters:
         param = param.strip()
         if is_not_empty(param):
-            params_chunks = [chunk.strip() for chunk in param.split()]
+            params_chunks = single_parameter_pattern.findall(param)[0]
 
             current_parameter = Parameter(params_chunks[0], params_chunks[1], params_chunks[2])
             current_state.add_parameter(current_parameter)
