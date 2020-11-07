@@ -16,12 +16,6 @@ class State:
         self.successor_states = list()
         self.parameters = list()
 
-    def __str__(self):
-        return f"State: {self.time},\n" \
-               f" predecessor_states = {self.predecessor_states},\n"\
-               f"successor_states = {self.successor_states},\n"\
-               f"parameters = {self.parameters}"
-
     def set_predecessor_state(self, pre_state):
         self.predecessor_states = pre_state
 

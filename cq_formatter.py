@@ -5,15 +5,19 @@ from gml_model.node import Node
 from gml_model.edge import Edge
 from gml_model.graph import Graph
 
+CQ_STATE_PREFIX = "State"
+
 NONE_VALUE = 'none'
 
 TIME_PATTERN = "Time\s*=\s(.*)\n"
 PREDECESSOR_STATE_PATTERN = "Predecessor states\s*:\s(.*)\n"
 SUCCESSOR_STATES_PATTERN = "Successor states\s*:\s(.*)\n"
+PARAMETERS_PATTERN = "Quantity Space((?:\n(?:.|\n)*))"
 
 time_pattern = re.compile(TIME_PATTERN)
 predecessor_state_pattern = re.compile(PREDECESSOR_STATE_PATTERN)
 successor_states_pattern = re.compile(SUCCESSOR_STATES_PATTERN)
+parameters_pattern = re.compile(PARAMETERS_PATTERN)
 
 
 def convert_to_gml(raw_cq_output):
@@ -25,11 +29,12 @@ def convert_to_gml(raw_cq_output):
 
 def parse_cq_states(raw_cq_output):
     cq_states = list()
-    cq_states_raw = raw_cq_output.split("State")
+    cq_states_raw = raw_cq_output.split(CQ_STATE_PREFIX)
+
     for raw_str in cq_states_raw:
-        current_state = State()
+        raw_str = raw_str.strip()
         if is_not_empty(raw_str):
-            raw_str = raw_str.strip()
+            current_state = State()
             init_id(current_state, raw_str)
             init_time(current_state, raw_str)
             init_predecessor_state(current_state, raw_str)
@@ -71,4 +76,10 @@ def init_successor_states(current_state, raw_str):
 
 
 def init_parameters(current_state, raw_str):
-    pass
+    raw_successors = parameters_pattern.findall(raw_str)
+    parameters = raw_successors[0].split("\n")
+
+    for param in parameters:
+        param = param.strip()
+        if is_not_empty(param):
+            current_state.add_parameter(param)

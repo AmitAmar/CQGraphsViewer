@@ -7,7 +7,7 @@ import os
 import cq_formatter
 from configparser import ConfigParser
 
-CONFIG_FILE_PATH = "config.ini"
+CONFIG_FILE_PATH = "conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
 
 

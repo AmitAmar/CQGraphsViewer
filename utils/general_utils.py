@@ -5,7 +5,7 @@ def auto_str(cls):
     :return: class with __str__ function
     """
     def __str__(self):
-        return inner_default_str(self)
+        return default_str_inner(self)
     cls.__str__ = __str__
     return cls
 
@@ -17,13 +17,13 @@ def auto_repr(cls):
     :return: class with __repr__ function
     """
     def __repr__(self):
-        return inner_default_str(self)
+        return default_str_inner(self)
 
     cls.__repr__ = __repr__
     return cls
 
 
-def inner_default_str(self):
+def default_str_inner(self):
     return '{type}({properties})'.format(
             type=type(self).__name__,
             properties=', '.join('{field_name}={field_value}'.format(
@@ -32,5 +32,5 @@ def inner_default_str(self):
 
 
 def is_not_empty(string):
-    return string is not None and len(string.strip()) > 0
+    return string is not None and len(string) > 0
 
