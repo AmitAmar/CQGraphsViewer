@@ -22,4 +22,3 @@ def handle_state(graph, state):
     # Create Edges:
     for successor in state.successor_states:
         graph.add_edge(Edge(state_id, successor))
-

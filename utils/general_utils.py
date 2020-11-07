@@ -30,7 +30,8 @@ def default_str_inner(self):
     return '{type}({properties})'.format(
             type=type(self).__name__,
             properties=', '.join('{field_name}={field_value}'.format(
-                field_name=item[0].replace(type(self).__name__ + "_", ""), field_value=item[1]) for item in vars(self).items())
+                field_name=item[0].replace(type(self).__name__ + "_", ""),
+                field_value=item[1]) for item in vars(self).items())
         )
 
 
@@ -39,7 +40,7 @@ def is_not_empty(string):
 
 
 def read_data(input_dir_path, input_cq_path):
-    with open(os.path.join(input_dir_path,input_cq_path)) as in_file:
+    with open(os.path.join(input_dir_path, input_cq_path)) as in_file:
         data = in_file.read()
 
     return data

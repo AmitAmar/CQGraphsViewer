@@ -27,16 +27,15 @@ class Graph:
 
     def __str__(self):
         result = "graph [\n"
-        #Load Nodes:
+        # Load Nodes:
 
         for node in self.__nodes:
             result += str(node)
 
-        #Load Edges:
+        # Load Edges:
 
         for edge in self.__edges:
             result += str(edge)
 
         result += "\n]"
-
         return result

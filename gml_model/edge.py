@@ -22,5 +22,3 @@ class Edge:
 
         result += "\n\t]"
         return result
-
-

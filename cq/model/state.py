@@ -1,6 +1,7 @@
 from utils.general_utils import auto_str,auto_repr
 from .parameter import Parameter
 
+
 @auto_str
 @auto_repr
 class State:
