@@ -298,7 +298,7 @@ graph [
 
 	]
 	node [
-		 id 1
+		 id 10
 		 time (2 3)
 		 SS	((SS* INF) inc)	(0 SS* INF)
 		 AB	(AB* std)	(0 AB% AB* AB%% INF)
@@ -331,7 +331,7 @@ graph [
 
 	]
 	node [
-		 id 1
+		 id 11
 		 time 3
 		 SS	(SS5 std)	(0 SS* SS5 INF)
 		 AB	(AB* std)	(0 AB% AB* AB%% INF)
@@ -366,41 +366,51 @@ graph [
 	edge [
 		 source 1
 		 target 2
+		 changed_quantities SS,AS,PL,PLA,PVR,PVRA,EDV,INA
 	]
 	edge [
 		 source 2
 		 target 3
+		 changed_quantities SV
 	]
 	edge [
 		 source 2
 		 target 4
+		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
 	]
 	edge [
 		 source 2
 		 target 5
+		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
 	]
 	edge [
 		 source 3
 		 target 6
+		 changed_quantities SV
 	]
 	edge [
 		 source 6
 		 target 7
+		 changed_quantities EF,IN
 	]
 	edge [
 		 source 6
 		 target 8
+		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
 	]
 	edge [
 		 source 6
 		 target 9
+		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
 	]
 	edge [
 		 source 7
 		 target 10
+		 changed_quantities EF,IN
 	]
 	edge [
-		 source 1
+		 source 10
 		 target 11
+		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
 	]
 ]

@@ -7,12 +7,14 @@ CQ_STATE_PREFIX = "State"
 
 NONE_VALUE = 'none'
 
+ID_PATTERN = "(\d+)\s*Time"
 TIME_PATTERN = "Time\s*=\s(.*)\n"
 PREDECESSOR_STATE_PATTERN = "Predecessor states\s*:\s(.*)\n"
 SUCCESSOR_STATES_PATTERN = "Successor states\s*:\s(.*)\n"
 PARAMETERS_PATTERN = "Quantity Space((?:\n(?:.|\n)*))"
 SINGLE_PARAMETER_PATTERN = "(\w*)\s*(\(.*\))\s*(\(.*\))"
 
+id_pattern = re.compile(ID_PATTERN)
 time_pattern = re.compile(TIME_PATTERN)
 predecessor_state_pattern = re.compile(PREDECESSOR_STATE_PATTERN)
 successor_states_pattern = re.compile(SUCCESSOR_STATES_PATTERN)
@@ -39,8 +41,8 @@ def parse_cq_states(raw_cq_output):
 
 
 def init_id(current_state, raw_str):
-    state_id = int(raw_str[0])
-    current_state.state_id = state_id
+    state_id = id_pattern.findall(raw_str)[0]
+    current_state.state_id = int(state_id)
 
 
 def init_time(current_state, raw_str):
