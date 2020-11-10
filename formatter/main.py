@@ -4,9 +4,9 @@
     Written by Amit Amar (2020)
 """
 import os
-import cq_formatter
+from formatter import cq_formatter
 from configparser import ConfigParser
-from utils.general_utils import read_data
+from formatter.utils.general_utils import read_data
 
 CONFIG_FILE_PATH = "conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
