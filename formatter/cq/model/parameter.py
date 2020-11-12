@@ -17,7 +17,7 @@ class Parameter:
         return self.__quantity_space
 
     def __str__(self):
-        return f"{self.__name}\t{self.__value}\t{self.__quantity_space}"
+        return f"{self.__name}\t\"{self.__value}\t{self.__quantity_space}\""
 
     def __repr__(self):
         return self.__str__()

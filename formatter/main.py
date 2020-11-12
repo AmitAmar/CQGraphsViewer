@@ -5,18 +5,11 @@
 """
 import os
 from formatter import cq_formatter
-from configparser import ConfigParser
-from formatter.utils.general_utils import read_data
+from utils.general_utils import load_user_config,read_data
 
-CONFIG_FILE_PATH = "conf/config.ini"
+
+CONFIG_FILE_PATH = "../conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
-
-
-def load_user_config():
-    config_object = ConfigParser()
-    config_object.read(CONFIG_FILE_PATH)
-    user_preferences = config_object[USER_PREFERENCES_CONFIG_SECTION]
-    return user_preferences
 
 
 def init_output_directory(results_directory_path):
@@ -31,7 +24,7 @@ def write_results(results_dir, output_path, gml):
 
 def main():
     # Read configurations:
-    user_preferences = load_user_config()
+    user_preferences = load_user_config(CONFIG_FILE_PATH, USER_PREFERENCES_CONFIG_SECTION)
     input_dir_path = user_preferences["INPUT_DIRECTORY_PATH"]
     output_dir_path = user_preferences["OUTPUT_DIRECTORY_PATH"]
     cq_data_path = user_preferences["CQ_DATA_PATH"]

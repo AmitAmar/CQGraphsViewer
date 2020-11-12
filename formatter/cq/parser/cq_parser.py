@@ -1,5 +1,5 @@
 import re
-from formatter.utils.general_utils import is_not_empty
+from utils.general_utils import is_not_empty
 from formatter.cq.model.state import State
 from formatter.cq.model.parameter import Parameter
 

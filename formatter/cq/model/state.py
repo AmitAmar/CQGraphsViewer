@@ -1,4 +1,4 @@
-from formatter.utils.general_utils import auto_str,auto_repr
+from utils.general_utils import auto_str,auto_repr
 from .parameter import Parameter
 
 

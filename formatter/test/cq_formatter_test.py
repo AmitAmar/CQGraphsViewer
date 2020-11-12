@@ -1,7 +1,7 @@
 import unittest
 import os
 from formatter.cq_formatter import convert_cq_to_gml
-from formatter.utils.general_utils import read_data
+from utils.general_utils import read_data
 
 INPUTS_DIRECTORY = "tests_inputs"
 OUTPUT_DIRECTORY = "tests_outputs"

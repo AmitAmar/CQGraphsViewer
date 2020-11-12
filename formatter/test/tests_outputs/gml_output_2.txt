@@ -2,415 +2,415 @@ graph [
 
 	node [
 		 id 1
-		 time 0
-		 SS	(SS* inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS* inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	(PL* inc)	(0 PL* INF)
-		 PLA	(PLA* inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	((0 SV*) inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	(PVR* inc)	(0 PVR* INF)
-		 PVRA	(PVRA* inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	(EDV* inc)	(0 EDV* INF)
-		 EF	((0 EF*) inc)	(0 EF* INF)
-		 IN	((0 IN*) inc)	(0 IN* INF)
-		 INA	(INA* inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "0"
+		 SS	"(SS* inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS* inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"(PL* inc)	(0 PL* INF)"
+		 PLA	"(PLA* inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"((0 SV*) inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"(PVR* inc)	(0 PVR* INF)"
+		 PVRA	"(PVRA* inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"(EDV* inc)	(0 EDV* INF)"
+		 EF	"((0 EF*) inc)	(0 EF* INF)"
+		 IN	"((0 IN*) inc)	(0 IN* INF)"
+		 INA	"(INA* inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 2
-		 time (0 1)
-		 SS	((SS* INF) inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	((AS* INF) inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	((PL* INF) inc)	(0 PL* INF)
-		 PLA	((PLA* INF) inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	((0 SV*) inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	((PVR* INF) inc)	(0 PVR* INF)
-		 PVRA	((PVRA* INF) inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	((EDV* INF) inc)	(0 EDV* INF)
-		 EF	((0 EF*) inc)	(0 EF* INF)
-		 IN	((0 IN*) inc)	(0 IN* INF)
-		 INA	((INA* INF) inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "(0 1)"
+		 SS	"((SS* INF) inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"((AS* INF) inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"((PL* INF) inc)	(0 PL* INF)"
+		 PLA	"((PLA* INF) inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"((0 SV*) inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"((PVR* INF) inc)	(0 PVR* INF)"
+		 PVRA	"((PVRA* INF) inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"((EDV* INF) inc)	(0 EDV* INF)"
+		 EF	"((0 EF*) inc)	(0 EF* INF)"
+		 IN	"((0 IN*) inc)	(0 IN* INF)"
+		 INA	"((INA* INF) inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 3
-		 time 1
-		 SS	((SS* INF) inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	((AS* INF) inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	((PL* INF) inc)	(0 PL* INF)
-		 PLA	((PLA* INF) inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV* inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	((PVR* INF) inc)	(0 PVR* INF)
-		 PVRA	((PVRA* INF) inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	((EDV* INF) inc)	(0 EDV* INF)
-		 EF	((0 EF*) inc)	(0 EF* INF)
-		 IN	((0 IN*) inc)	(0 IN* INF)
-		 INA	((INA* INF) inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "1"
+		 SS	"((SS* INF) inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"((AS* INF) inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"((PL* INF) inc)	(0 PL* INF)"
+		 PLA	"((PLA* INF) inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV* inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"((PVR* INF) inc)	(0 PVR* INF)"
+		 PVRA	"((PVRA* INF) inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"((EDV* INF) inc)	(0 EDV* INF)"
+		 EF	"((0 EF*) inc)	(0 EF* INF)"
+		 IN	"((0 IN*) inc)	(0 IN* INF)"
+		 INA	"((INA* INF) inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 4
-		 time 1
-		 SS	(SS1 std)	(0 SS* SS1 INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS1 std)	(0 AS* AS1 INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	(BS1 std)	(0 BS1 BS* INF)
-		 PL	(PL1 std)	(0 PL* PL1 INF)
-		 PLA	(PLA1 std)	(0 PLA* PLA1 INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	(HR1 std)	(0 HR1 HR* INF)
-		 HRA	(HRA1 std)	(0 HRA1 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV* std)	(0 SV* INF)
-		 CO	(CO1 std)	(0 CO1 CO* INF)
-		 PVR	(PVR1 std)	(0 PVR* PVR1 INF)
-		 PVRA	(PVRA1 std)	(0 PVRA* PVRA1 INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	(MSP* std)	(0 MSP* INF)
-		 MDP	(MDP* std)	(0 MDP* INF)
-		 DSS	(0 std)	(MINF 0 INF)
-		 EDV	(EDV1 std)	(0 EDV* EDV1 INF)
-		 EF	(EF1 std)	(0 EF1 EF* INF)
-		 IN	(IN1 std)	(0 IN1 IN* INF)
-		 INA	(INA1 std)	(0 INA* INA1 INF)
-		 INB	(INB1 std)	(0 INB1 INB* INF)
-		 INC	(INC1 std)	(0 INC1 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "1"
+		 SS	"(SS1 std)	(0 SS* SS1 INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS1 std)	(0 AS* AS1 INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"(BS1 std)	(0 BS1 BS* INF)"
+		 PL	"(PL1 std)	(0 PL* PL1 INF)"
+		 PLA	"(PLA1 std)	(0 PLA* PLA1 INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"(HR1 std)	(0 HR1 HR* INF)"
+		 HRA	"(HRA1 std)	(0 HRA1 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV* std)	(0 SV* INF)"
+		 CO	"(CO1 std)	(0 CO1 CO* INF)"
+		 PVR	"(PVR1 std)	(0 PVR* PVR1 INF)"
+		 PVRA	"(PVRA1 std)	(0 PVRA* PVRA1 INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"(MSP* std)	(0 MSP* INF)"
+		 MDP	"(MDP* std)	(0 MDP* INF)"
+		 DSS	"(0 std)	(MINF 0 INF)"
+		 EDV	"(EDV1 std)	(0 EDV* EDV1 INF)"
+		 EF	"(EF1 std)	(0 EF1 EF* INF)"
+		 IN	"(IN1 std)	(0 IN1 IN* INF)"
+		 INA	"(INA1 std)	(0 INA* INA1 INF)"
+		 INB	"(INB1 std)	(0 INB1 INB* INF)"
+		 INC	"(INC1 std)	(0 INC1 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 5
-		 time 1
-		 SS	(SS2 std)	(0 SS* SS2 INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS2 std)	(0 AS* AS2 INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	(BS2 std)	(0 BS2 BS* INF)
-		 PL	(PL2 std)	(0 PL* PL2 INF)
-		 PLA	(PLA2 std)	(0 PLA* PLA2 INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	(HR2 std)	(0 HR2 HR* INF)
-		 HRA	(HRA2 std)	(0 HRA2 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV1 std)	(0 SV1 SV* INF)
-		 CO	(CO2 std)	(0 CO2 CO* INF)
-		 PVR	(PVR2 std)	(0 PVR* PVR2 INF)
-		 PVRA	(PVRA2 std)	(0 PVRA* PVRA2 INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	(MSP* std)	(0 MSP* INF)
-		 MDP	(MDP* std)	(0 MDP* INF)
-		 DSS	(0 std)	(MINF 0 INF)
-		 EDV	(EDV2 std)	(0 EDV* EDV2 INF)
-		 EF	(EF2 std)	(0 EF2 EF* INF)
-		 IN	(IN2 std)	(0 IN2 IN* INF)
-		 INA	(INA2 std)	(0 INA* INA2 INF)
-		 INB	(INB2 std)	(0 INB2 INB* INF)
-		 INC	(INC2 std)	(0 INC2 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "1"
+		 SS	"(SS2 std)	(0 SS* SS2 INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS2 std)	(0 AS* AS2 INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"(BS2 std)	(0 BS2 BS* INF)"
+		 PL	"(PL2 std)	(0 PL* PL2 INF)"
+		 PLA	"(PLA2 std)	(0 PLA* PLA2 INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"(HR2 std)	(0 HR2 HR* INF)"
+		 HRA	"(HRA2 std)	(0 HRA2 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV1 std)	(0 SV1 SV* INF)"
+		 CO	"(CO2 std)	(0 CO2 CO* INF)"
+		 PVR	"(PVR2 std)	(0 PVR* PVR2 INF)"
+		 PVRA	"(PVRA2 std)	(0 PVRA* PVRA2 INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"(MSP* std)	(0 MSP* INF)"
+		 MDP	"(MDP* std)	(0 MDP* INF)"
+		 DSS	"(0 std)	(MINF 0 INF)"
+		 EDV	"(EDV2 std)	(0 EDV* EDV2 INF)"
+		 EF	"(EF2 std)	(0 EF2 EF* INF)"
+		 IN	"(IN2 std)	(0 IN2 IN* INF)"
+		 INA	"(INA2 std)	(0 INA* INA2 INF)"
+		 INB	"(INB2 std)	(0 INB2 INB* INF)"
+		 INC	"(INC2 std)	(0 INC2 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 6
-		 time (1 2)
-		 SS	((SS* INF) inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	((AS* INF) inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	((PL* INF) inc)	(0 PL* INF)
-		 PLA	((PLA* INF) inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	((SV* INF) inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	((PVR* INF) inc)	(0 PVR* INF)
-		 PVRA	((PVRA* INF) inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	((EDV* INF) inc)	(0 EDV* INF)
-		 EF	((0 EF*) inc)	(0 EF* INF)
-		 IN	((0 IN*) inc)	(0 IN* INF)
-		 INA	((INA* INF) inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "(1 2)"
+		 SS	"((SS* INF) inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"((AS* INF) inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"((PL* INF) inc)	(0 PL* INF)"
+		 PLA	"((PLA* INF) inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"((SV* INF) inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"((PVR* INF) inc)	(0 PVR* INF)"
+		 PVRA	"((PVRA* INF) inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"((EDV* INF) inc)	(0 EDV* INF)"
+		 EF	"((0 EF*) inc)	(0 EF* INF)"
+		 IN	"((0 IN*) inc)	(0 IN* INF)"
+		 INA	"((INA* INF) inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 7
-		 time 2
-		 SS	((SS* INF) inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	((AS* INF) inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	((PL* INF) inc)	(0 PL* INF)
-		 PLA	((PLA* INF) inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	((SV* INF) inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	((PVR* INF) inc)	(0 PVR* INF)
-		 PVRA	((PVRA* INF) inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	((EDV* INF) inc)	(0 EDV* INF)
-		 EF	(EF* inc)	(0 EF* INF)
-		 IN	(IN* inc)	(0 IN* INF)
-		 INA	((INA* INF) inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "2"
+		 SS	"((SS* INF) inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"((AS* INF) inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"((PL* INF) inc)	(0 PL* INF)"
+		 PLA	"((PLA* INF) inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"((SV* INF) inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"((PVR* INF) inc)	(0 PVR* INF)"
+		 PVRA	"((PVRA* INF) inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"((EDV* INF) inc)	(0 EDV* INF)"
+		 EF	"(EF* inc)	(0 EF* INF)"
+		 IN	"(IN* inc)	(0 IN* INF)"
+		 INA	"((INA* INF) inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 8
-		 time 2
-		 SS	(SS3 std)	(0 SS* SS3 INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS3 std)	(0 AS* AS3 INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	(BS3 std)	(0 BS3 BS* INF)
-		 PL	(PL3 std)	(0 PL* PL3 INF)
-		 PLA	(PLA3 std)	(0 PLA* PLA3 INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	(HR3 std)	(0 HR3 HR* INF)
-		 HRA	(HRA3 std)	(0 HRA3 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV2 std)	(0 SV* SV2 INF)
-		 CO	(CO3 std)	(0 CO3 CO* INF)
-		 PVR	(PVR3 std)	(0 PVR* PVR3 INF)
-		 PVRA	(PVRA3 std)	(0 PVRA* PVRA3 INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	(MSP* std)	(0 MSP* INF)
-		 MDP	(MDP* std)	(0 MDP* INF)
-		 DSS	(0 std)	(MINF 0 INF)
-		 EDV	(EDV3 std)	(0 EDV* EDV3 INF)
-		 EF	(EF* std)	(0 EF* INF)
-		 IN	(IN* std)	(0 IN* INF)
-		 INA	(INA3 std)	(0 INA* INA3 INF)
-		 INB	(INB3 std)	(0 INB3 INB* INF)
-		 INC	(INC3 std)	(0 INC3 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "2"
+		 SS	"(SS3 std)	(0 SS* SS3 INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS3 std)	(0 AS* AS3 INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"(BS3 std)	(0 BS3 BS* INF)"
+		 PL	"(PL3 std)	(0 PL* PL3 INF)"
+		 PLA	"(PLA3 std)	(0 PLA* PLA3 INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"(HR3 std)	(0 HR3 HR* INF)"
+		 HRA	"(HRA3 std)	(0 HRA3 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV2 std)	(0 SV* SV2 INF)"
+		 CO	"(CO3 std)	(0 CO3 CO* INF)"
+		 PVR	"(PVR3 std)	(0 PVR* PVR3 INF)"
+		 PVRA	"(PVRA3 std)	(0 PVRA* PVRA3 INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"(MSP* std)	(0 MSP* INF)"
+		 MDP	"(MDP* std)	(0 MDP* INF)"
+		 DSS	"(0 std)	(MINF 0 INF)"
+		 EDV	"(EDV3 std)	(0 EDV* EDV3 INF)"
+		 EF	"(EF* std)	(0 EF* INF)"
+		 IN	"(IN* std)	(0 IN* INF)"
+		 INA	"(INA3 std)	(0 INA* INA3 INF)"
+		 INB	"(INB3 std)	(0 INB3 INB* INF)"
+		 INC	"(INC3 std)	(0 INC3 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 9
-		 time 2
-		 SS	(SS4 std)	(0 SS* SS4 INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS4 std)	(0 AS* AS4 INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	(BS4 std)	(0 BS4 BS* INF)
-		 PL	(PL4 std)	(0 PL* PL4 INF)
-		 PLA	(PLA4 std)	(0 PLA* PLA4 INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	(HR4 std)	(0 HR4 HR* INF)
-		 HRA	(HRA4 std)	(0 HRA4 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV3 std)	(0 SV* SV3 INF)
-		 CO	(CO4 std)	(0 CO4 CO* INF)
-		 PVR	(PVR4 std)	(0 PVR* PVR4 INF)
-		 PVRA	(PVRA4 std)	(0 PVRA* PVRA4 INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	(MSP* std)	(0 MSP* INF)
-		 MDP	(MDP* std)	(0 MDP* INF)
-		 DSS	(0 std)	(MINF 0 INF)
-		 EDV	(EDV4 std)	(0 EDV* EDV4 INF)
-		 EF	(EF3 std)	(0 EF3 EF* INF)
-		 IN	(IN3 std)	(0 IN3 IN* INF)
-		 INA	(INA4 std)	(0 INA* INA4 INF)
-		 INB	(INB4 std)	(0 INB4 INB* INF)
-		 INC	(INC4 std)	(0 INC4 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "2"
+		 SS	"(SS4 std)	(0 SS* SS4 INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS4 std)	(0 AS* AS4 INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"(BS4 std)	(0 BS4 BS* INF)"
+		 PL	"(PL4 std)	(0 PL* PL4 INF)"
+		 PLA	"(PLA4 std)	(0 PLA* PLA4 INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"(HR4 std)	(0 HR4 HR* INF)"
+		 HRA	"(HRA4 std)	(0 HRA4 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV3 std)	(0 SV* SV3 INF)"
+		 CO	"(CO4 std)	(0 CO4 CO* INF)"
+		 PVR	"(PVR4 std)	(0 PVR* PVR4 INF)"
+		 PVRA	"(PVRA4 std)	(0 PVRA* PVRA4 INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"(MSP* std)	(0 MSP* INF)"
+		 MDP	"(MDP* std)	(0 MDP* INF)"
+		 DSS	"(0 std)	(MINF 0 INF)"
+		 EDV	"(EDV4 std)	(0 EDV* EDV4 INF)"
+		 EF	"(EF3 std)	(0 EF3 EF* INF)"
+		 IN	"(IN3 std)	(0 IN3 IN* INF)"
+		 INA	"(INA4 std)	(0 INA* INA4 INF)"
+		 INB	"(INB4 std)	(0 INB4 INB* INF)"
+		 INC	"(INC4 std)	(0 INC4 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 10
-		 time (2 3)
-		 SS	((SS* INF) inc)	(0 SS* INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	((AS* INF) inc)	(0 AS* INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	((0 BS*) inc)	(0 BS* INF)
-		 PL	((PL* INF) inc)	(0 PL* INF)
-		 PLA	((PLA* INF) inc)	(0 PLA* INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	((0 HR*) inc)	(0 HR* INF)
-		 HRA	((0 HRA*) inc)	(0 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	((SV* INF) inc)	(0 SV* INF)
-		 CO	((0 CO*) inc)	(0 CO* INF)
-		 PVR	((PVR* INF) inc)	(0 PVR* INF)
-		 PVRA	((PVRA* INF) inc)	(0 PVRA* INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	((0 MSP*) inc)	(0 MSP* INF)
-		 MDP	((0 MDP*) inc)	(0 MDP* INF)
-		 DSS	((0 INF) dec)	(MINF 0 INF)
-		 EDV	((EDV* INF) inc)	(0 EDV* INF)
-		 EF	((EF* INF) inc)	(0 EF* INF)
-		 IN	((IN* INF) inc)	(0 IN* INF)
-		 INA	((INA* INF) inc)	(0 INA* INF)
-		 INB	((0 INB*) inc)	(0 INB* INF)
-		 INC	((0 INC*) inc)	(0 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "(2 3)"
+		 SS	"((SS* INF) inc)	(0 SS* INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"((AS* INF) inc)	(0 AS* INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"((0 BS*) inc)	(0 BS* INF)"
+		 PL	"((PL* INF) inc)	(0 PL* INF)"
+		 PLA	"((PLA* INF) inc)	(0 PLA* INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"((0 HR*) inc)	(0 HR* INF)"
+		 HRA	"((0 HRA*) inc)	(0 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"((SV* INF) inc)	(0 SV* INF)"
+		 CO	"((0 CO*) inc)	(0 CO* INF)"
+		 PVR	"((PVR* INF) inc)	(0 PVR* INF)"
+		 PVRA	"((PVRA* INF) inc)	(0 PVRA* INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"((0 MSP*) inc)	(0 MSP* INF)"
+		 MDP	"((0 MDP*) inc)	(0 MDP* INF)"
+		 DSS	"((0 INF) dec)	(MINF 0 INF)"
+		 EDV	"((EDV* INF) inc)	(0 EDV* INF)"
+		 EF	"((EF* INF) inc)	(0 EF* INF)"
+		 IN	"((IN* INF) inc)	(0 IN* INF)"
+		 INA	"((INA* INF) inc)	(0 INA* INF)"
+		 INB	"((0 INB*) inc)	(0 INB* INF)"
+		 INC	"((0 INC*) inc)	(0 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	node [
 		 id 11
-		 time 3
-		 SS	(SS5 std)	(0 SS* SS5 INF)
-		 AB	(AB* std)	(0 AB% AB* AB%% INF)
-		 AS	(AS5 std)	(0 AS* AS5 INF)
-		 BB	(BB% std)	(0 BB% BB* BB%% INF)
-		 BS	(BS5 std)	(0 BS5 BS* INF)
-		 PL	(PL5 std)	(0 PL* PL5 INF)
-		 PLA	(PLA5 std)	(0 PLA* PLA5 INF)
-		 BV	(BV* std)	(0 BV% BV* BV%% INF)
-		 SC	(SC* std)	(0 SC% SC* SC%% INF)
-		 HR	(HR5 std)	(0 HR5 HR* INF)
-		 HRA	(HRA5 std)	(0 HRA5 HRA* INF)
-		 HRX	(HRX* std)	(0 HRX% HRX* HRX%% INF)
-		 SV	(SV4 std)	(0 SV* SV4 INF)
-		 CO	(CO5 std)	(0 CO5 CO* INF)
-		 PVR	(PVR5 std)	(0 PVR* PVR5 INF)
-		 PVRA	(PVRA5 std)	(0 PVRA* PVRA5 INF)
-		 PVRX	(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)
-		 MSFP	(MSFP* std)	(0 MSFP* INF)
-		 MSP	(MSP* std)	(0 MSP* INF)
-		 MDP	(MDP* std)	(0 MDP* INF)
-		 DSS	(0 std)	(MINF 0 INF)
-		 EDV	(EDV5 std)	(0 EDV* EDV5 INF)
-		 EF	(EF4 std)	(0 EF* EF4 INF)
-		 IN	(IN4 std)	(0 IN* IN4 INF)
-		 INA	(INA5 std)	(0 INA* INA5 INF)
-		 INB	(INB5 std)	(0 INB5 INB* INF)
-		 INC	(INC5 std)	(0 INC5 INC* INF)
-		 INX	(INX* std)	(0 INX% INX* INX%% INF)
+		 time "3"
+		 SS	"(SS5 std)	(0 SS* SS5 INF)"
+		 AB	"(AB* std)	(0 AB% AB* AB%% INF)"
+		 AS	"(AS5 std)	(0 AS* AS5 INF)"
+		 BB	"(BB% std)	(0 BB% BB* BB%% INF)"
+		 BS	"(BS5 std)	(0 BS5 BS* INF)"
+		 PL	"(PL5 std)	(0 PL* PL5 INF)"
+		 PLA	"(PLA5 std)	(0 PLA* PLA5 INF)"
+		 BV	"(BV* std)	(0 BV% BV* BV%% INF)"
+		 SC	"(SC* std)	(0 SC% SC* SC%% INF)"
+		 HR	"(HR5 std)	(0 HR5 HR* INF)"
+		 HRA	"(HRA5 std)	(0 HRA5 HRA* INF)"
+		 HRX	"(HRX* std)	(0 HRX% HRX* HRX%% INF)"
+		 SV	"(SV4 std)	(0 SV* SV4 INF)"
+		 CO	"(CO5 std)	(0 CO5 CO* INF)"
+		 PVR	"(PVR5 std)	(0 PVR* PVR5 INF)"
+		 PVRA	"(PVRA5 std)	(0 PVRA* PVRA5 INF)"
+		 PVRX	"(PVRX* std)	(0 PVRX% PVRX* PVRX%% INF)"
+		 MSFP	"(MSFP* std)	(0 MSFP* INF)"
+		 MSP	"(MSP* std)	(0 MSP* INF)"
+		 MDP	"(MDP* std)	(0 MDP* INF)"
+		 DSS	"(0 std)	(MINF 0 INF)"
+		 EDV	"(EDV5 std)	(0 EDV* EDV5 INF)"
+		 EF	"(EF4 std)	(0 EF* EF4 INF)"
+		 IN	"(IN4 std)	(0 IN* IN4 INF)"
+		 INA	"(INA5 std)	(0 INA* INA5 INF)"
+		 INB	"(INB5 std)	(0 INB5 INB* INF)"
+		 INC	"(INC5 std)	(0 INC5 INC* INF)"
+		 INX	"(INX* std)	(0 INX% INX* INX%% INF)"
 
 	]
 	edge [
 		 source 1
 		 target 2
-		 changed_quantities SS,AS,PL,PLA,PVR,PVRA,EDV,INA
+		 changed_quantities "SS,AS,PL,PLA,PVR,PVRA,EDV,INA"
 	]
 	edge [
 		 source 2
 		 target 3
-		 changed_quantities SV
+		 changed_quantities "SV"
 	]
 	edge [
 		 source 2
 		 target 4
-		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
+		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 2
 		 target 5
-		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
+		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 3
 		 target 6
-		 changed_quantities SV
+		 changed_quantities "SV"
 	]
 	edge [
 		 source 6
 		 target 7
-		 changed_quantities EF,IN
+		 changed_quantities "EF,IN"
 	]
 	edge [
 		 source 6
 		 target 8
-		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
+		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 6
 		 target 9
-		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
+		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 7
 		 target 10
-		 changed_quantities EF,IN
+		 changed_quantities "EF,IN"
 	]
 	edge [
 		 source 10
 		 target 11
-		 changed_quantities SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC
+		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 ]

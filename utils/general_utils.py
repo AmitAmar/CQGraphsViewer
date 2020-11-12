@@ -1,4 +1,5 @@
 import os
+from configparser import ConfigParser
 
 
 def auto_str(cls):
@@ -24,6 +25,14 @@ def auto_repr(cls):
 
     cls.__repr__ = __repr__
     return cls
+
+
+def load_user_config(path, section):
+    config_object = ConfigParser()
+    config_object.read(path)
+    config_section = config_object[section]
+
+    return config_section
 
 
 def default_str_inner(self):

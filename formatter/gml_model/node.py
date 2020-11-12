@@ -20,7 +20,7 @@ class Node:
         result = "\n\tnode [\n"
 
         result += f"\t\t id {self.__node_id}\n"
-        result += f"\t\t time {self.__time}\n"
+        result += f"\t\t time \"{self.__time}\"\n"
 
         for param in self.__parameters:
             result += f"\t\t {param}\n"

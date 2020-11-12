@@ -2,99 +2,99 @@ graph [
 
 	node [
 		 id 0
-		 time 0
-		 amount	(0 inc)	(0 full)
-		 level	(0 inc)	(0 top inf)
-		 pressure	(0 inc)	(0 inf)
-		 outflow	(0 inc)	(0 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	((0 inf) dec)	(minf 0 inf)
+		 time "0"
+		 amount	"(0 inc)	(0 full)"
+		 level	"(0 inc)	(0 top inf)"
+		 pressure	"(0 inc)	(0 inf)"
+		 outflow	"(0 inc)	(0 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"((0 inf) dec)	(minf 0 inf)"
 
 	]
 	node [
 		 id 1
-		 time 0
-		 amount	(0 std)	(0 full)
-		 level	(0 std)	(0 top inf)
-		 pressure	(0 std)	(0 inf)
-		 outflow	(0 std)	(0 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	(0 std)	(minf 0 inf)
+		 time "0"
+		 amount	"(0 std)	(0 full)"
+		 level	"(0 std)	(0 top inf)"
+		 pressure	"(0 std)	(0 inf)"
+		 outflow	"(0 std)	(0 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"(0 std)	(minf 0 inf)"
 
 	]
 	node [
 		 id 2
-		 time 0
-		 amount	(0 dec)	(0 full)
-		 level	(0 dec)	(0 top inf)
-		 pressure	(0 dec)	(0 inf)
-		 outflow	(0 dec)	(0 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	((minf 0) inc)	(minf 0 inf)
+		 time "0"
+		 amount	"(0 dec)	(0 full)"
+		 level	"(0 dec)	(0 top inf)"
+		 pressure	"(0 dec)	(0 inf)"
+		 outflow	"(0 dec)	(0 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"((minf 0) inc)	(minf 0 inf)"
 
 	]
 	node [
 		 id 3
-		 time (0 1)
-		 amount	((0 full) inc)	(0 full)
-		 level	((0 top) inc)	(0 top inf)
-		 pressure	((0 inf) inc)	(0 inf)
-		 outflow	((0 inf) inc)	(0 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	((0 inf) dec)	(minf 0 inf)
+		 time "(0 1)"
+		 amount	"((0 full) inc)	(0 full)"
+		 level	"((0 top) inc)	(0 top inf)"
+		 pressure	"((0 inf) inc)	(0 inf)"
+		 outflow	"((0 inf) inc)	(0 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"((0 inf) dec)	(minf 0 inf)"
 
 	]
 	node [
 		 id 4
-		 time 1
-		 amount	(full std)	(0 full)
-		 level	(top std)	(0 top inf)
-		 pressure	(P1 std)	(0 P1 inf)
-		 outflow	(OF1 std)	(0 OF1 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	(0 std)	(minf 0 inf)
+		 time "1"
+		 amount	"(full std)	(0 full)"
+		 level	"(top std)	(0 top inf)"
+		 pressure	"(P1 std)	(0 P1 inf)"
+		 outflow	"(OF1 std)	(0 OF1 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"(0 std)	(minf 0 inf)"
 
 	]
 	node [
 		 id 5
-		 time 1
-		 amount	(full inc)	(0 full)
-		 level	(top inc)	(0 top inf)
-		 pressure	((0 inf) inc)	(0 inf)
-		 outflow	((0 inf) inc)	(0 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	((0 inf) dec)	(minf 0 inf)
+		 time "1"
+		 amount	"(full inc)	(0 full)"
+		 level	"(top inc)	(0 top inf)"
+		 pressure	"((0 inf) inc)	(0 inf)"
+		 outflow	"((0 inf) inc)	(0 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"((0 inf) dec)	(minf 0 inf)"
 
 	]
 	node [
 		 id 6
-		 time 1
-		 amount	(A1 std)	(0 A1 full)
-		 level	(L1 std)	(0 L1 top inf)
-		 pressure	(P2 std)	(0 P2 inf)
-		 outflow	(OF2 std)	(0 OF2 inf)
-		 inflow	(if* std)	(0 if* inf)
-		 netflow	(0 std)	(minf 0 inf)
+		 time "1"
+		 amount	"(A1 std)	(0 A1 full)"
+		 level	"(L1 std)	(0 L1 top inf)"
+		 pressure	"(P2 std)	(0 P2 inf)"
+		 outflow	"(OF2 std)	(0 OF2 inf)"
+		 inflow	"(if* std)	(0 if* inf)"
+		 netflow	"(0 std)	(minf 0 inf)"
 
 	]
 	edge [
 		 source 0
 		 target 3
-		 changed_quantities amount,level,pressure,outflow
+		 changed_quantities "amount,level,pressure,outflow"
 	]
 	edge [
 		 source 3
 		 target 4
-		 changed_quantities amount,level,pressure,outflow,netflow
+		 changed_quantities "amount,level,pressure,outflow,netflow"
 	]
 	edge [
 		 source 3
 		 target 5
-		 changed_quantities amount,level
+		 changed_quantities "amount,level"
 	]
 	edge [
 		 source 3
 		 target 6
-		 changed_quantities amount,level,pressure,outflow,netflow
+		 changed_quantities "amount,level,pressure,outflow,netflow"
 	]
 ]
