@@ -366,51 +366,51 @@ graph [
 	edge [
 		 source 1
 		 target 2
-		 changed_quantities "SS,AS,PL,PLA,PVR,PVRA,EDV,INA"
+		 label "SS,AS,PL,PLA,PVR,PVRA,EDV,INA"
 	]
 	edge [
 		 source 2
 		 target 3
-		 changed_quantities "SV"
+		 label "SV"
 	]
 	edge [
 		 source 2
 		 target 4
-		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
+		 label "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 2
 		 target 5
-		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
+		 label "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 3
 		 target 6
-		 changed_quantities "SV"
+		 label "SV"
 	]
 	edge [
 		 source 6
 		 target 7
-		 changed_quantities "EF,IN"
+		 label "EF,IN"
 	]
 	edge [
 		 source 6
 		 target 8
-		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
+		 label "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 6
 		 target 9
-		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
+		 label "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 	edge [
 		 source 7
 		 target 10
-		 changed_quantities "EF,IN"
+		 label "EF,IN"
 	]
 	edge [
 		 source 10
 		 target 11
-		 changed_quantities "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
+		 label "SS,AS,BS,PL,PLA,HR,HRA,SV,CO,PVR,PVRA,MSP,MDP,DSS,EDV,EF,IN,INA,INB,INC"
 	]
 ]

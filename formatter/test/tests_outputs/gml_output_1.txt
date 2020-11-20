@@ -80,21 +80,21 @@ graph [
 	edge [
 		 source 0
 		 target 3
-		 changed_quantities "amount,level,pressure,outflow"
+		 label "amount,level,pressure,outflow"
 	]
 	edge [
 		 source 3
 		 target 4
-		 changed_quantities "amount,level,pressure,outflow,netflow"
+		 label "amount,level,pressure,outflow,netflow"
 	]
 	edge [
 		 source 3
 		 target 5
-		 changed_quantities "amount,level"
+		 label "amount,level"
 	]
 	edge [
 		 source 3
 		 target 6
-		 changed_quantities "amount,level,pressure,outflow,netflow"
+		 label "amount,level,pressure,outflow,netflow"
 	]
 ]

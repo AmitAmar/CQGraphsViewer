@@ -24,7 +24,7 @@ class Edge:
 
         result += f"\t\t source {self.__source}\n"
         result += f"\t\t target {self.__target}\n"
-        result += f"\t\t changed_quantities \"{self.__changed_quantities}\""
+        result += f"\t\t label \"{self.__changed_quantities}\""
 
         result += "\n\t]"
         return result
