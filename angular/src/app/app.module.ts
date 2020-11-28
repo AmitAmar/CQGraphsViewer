@@ -8,15 +8,12 @@ import {MatButtonModule} from '@angular/material/button';
 
 import { MatMenuModule } from '@angular/material/menu';
 
-import { InspectorComponent } from './inspector/inspector.component';
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
-    InspectorComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
