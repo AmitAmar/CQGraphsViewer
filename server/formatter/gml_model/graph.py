@@ -1,5 +1,5 @@
-from formatter.gml_model.node import Node
-from formatter.gml_model.edge import Edge
+from server.formatter.gml_model.node import Node
+from server.formatter.gml_model.edge import Edge
 
 
 class Graph:

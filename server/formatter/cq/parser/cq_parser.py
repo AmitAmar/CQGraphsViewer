@@ -1,7 +1,7 @@
 import re
-from utils.general_utils import is_not_empty
-from formatter.cq.model.state import State
-from formatter.cq.model.parameter import Parameter
+from server.utils.general_utils import is_not_empty
+from server.formatter.cq.model.state import State
+from server.formatter.cq.model.parameter import Parameter
 
 CQ_STATE_PREFIX = "State"
 

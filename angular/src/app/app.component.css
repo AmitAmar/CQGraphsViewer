@@ -1,0 +1,77 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic,300italic,300,100italic,100);
+
+body {
+   font-family: 'Ariel', sans-serif;
+}
+
+.myDiagramDiv {
+  background: whitesmoke;
+  width: 900px;
+  height: 500px;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+
+.left {
+  float: left;
+  padding: 5px;
+  margin: 5px;
+}
+
+.center {
+width:200px;
+height:200px;
+position: fixed;
+top: 25%;
+left: 25%;
+margin-top: -100px;
+margin-left: -100px;
+}
+
+.tp-button-row button,
+.tp-button-row a {
+   margin-right: 8px;
+}
+
+.box {
+  border: solid 1px black;
+  background: whitesmoke;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.clear {
+  clear: both;
+}
+
+section {
+  display: table;
+}
+
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button-row {
+  display: table-cell;
+  width: 490px;
+}
+
+.example-button-row .mat-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}

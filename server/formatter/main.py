@@ -4,8 +4,8 @@
     Written by Amit Amar (2020)
 """
 import os
-from formatter import cq_formatter
-from utils.general_utils import load_user_config,read_data
+from server.formatter import cq_formatter
+from server.utils.general_utils import load_user_config,read_data
 
 
 CONFIG_FILE_PATH = "../conf/config.ini"
