@@ -193,13 +193,13 @@ tools/gulp-tasks/cldr/cldr-data/
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-angular/dist
+client/dist
 /tmp
 /out-tsc
 # Only exists if Bazel was run
 
 # dependencies
-angular/node_modules
+client/node_modules
 
 # profiling files
 chrome-profiler-events*.json
