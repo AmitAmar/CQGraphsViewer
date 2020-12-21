@@ -1,0 +1,75 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic,300italic,300,100italic,100);
+
+.wrapper {
+  height: 100%;
+}
+
+.header {
+  height: calc(30vh - 20px);
+}
+
+.myDiagramDiv {
+  background: whitesmoke;
+  height: calc(70vh - 20px);
+  border: 1px solid black;
+}
+
+
+.left {
+  float: left;
+  padding: 5px;
+  margin: 5px;
+}
+
+.center {
+  width: 200px;
+  height: 200px;
+  position: fixed;
+  top: 25%;
+  left: 25%;
+  margin-top: -100px;
+  margin-left: -100px;
+}
+
+.box {
+  border: solid 1px black;
+  background: whitesmoke;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.clear {
+  clear: both;
+}
+
+section {
+  display: table;
+}
+
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button-row {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.example-button-row .mat-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}

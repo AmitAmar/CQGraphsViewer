@@ -1,0 +1,42 @@
+<div class="wrapper">
+  <div class="header">
+    <h1 align="center">CQ States</h1>
+
+    <div class="example-button-row">
+      <button mat-raised-button color="primary">Create/modify the model</button>
+      <button mat-raised-button color="primary">Plot A</button>
+      <button mat-raised-button color="primary">Plot B</button>
+    </div>
+
+    <div class="example-button-row">
+
+      <button mat-button [matMenuTriggerFor]="menu">Arrange By...</button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="horizontally">Horizontally</button>
+        <button mat-menu-item [matMenuTriggerFor]="vertically">Vertically</button>
+      </mat-menu>
+
+      <mat-menu #horizontally="matMenu">
+        <button mat-menu-item>Time</button>
+        <button mat-menu-item>Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #vertically="matMenu">
+        <button mat-menu-item>Quantities list</button>
+      </mat-menu>
+    </div>
+
+  </div>
+  <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"
+                [initDiagram]='initDiagram'
+                [nodeDataArray]='diagramNodeData'
+                [linkDataArray]='diagramLinkData'
+                divClassName='myDiagramDiv'
+                [modelData]='diagramModelData'
+                [skipsDiagramUpdate]='skipsDiagramUpdate'
+                (modelChange)='diagramModelChange($event)'
+  >
+  </gojs-diagram>
+
+</div>
