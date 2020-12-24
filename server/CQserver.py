@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-import cq_rest_controller
+from rest import cq_rest_controller
 
 HOSTNAME = 'localhost'
 PORT = 8080

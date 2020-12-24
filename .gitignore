@@ -131,7 +131,7 @@ dmypy.json
 
 /.idea
 /server/outputs
-/server/conf
+/server/formatter/conf
 
 .DS_STORE
 

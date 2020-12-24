@@ -32,56 +32,86 @@ export class AppComponent implements OnInit {
     dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
 
 
-    const makePort = function (id: string, spot: go.Spot) {
-      return $(go.Shape, 'Circle',
+
+    dia.nodeTemplate =
+      $(go.Node, "Auto",
         {
-          opacity: .5,
-          fill: 'gray', strokeWidth: 0, desiredSize: new go.Size(8, 8),
-          portId: id, alignment: spot,
-          fromLinkable: true, toLinkable: true
-        }
+          locationSpot: go.Spot.Center,
+          // when the user clicks on a Node, highlight all Links coming out of the node
+          // and all of the Nodes at the other ends of those Links.
+          click: function(e, node) {
+            var diagram = node.diagram;
+            diagram.startTransaction("highlight");
+            diagram.clearHighlighteds();
+            // @ts-ignore
+            node.findLinksOutOf().each(function(l) { l.isHighlighted = true; });
+            // @ts-ignore
+            node.findNodesOutOf().each(function(n) { n.isHighlighted = true; });
+            diagram.commitTransaction("highlight");
+          }
+        },
+
+        $(go.Shape,
+          { fill: $(go.Brush, "Linear", { 0: "white", 1: "lightblue" }),
+                    stroke: "darkblue", strokeWidth: 2 }),
+        $(go.Panel, "Table",
+          { defaultAlignment: go.Spot.Left, margin: 4 },
+          $(go.RowColumnDefinition, { column: 1, width: 4 }),
+          $(go.TextBlock,
+            { row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center },
+            { font: "bold 14pt sans-serif" },
+            new go.Binding("text", "key")),
+          $(go.TextBlock, "Time: ",
+            { row: 1, column: 0 },{ font: "bold 10pt sans-serif" }),
+          $(go.TextBlock,
+            { row: 1, column: 2 },
+            new go.Binding("text", "time")),
+          $(go.TextBlock, "Parameters: ",
+            { row: 2, column: 0 }, { font: "bold 10pt sans-serif" }),
+          $(go.TextBlock,
+            { row: 2, column: 2 },
+            new go.Binding("text", "parameters"))
+        ),
       );
+
+
+    // when the user clicks on the background of the Diagram, remove all highlighting
+    dia.click = function(e) {
+      e.diagram.commit(function(d) { d.clearHighlighteds(); }, "no highlighteds");
+    };
+
+    //Prevent deleting nodes from the graph!
+    dia.undoManager.isEnabled = true;
+    dia.model.isReadOnly = true;  // Disable adding or removing parts
+
+
+
+    // a function that produces the content of the diagram tooltip
+    function diagramInfo(model) {
+      return "Model:\n" + model.nodeDataArray.length + " nodes, " +
+        model.linkDataArray.length + " links";
     }
 
-    // define the Node template
-    dia.nodeTemplate =
-      $(go.Node, 'Spot',
-        {
-          contextMenu:
-            $('ContextMenu',
-              $('ContextMenuButton',
-                $(go.TextBlock, 'Group'),
-                {
-                  click: function (e, obj) {
-                    e.diagram.commandHandler.groupSelection();
-                  }
-                },
-                new go.Binding('visible', '', function (o) {
-                  return o.diagram.selection.count > 1;
-                }).ofObject())
-            )
-        },
-        $(go.Panel, 'Auto',
-          $(go.Shape, 'RoundedRectangle', {stroke: null},
-            new go.Binding('fill', 'color')
-          ),
-          $(go.TextBlock, {margin: 8},
-            new go.Binding('text', 'key'))
-        ),
-        // Ports
-        makePort('t', go.Spot.TopCenter),
-        makePort('l', go.Spot.Left),
-        makePort('r', go.Spot.Right),
-        makePort('b', go.Spot.BottomCenter)
-      );
-
-
     dia.linkTemplate =
-      $(go.Link,
-        $(go.Shape),                           // this is the link shape (the line)
-        $(go.Shape, {toArrow: "Standard"}),  // this is an arrowhead
+      $(go.Link,{ toShortLength: 4, reshapable: true, resegmentable: true },
+
+        $(go.Shape,
+          // when highlighted, draw as a thick red line
+          new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "black"; })
+            .ofObject(),
+          new go.Binding("strokeWidth", "isHighlighted", function(h) { return h ? 3 : 1; })
+            .ofObject()),
+
+        $(go.Shape,
+          { toArrow: "Standard", strokeWidth: 0 },
+          new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
+            .ofObject())
+      ,
         $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
       );
+
+    dia.layout = $(go.TreeLayout);
+
 
     return dia;
   }
@@ -156,7 +186,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() : void {
+  ngOnInit(): void {
     this.apiService.getNodeAndEdge().subscribe(result => {
       this.diagramNodeData = result?.nodes ? result?.nodes : [];
       this.diagramLinkData = result?.edges ? result?.edges : [];

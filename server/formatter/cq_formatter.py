@@ -12,7 +12,7 @@ def convert_cq_to_gml(raw_cq_output):
     for state in cq_states:
         handle_state(graph, state, states)
 
-    return str(graph)
+    return graph
 
 
 def handle_state(graph, state, states):

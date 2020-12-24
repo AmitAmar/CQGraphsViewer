@@ -8,7 +8,7 @@ from server.formatter import cq_formatter
 from server.utils.general_utils import load_user_config,read_data
 
 
-CONFIG_FILE_PATH = "../conf/config.ini"
+CONFIG_FILE_PATH = "conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
 
 
@@ -33,7 +33,7 @@ def main():
     init_output_directory(output_dir_path)
     raw_cq_data = read_data(input_dir_path, cq_data_path)
     gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
-    write_results(output_dir_path, gml_output_path, gml)
+    write_results(output_dir_path, gml_output_path, str(gml))
 
 
 if __name__ == '__main__':

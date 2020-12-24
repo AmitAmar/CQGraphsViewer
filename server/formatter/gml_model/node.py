@@ -16,6 +16,10 @@ class Node:
     def time(self):
         return self.__time
 
+    @property
+    def parameters(self):
+        return self.__parameters
+
     def __str__(self):
         result = "\n\tnode [\n"
 

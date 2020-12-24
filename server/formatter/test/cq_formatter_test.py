@@ -15,7 +15,7 @@ class CQFormatterTest(unittest.TestCase):
         for in_file, out_file in zip(input_files,output_files):
             cq_data = read_data(INPUTS_DIRECTORY, in_file)
             self.assertIsNotNone(cq_data)
-            gml = convert_cq_to_gml(cq_data)
+            gml = str(convert_cq_to_gml(cq_data))
             self.assertIsNotNone(gml)
             self.assertEqual(gml, read_data(OUTPUT_DIRECTORY, out_file))
 
