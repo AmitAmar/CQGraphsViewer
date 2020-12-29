@@ -17,5 +17,15 @@ def get_graph():
     return cq_rest_controller.get_graph()
 
 
+@app.route('/get-quantities', methods=['GET'])
+def get_quantities():
+    return cq_rest_controller.get_quantities()
+
+
+@app.route('/arranged-by/<field>', methods=['POST'])
+def arrange_by(field):
+    print("arrange by : ", field)
+
+
 if __name__ == '__main__':
     app.run(host=HOSTNAME, port=PORT)

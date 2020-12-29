@@ -19,11 +19,15 @@
 
       <mat-menu #horizontally="matMenu">
         <button mat-menu-item>Time</button>
-        <button mat-menu-item>Quantities list</button>
+        <button mat-menu-item [matMenuTriggerFor]="quantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #quantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange(quantity.name)">{{quantity.name}}</button>
       </mat-menu>
 
       <mat-menu #vertically="matMenu">
-        <button mat-menu-item>Quantities list</button>
+        <button mat-menu-item [matMenuTriggerFor]="quantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
       </mat-menu>
     </div>
 

@@ -3,6 +3,8 @@ import * as go from 'gojs';
 import {DataSyncService, DiagramComponent} from 'gojs-angular';
 import * as _ from 'lodash';
 import {ApiService} from "./api.service";
+import {Quantity} from "./types";
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -13,6 +15,8 @@ import {ApiService} from "./api.service";
 export class AppComponent implements OnInit {
 
   @ViewChild('myDiagram', {static: true}) public myDiagramComponent: DiagramComponent;
+
+  quantities: Quantity[];
 
   // initialize diagram / templates
   public initDiagram(): go.Diagram {
@@ -32,58 +36,64 @@ export class AppComponent implements OnInit {
     dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
 
 
-
     dia.nodeTemplate =
       $(go.Node, "Auto",
         {
           locationSpot: go.Spot.Center,
           // when the user clicks on a Node, highlight all Links coming out of the node
           // and all of the Nodes at the other ends of those Links.
-          click: function(e, node) {
+          click: function (e, node) {
             var diagram = node.diagram;
             diagram.startTransaction("highlight");
             diagram.clearHighlighteds();
             // @ts-ignore
-            node.findLinksOutOf().each(function(l) { l.isHighlighted = true; });
+            node.findLinksOutOf().each(function (l) {
+              l.isHighlighted = true;
+            });
             // @ts-ignore
-            node.findNodesOutOf().each(function(n) { n.isHighlighted = true; });
+            node.findNodesOutOf().each(function (n) {
+              n.isHighlighted = true;
+            });
             diagram.commitTransaction("highlight");
           }
         },
 
         $(go.Shape,
-          { fill: $(go.Brush, "Linear", { 0: "white", 1: "lightblue" }),
-                    stroke: "darkblue", strokeWidth: 2 }),
+          {
+            fill: $(go.Brush, "Linear", {0: "white", 1: "lightblue"}),
+            stroke: "darkblue", strokeWidth: 2
+          }),
         $(go.Panel, "Table",
-          { defaultAlignment: go.Spot.Left, margin: 4 },
-          $(go.RowColumnDefinition, { column: 1, width: 4 }),
+          {defaultAlignment: go.Spot.Left, margin: 4},
+          $(go.RowColumnDefinition, {column: 1, width: 4}),
           $(go.TextBlock,
-            { row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center },
-            { font: "bold 14pt sans-serif" },
+            {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
+            {font: "bold 14pt sans-serif"},
             new go.Binding("text", "key")),
           $(go.TextBlock, "Time: ",
-            { row: 1, column: 0 },{ font: "bold 10pt sans-serif" }),
+            {row: 1, column: 0}, {font: "bold 10pt sans-serif"}),
           $(go.TextBlock,
-            { row: 1, column: 2 },
+            {row: 1, column: 2},
             new go.Binding("text", "time")),
           $(go.TextBlock, "Parameters: ",
-            { row: 2, column: 0 }, { font: "bold 10pt sans-serif" }),
+            {row: 2, column: 0}, {font: "bold 10pt sans-serif"}),
           $(go.TextBlock,
-            { row: 2, column: 2 },
+            {row: 2, column: 2},
             new go.Binding("text", "parameters"))
         ),
       );
 
 
     // when the user clicks on the background of the Diagram, remove all highlighting
-    dia.click = function(e) {
-      e.diagram.commit(function(d) { d.clearHighlighteds(); }, "no highlighteds");
+    dia.click = function (e) {
+      e.diagram.commit(function (d) {
+        d.clearHighlighteds();
+      }, "no highlighteds");
     };
 
     //Prevent deleting nodes from the graph!
     dia.undoManager.isEnabled = true;
     dia.model.isReadOnly = true;  // Disable adding or removing parts
-
 
 
     // a function that produces the content of the diagram tooltip
@@ -93,20 +103,26 @@ export class AppComponent implements OnInit {
     }
 
     dia.linkTemplate =
-      $(go.Link,{ toShortLength: 4, reshapable: true, resegmentable: true },
+      $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
 
         $(go.Shape,
           // when highlighted, draw as a thick red line
-          new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "black"; })
+          new go.Binding("stroke", "isHighlighted", function (h) {
+            return h ? "red" : "black";
+          })
             .ofObject(),
-          new go.Binding("strokeWidth", "isHighlighted", function(h) { return h ? 3 : 1; })
+          new go.Binding("strokeWidth", "isHighlighted", function (h) {
+            return h ? 3 : 1;
+          })
             .ofObject()),
 
         $(go.Shape,
-          { toArrow: "Standard", strokeWidth: 0 },
-          new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
+          {toArrow: "Standard", strokeWidth: 0},
+          new go.Binding("fill", "isHighlighted", function (h) {
+            return h ? "red" : "black";
+          })
             .ofObject())
-      ,
+        ,
         $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
       );
 
@@ -196,5 +212,21 @@ export class AppComponent implements OnInit {
   }
 
 
+  getQuantities() {
+    this.apiService.getQuantities().subscribe((quantities: Quantity[]) => {
+      this.quantities = quantities;
+    });
+  }
+
+  postArrange(name: string) {
+    this.apiService.postArrange(name)
+      .pipe(switchMap(() => {
+        return this.apiService.getNodeAndEdge()
+      }))
+      .subscribe((result) => {
+        this.diagramNodeData = result?.nodes ? result?.nodes : [];
+        this.diagramLinkData = result?.edges ? result?.edges : [];
+      });
+  }
 }
 
