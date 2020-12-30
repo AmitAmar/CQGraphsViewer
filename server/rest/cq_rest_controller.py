@@ -60,7 +60,7 @@ def create_edges_json(edges):
     return edges_list
 
 
-def get_graph():
+def get_graph(user_graph):
     # TODO: create a wizard for choosing the input file
     input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
     cq_data_path = 'cq_data.txt'
@@ -68,14 +68,25 @@ def get_graph():
     raw_cq_data = read_data(input_dir_path, cq_data_path)
     gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
 
+    # Init quantities:
+
+    params = gml.nodes[0].parameters
+
+    for param in params:
+        user_graph.add_quantity(param)
+
     nodes_json = create_nodes_json(gml.nodes)
     edges_json = create_edges_json(gml.edges)
 
     return jsonify({NODES: nodes_json, EDGES: edges_json})
 
 
-def get_quantities():
-    # TODO: take values from graph
-    l = [{QUANTITIES_NAME_KEY: 'amit'}, {QUANTITIES_NAME_KEY: 'bar'}, {QUANTITIES_NAME_KEY: 'coral'}]
+def get_quantities(user_graph):
+    quantities_result = []
 
-    return jsonify(l)
+    for quantity in user_graph.quantities:
+        quantity = str(quantity)
+        quantity = quantity[0 : quantity.index('"')]
+        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity)})
+
+    return jsonify(quantities_result)
