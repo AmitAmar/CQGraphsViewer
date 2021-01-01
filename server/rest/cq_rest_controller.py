@@ -38,9 +38,10 @@ def create_nodes_json(nodes):
     nodes_list = []
 
     for node in nodes:
-        current_node = {NODE_KEY: f"State {node.node_id}",
+        current_node = {NODE_KEY: f"{node.node_id}",
                         TIME_KEY: str(node.time),
-                        PARAMETERS_KEY: parse_parameters(node.parameters)}
+                        PARAMETERS_KEY: parse_parameters(node.parameters),
+                        'category':'simple'}
 
         nodes_list.append(current_node)
 
@@ -52,8 +53,8 @@ def create_edges_json(edges):
 
     for index, edge in enumerate(edges):
         current_edge = {EDGE_KEY: index,
-                        FROM_KEY: f"State {edge.source}",
-                        TO_KEY: f"State {edge.target}",
+                        FROM_KEY: f"{edge.source}",
+                        TO_KEY: f"{edge.target}",
                         TEXT_KEY: edge.changed_quantities}
         edges_list.append(current_edge)
 
@@ -72,6 +73,7 @@ def get_graph(user_graph):
 
     params = gml.nodes[0].parameters
 
+    user_graph.quantities.clear()
     for param in params:
         user_graph.add_quantity(param)
 
@@ -90,3 +92,10 @@ def get_quantities(user_graph):
         quantities_result.append({QUANTITIES_NAME_KEY: str(quantity)})
 
     return jsonify(quantities_result)
+
+
+def arrange_by(field, user_graph):
+    user_graph.arrange_by = field
+    print("arrange by : ", field)
+
+    return jsonify(field)

@@ -35,8 +35,7 @@ export class AppComponent implements OnInit {
 
     dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
 
-
-    dia.nodeTemplate =
+    var simpletemplate =
       $(go.Node, "Auto",
         {
           locationSpot: go.Spot.Center,
@@ -54,11 +53,48 @@ export class AppComponent implements OnInit {
             node.findNodesOutOf().each(function (n) {
               n.isHighlighted = true;
             });
+            changeCategory(e, node);
+            diagram.commitTransaction("highlight");
+          }
+        },
+        $(go.Shape,"Ellipse",
+          {
+            fill: $(go.Brush, "Linear", {0: "white", 1: "lightblue"}),
+            stroke: "darkblue", strokeWidth: 2
+          }),
+        $(go.Panel, "Table",
+          {defaultAlignment: go.Spot.Left, margin: 4},
+          $(go.RowColumnDefinition, {column: 1, width: 4}),
+          $(go.TextBlock,
+            {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
+            {font: "bold 14pt sans-serif"},
+            new go.Binding("text", "key"))
+      ));
+
+    var detailtemplate =
+      $(go.Node, "Auto",
+        {
+          locationSpot: go.Spot.Center,
+          // when the user clicks on a Node, highlight all Links coming out of the node
+          // and all of the Nodes at the other ends of those Links.
+          click: function (e, node) {
+            var diagram = node.diagram;
+            diagram.startTransaction("highlight");
+            diagram.clearHighlighteds();
+            // @ts-ignore
+            node.findLinksOutOf().each(function (l) {
+              l.isHighlighted = true;
+            });
+            // @ts-ignore
+            node.findNodesOutOf().each(function (n) {
+              n.isHighlighted = true;
+            });
+            changeCategory(e, node);
             diagram.commitTransaction("highlight");
           }
         },
 
-        $(go.Shape,
+        $(go.Shape,"Ellipse",
           {
             fill: $(go.Brush, "Linear", {0: "white", 1: "lightblue"}),
             stroke: "darkblue", strokeWidth: 2
@@ -80,8 +116,18 @@ export class AppComponent implements OnInit {
           $(go.TextBlock,
             {row: 2, column: 2},
             new go.Binding("text", "parameters"))
-        ),
+        )
       );
+
+    // create the nodeTemplateMap, holding three node templates:
+    var templmap = new go.Map<string, go.Node>(); // In TypeScript you could write: new go.Map<string, go.Node>();
+    // for each of the node categories, specify which template to use
+    templmap.add("simple", simpletemplate);
+    templmap.add("detailed", detailtemplate);
+    // for the default category, "", use the same template that Diagrams use by default;
+    // this just shows the key value as a simple TextBlock
+    dia.nodeTemplate = simpletemplate;
+    dia.nodeTemplateMap = templmap;
 
 
     // when the user clicks on the background of the Diagram, remove all highlighting
@@ -94,13 +140,6 @@ export class AppComponent implements OnInit {
     //Prevent deleting nodes from the graph!
     dia.undoManager.isEnabled = true;
     dia.model.isReadOnly = true;  // Disable adding or removing parts
-
-
-    // a function that produces the content of the diagram tooltip
-    function diagramInfo(model) {
-      return "Model:\n" + model.nodeDataArray.length + " nodes, " +
-        model.linkDataArray.length + " links";
-    }
 
     dia.linkTemplate =
       $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
@@ -126,8 +165,30 @@ export class AppComponent implements OnInit {
         $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
       );
 
-    dia.layout = $(go.TreeLayout);
+    function changeCategory(e, obj) {
+      var node = obj.part;
+      if (node) {
+        var diagram = node.diagram;
+        diagram.startTransaction("changeCategory");
+        var cat = diagram.model.getCategoryForNodeData(node.data);
+        if (cat === "simple")
+          cat = "detailed";
+        else
+          cat = "simple";
+        diagram.model.setCategoryForNodeData(node.data, cat);
+        diagram.commitTransaction("changeCategory");
+      }
+    }
 
+    dia.grid.visible = true;
+    //dia.layout = $(go.TreeLayout);
+    //    var lay = dia.layout;
+    //    lay.angle = 270;
+
+    // <input type="radio" name="angle" onclick="layout()" value="0" checked="checked">Right
+    //   <input type="radio" name="angle" onclick="layout()" value="90">Down
+    //   <input type="radio" name="angle" onclick="layout()" value="180">Left
+    //   <input type="radio" name="angle" onclick="layout()" value="270">Up<br>
 
     return dia;
   }
@@ -182,6 +243,7 @@ export class AppComponent implements OnInit {
     });
 
   } // end ngAfterViewInit
+  fileName: string;
 
 
   public handleInspectorChange(newNodeData) {
@@ -227,6 +289,10 @@ export class AppComponent implements OnInit {
         this.diagramNodeData = result?.nodes ? result?.nodes : [];
         this.diagramLinkData = result?.edges ? result?.edges : [];
       });
+  }
+
+  fileUpload() {
+    console.log((document.getElementById('file-uploader') as any).files[0].name);
   }
 }
 

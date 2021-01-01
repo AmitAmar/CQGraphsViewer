@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 
 from rest import cq_rest_controller
@@ -14,6 +14,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 user_graph = ExtendedGraph()
 
+
 @app.route('/get-graph', methods=['GET'])
 def get_graph():
     return cq_rest_controller.get_graph(user_graph)
@@ -26,7 +27,8 @@ def get_quantities():
 
 @app.route('/arranged-by/<field>', methods=['POST'])
 def arrange_by(field):
-    print("arrange by : ", field)
+    return cq_rest_controller.arrange_by(field, user_graph)
+
 
 
 if __name__ == '__main__':

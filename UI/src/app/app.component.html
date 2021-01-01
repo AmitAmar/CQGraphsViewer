@@ -4,6 +4,13 @@
 
     <div class="example-button-row">
       <button mat-raised-button color="primary">Create/modify the model</button>
+
+<!--      <input type="file" id="file-uploader" [(ngModel)]="fileName">-->
+
+<!--      <button (click)="fileUpload()"></button>-->
+
+<!--      {{fileName| json}}-->
+
       <button mat-raised-button color="primary">Plot A</button>
       <button mat-raised-button color="primary">Plot B</button>
     </div>
@@ -18,16 +25,21 @@
       </mat-menu>
 
       <mat-menu #horizontally="matMenu">
-        <button mat-menu-item>Time</button>
-        <button mat-menu-item [matMenuTriggerFor]="quantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
+        <button mat-menu-item (click)="postArrange('horizontal_Time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="horizontalQuantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
       </mat-menu>
 
-      <mat-menu #quantitiesMenu="matMenu">
-        <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange(quantity.name)">{{quantity.name}}</button>
+      <mat-menu #horizontalQuantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange('horizontal_' + quantity.name)">{{quantity.name}}</button>
+      </mat-menu>
+
+      <mat-menu #verticalQuantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange('vertical_' + quantity.name)">{{quantity.name}}</button>
       </mat-menu>
 
       <mat-menu #vertically="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="quantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
+        <button mat-menu-item (click)="postArrange('vertical_Time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
       </mat-menu>
     </div>
 
