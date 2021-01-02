@@ -18,10 +18,54 @@ export class AppComponent implements OnInit {
 
   quantities: Quantity[];
 
+
   // initialize diagram / templates
   public initDiagram(): go.Diagram {
+
+    // this controls whether the layout is horizontal and the layer bands are vertical, or vice-versa:
+    var HORIZONTAL = true;  // this constant parameter can only be set here, not dynamically
+
+    // Perform a TreeLayout where commitLayers is overridden to modify the background Part whose key is "_BANDS".
+    function BandedTreeLayout() {
+      go.TreeLayout.call(this);
+      this.layerStyle = go.TreeLayout.LayerUniform;  // needed for straight layers
+    }
+    go.Diagram.inherit(BandedTreeLayout, go.TreeLayout);
+
+    BandedTreeLayout.prototype.commitLayers = function(layerRects, offset) {
+      // update the background object holding the visual "bands"
+      var bands = this.diagram.findPartForKey("_BANDS");
+      if (bands) {
+        var model = this.diagram.model;
+        bands.location = this.arrangementOrigin.copy().add(offset);
+
+        // make each band visible or not, depending on whether there is a layer for it
+        for (var it = bands.elements; it.next();) {
+          var idx = it.key;
+          var elt = it.value;  // the item panel representing a band
+          elt.visible = idx < layerRects.length;
+        }
+
+        // set the bounds of each band via data binding of the "bounds" property
+        var arr = bands.data.itemArray;
+        for (var i = 0; i < layerRects.length; i++) {
+          var itemdata = arr[i];
+          if (itemdata) {
+            model.setDataProperty(itemdata, "bounds", layerRects[i]);
+          }
+        }
+      }
+    };
+    // end BandedTreeLayout
+
     const $ = go.GraphObject.make;
     const dia = $(go.Diagram, {
+      // @ts-ignore
+      layout: $(BandedTreeLayout,  // custom layout is defined above
+        {
+          angle: HORIZONTAL ? 0 : 90,
+          arrangement: HORIZONTAL ? go.TreeLayout.ArrangementVertical : go.TreeLayout.ArrangementHorizontal
+        }),
       'initialContentAlignment': go.Spot.Center,
       'undoManager.isEnabled': true,
       model: $(go.GraphLinksModel,
@@ -36,7 +80,7 @@ export class AppComponent implements OnInit {
 
     dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
 
-    var simpletemplate =
+    var nodeSimpleTemplate =
       $(go.Node, "Auto",
         {
           locationSpot: go.Spot.Center,
@@ -48,13 +92,14 @@ export class AppComponent implements OnInit {
             diagram.clearHighlighteds();
             // @ts-ignore
             node.findLinksOutOf().each(function (l) {
+              changeLinkCategory(e,l);
               l.isHighlighted = true;
             });
             // @ts-ignore
             node.findNodesOutOf().each(function (n) {
               n.isHighlighted = true;
             });
-            changeCategory(e, node);
+            changeNodeCategory(e, node);
             diagram.commitTransaction("highlight");
           }
         },
@@ -72,7 +117,7 @@ export class AppComponent implements OnInit {
             new go.Binding("text", "key"))
       ));
 
-    var detailtemplate =
+    var nodeDetailstemplate =
       $(go.Node, "Auto",
         {
           locationSpot: go.Spot.Center,
@@ -84,13 +129,14 @@ export class AppComponent implements OnInit {
             diagram.clearHighlighteds();
             // @ts-ignore
             node.findLinksOutOf().each(function (l) {
+              changeLinkCategory(e,l);
               l.isHighlighted = true;
             });
             // @ts-ignore
             node.findNodesOutOf().each(function (n) {
               n.isHighlighted = true;
             });
-            changeCategory(e, node);
+            changeNodeCategory(e, node);
             diagram.commitTransaction("highlight");
           }
         },
@@ -121,14 +167,14 @@ export class AppComponent implements OnInit {
       );
 
     // create the nodeTemplateMap, holding three node templates:
-    var templmap = new go.Map<string, go.Node>(); // In TypeScript you could write: new go.Map<string, go.Node>();
+    var nodeTemplatemap = new go.Map<string, go.Node>(); // In TypeScript you could write: new go.Map<string, go.Node>();
     // for each of the node categories, specify which template to use
-    templmap.add("simple", simpletemplate);
-    templmap.add("detailed", detailtemplate);
+    nodeTemplatemap.add("simple", nodeSimpleTemplate);
+    nodeTemplatemap.add("detailed", nodeDetailstemplate);
     // for the default category, "", use the same template that Diagrams use by default;
     // this just shows the key value as a simple TextBlock
-    dia.nodeTemplate = simpletemplate;
-    dia.nodeTemplateMap = templmap;
+    dia.nodeTemplate = nodeSimpleTemplate;
+    dia.nodeTemplateMap = nodeTemplatemap;
 
 
     // when the user clicks on the background of the Diagram, remove all highlighting
@@ -142,7 +188,33 @@ export class AppComponent implements OnInit {
     dia.undoManager.isEnabled = true;
     dia.model.isReadOnly = true;  // Disable adding or removing parts
 
-    dia.linkTemplate =
+
+    var linkTemplatemap = new go.Map<string, go.Link>();
+
+
+    var simpleLinkTemplate =
+      $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
+
+        $(go.Shape,
+          // when highlighted, draw as a thick red line
+          new go.Binding("stroke", "isHighlighted", function (h) {
+            return h ? "red" : "black";
+          })
+            .ofObject(),
+          new go.Binding("strokeWidth", "isHighlighted", function (h) {
+            return h ? 3 : 1;
+          })
+            .ofObject()),
+
+        $(go.Shape,
+          {toArrow: "Standard", strokeWidth: 0},
+          new go.Binding("fill", "isHighlighted", function (h) {
+            return h ? "red" : "black";
+          })
+            .ofObject())
+      );
+
+   var detailsLinkTemplate =
       $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
 
         $(go.Shape,
@@ -166,7 +238,56 @@ export class AppComponent implements OnInit {
         $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
       );
 
-    function changeCategory(e, obj) {
+   linkTemplatemap.add("simple", simpleLinkTemplate);
+   linkTemplatemap.add("detailed", detailsLinkTemplate);
+   dia.linkTemplateMap = linkTemplatemap;
+   dia.linkTemplate = simpleLinkTemplate;
+
+    dia.nodeTemplateMap.add("Bands",
+      $(go.Part, "Position",
+        new go.Binding("itemArray"),
+        {
+          isLayoutPositioned: false,  // but still in document bounds
+          locationSpot: new go.Spot(0, 0, HORIZONTAL ? 0 : 16, HORIZONTAL ? 16 : 0),  // account for header height
+          layerName: "Background",
+          pickable: false,
+          selectable: false,
+          itemTemplate:
+            $(go.Panel, HORIZONTAL ? "Vertical" : "Horizontal",
+              new go.Binding("position", "bounds", function(b) { return b.position; }),
+              $(go.TextBlock,
+                {
+                  angle: HORIZONTAL ? 0 : 270,
+                  textAlign: "center",
+                  wrap: go.TextBlock.None,
+                  font: "bold 11pt sans-serif",
+                  background: $(go.Brush, "Linear", { 0: "aqua", 1: go.Brush.darken("aqua") })
+                },
+                new go.Binding("text"),
+                // always bind "width" because the angle does the rotation
+                new go.Binding("width", "bounds", function(r) { return HORIZONTAL ? r.width : r.height; })
+              ),
+              // option 1: rectangular bands:
+              $(go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("desiredSize", "bounds", function(r) { return r.size; }),
+                new go.Binding("fill", "itemIndex", function(i) { return i % 2 == 0 ? "whitesmoke" : go.Brush.darken("whitesmoke"); }).ofObject())
+              // option 2: separator lines:
+              //(HORIZONTAL
+              //  ? $(go.Shape, "LineV",
+              //      { stroke: "gray", alignment: go.Spot.TopLeft, width: 1 },
+              //      new go.Binding("height", "bounds", function(r) { return r.height; }),
+              //      new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject())
+              //  : $(go.Shape, "LineH",
+              //      { stroke: "gray", alignment: go.Spot.TopLeft, height: 1 },
+              //      new go.Binding("width", "bounds", function(r) { return r.width; }),
+              //      new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject())
+              //)
+            )
+        }
+      ));
+
+    function changeNodeCategory(e, obj) {
       var node = obj.part;
       if (node) {
         var diagram = node.diagram;
@@ -181,16 +302,22 @@ export class AppComponent implements OnInit {
       }
     }
 
-    dia.grid.visible = true;
-    //dia.layout = $(go.TreeLayout);
-    //    var lay = dia.layout;
-    //    lay.angle = 270;
+    function changeLinkCategory(e, obj) {
+      var link = obj.part;
+      if (link) {
+        var diagram = link.diagram;
+        diagram.startTransaction("changeCategory");
+        var cat = diagram.model.getCategoryForLinkData(link.data);
+        if (cat === "simple")
+          cat = "detailed";
+        else
+          cat = "simple";
+        diagram.model.setCategoryForLinkData(link.data, cat);
+        diagram.commitTransaction("changeCategory");
+      }
+    }
 
-    // <input type="radio" name="angle" onclick="layout()" value="0" checked="checked">Right
-    //   <input type="radio" name="angle" onclick="layout()" value="90">Down
-    //   <input type="radio" name="angle" onclick="layout()" value="180">Left
-    //   <input type="radio" name="angle" onclick="layout()" value="270">Up<br>
-
+    //dia.grid.visible = true;
     return dia;
   }
 
@@ -247,24 +374,6 @@ export class AppComponent implements OnInit {
   } // end ngAfterViewInit
   fileName: string;
 
-
-  public handleInspectorChange(newNodeData) {
-    const key = newNodeData.key;
-    // find the entry in nodeDataArray with this key, replace it with newNodeData
-    let index = null;
-    for (let i = 0; i < this.diagramNodeData.length; i++) {
-      const entry = this.diagramNodeData[i];
-      if (entry.key && entry.key === key) {
-        index = i;
-      }
-    }
-
-    if (index >= 0) {
-      // here, we set skipsDiagramUpdate to false, since GoJS does not yet have this update
-      this.skipsDiagramUpdate = false;
-      this.diagramNodeData[index] = _.cloneDeep(newNodeData);
-    }
-  }
 
   ngOnInit(): void {
     this.apiService.getNodeAndEdge().subscribe(result => {
