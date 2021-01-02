@@ -4,15 +4,8 @@
 
     <div class="example-button-row">
       <button mat-raised-button color="primary">Create/modify the model</button>
-
-<!--      <input type="file" id="file-uploader" [(ngModel)]="fileName">-->
-
-<!--      <button (click)="fileUpload()"></button>-->
-
-<!--      {{fileName| json}}-->
-
-      <button mat-raised-button color="primary">Plot A</button>
-      <button mat-raised-button color="primary">Plot B</button>
+      <button mat-raised-button color="primary" (click)="postPlot('A')">Plot A</button>
+      <button mat-raised-button color="primary" (click)="postPlot('b')">Plot B</button>
     </div>
 
     <div class="example-button-row">

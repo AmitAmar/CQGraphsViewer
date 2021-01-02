@@ -30,7 +30,8 @@ export class AppComponent implements OnInit {
           linkFromPortIdProperty: 'fromPort',
           linkKeyProperty: 'key' // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
         }
-      )
+      ),
+
     });
 
     dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
@@ -199,6 +200,7 @@ export class AppComponent implements OnInit {
   public diagramModelData = {prop: 'value'};
 
   public skipsDiagramUpdate = false;
+  showVar: boolean = true;
 
   // When the diagram model changes, update app data to reflect those changes
   public diagramModelChange = function (changes: go.IncrementalData) {
@@ -290,6 +292,20 @@ export class AppComponent implements OnInit {
         this.diagramLinkData = result?.edges ? result?.edges : [];
       });
   }
+
+
+  postPlot(name: string) {
+    this.apiService.postPlot(name)
+      .pipe(switchMap(() => {
+        return this.apiService.getNodeAndEdge()
+      }))
+      .subscribe((result) => {
+        this.diagramNodeData = result?.nodes ? result?.nodes : [];
+        this.diagramLinkData = result?.edges ? result?.edges : [];
+      });
+  }
+
+
 
   fileUpload() {
     console.log((document.getElementById('file-uploader') as any).files[0].name);

@@ -11,6 +11,7 @@ export class ApiService {
   private readonly graphUrl = `${this.url}/get-graph`;
   private readonly quantitiesUrl = `${this.url}/get-quantities`;
   private readonly arrangedByUrl = `${this.url}/arranged-by`;
+  private readonly plotUrl = `${this.url}/plot`;
 
 
   constructor(private http: HttpClient) {
@@ -25,5 +26,9 @@ export class ApiService {
 
   postArrange(name: string) {
     return this.http.post(`${this.arrangedByUrl}/${name}`, {});
+  }
+
+  postPlot(name: string) {
+    return this.http.post(`${this.plotUrl}/${name}`, {});
   }
 }

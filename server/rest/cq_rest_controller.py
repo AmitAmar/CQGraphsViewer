@@ -99,3 +99,9 @@ def arrange_by(field, user_graph):
     print("arrange by : ", field)
 
     return jsonify(field)
+
+
+def plot(name, user_graph):
+    print("Plot : ", name)
+
+    return jsonify(name)

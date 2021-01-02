@@ -30,6 +30,10 @@ def arrange_by(field):
     return cq_rest_controller.arrange_by(field, user_graph)
 
 
+@app.route('/plot/<name>', methods=['POST'])
+def plot(name):
+    return cq_rest_controller.plot(name, user_graph)
+
 
 if __name__ == '__main__':
     app.run(host=HOSTNAME, port=PORT)
