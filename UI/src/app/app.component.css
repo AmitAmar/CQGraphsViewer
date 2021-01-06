@@ -1,17 +1,38 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic,300italic,300,100italic,100);
 
-.wrapper {
+html, body, app-root, .wrapper {
   height: 100%;
 }
 
+.wrapper {
+  display: grid;
+  grid-template-areas: "drawer graph"
+                        "drawer table";
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 3fr 1fr;
+}
+
 .header {
-  height: calc(30vh - 20px);
+  /*height: calc(30vh - 20px);*/
+  grid-area: drawer;
+}
+
+gojs-diagram {
+  /*background: whitesmoke;*/
+  /*height: calc(70vh - 20px);*/
+  /*border: 1px solid black;*/
+  grid-area: graph;
 }
 
 .myDiagramDiv {
   background: whitesmoke;
-  height: calc(70vh - 20px);
+  height: 100%;
   border: 1px solid black;
+  /*grid-area: graph;*/
+}
+
+.table {
+  grid-area: table;
 }
 
 

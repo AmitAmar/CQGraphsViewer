@@ -18,7 +18,7 @@
       </mat-menu>
 
       <mat-menu #horizontally="matMenu">
-        <button mat-menu-item (click)="postArrange('horizontal_Time')">Time</button>
+        <button mat-menu-item (click)="postArrange('horizontal_time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="horizontalQuantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
       </mat-menu>
 
@@ -31,14 +31,21 @@
       </mat-menu>
 
       <mat-menu #vertically="matMenu">
-        <button mat-menu-item (click)="postArrange('vertical_Time')">Time</button>
+        <button mat-menu-item (click)="postArrange('vertical_time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu" (mouseover)="getQuantities()">Quantities list</button>
       </mat-menu>
     </div>
 
+    <h3 align="center">Arrange By: {{arrangedBy}}</h3>
+    <h3 align="center" *ngIf="horizontal === true || horizontal === false">Layout: {{horizontal ? 'horizontal' : 'vertical'}}</h3>
+
+
   </div>
+
+
+
   <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"
-                [initDiagram]='initDiagram'
+                [initDiagram]=initDiagram.bind(this)
                 [nodeDataArray]='diagramNodeData'
                 [linkDataArray]='diagramLinkData'
                 divClassName='myDiagramDiv'
