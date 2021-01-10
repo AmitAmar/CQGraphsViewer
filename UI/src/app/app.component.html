@@ -52,10 +52,12 @@
   <table class="table">
     <tr>
       <th>Index</th>
+      <th>Time</th>
       <th *ngFor="let quantity of quantities">{{quantity.name}}</th>
     </tr>
     <tr *ngFor="let data of tableData">
       <td>{{data.index}}</td>
+      <td>{{data.time}}</td>
       <td *ngFor="let quantity of quantities">{{data[quantity.name]}}</td>
     </tr>
   </table>

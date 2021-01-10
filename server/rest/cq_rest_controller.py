@@ -218,7 +218,7 @@ def get_table(user_graph):
     rows = []
 
     for node in user_graph.nodes:
-        current_row = {'index': node.node_id}
+        current_row = {'index': node.node_id, 'time': node.time}
 
         for param_name, param_value in node.parameters_dict.items():
             current_row[param_name] = param_value.value
