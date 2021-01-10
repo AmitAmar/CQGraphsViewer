@@ -10,6 +10,7 @@ export class ApiService {
   private readonly url = 'http://localhost:8080';
   private readonly graphUrl = `${this.url}/get-graph`;
   private readonly quantitiesUrl = `${this.url}/get-quantities`;
+  private readonly tableUrl = `${this.url}/get-table`;
   private readonly arrangedByUrl = `${this.url}/arranged-by`;
   private readonly plotUrl = `${this.url}/plot`;
 
@@ -17,11 +18,14 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-  getNodeAndEdge = () => this.http.get<ApiGraph>(this.graphUrl)
+  getGraph = () => this.http.get<ApiGraph>(this.graphUrl)
 
   getQuantities(): Observable<Quantity[]> {
     return this.http.get<Quantity[]>(this.quantitiesUrl);
-    //return of([{name: 'Amit'}, {name: 'Mochai'}, {name: 'Oren'}, {name: 'Dima'}]);
+  }
+
+  getTableData(): Observable<{[key: string]:string}[]> {
+    return this.http.get<{[key: string]:string}[]>(this.tableUrl);
   }
 
   postArrange(name: string) {

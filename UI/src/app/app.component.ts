@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as go from 'gojs';
-import {DataSyncService, DiagramComponent} from 'gojs-angular';
-import * as _ from 'lodash';
+import {DiagramComponent} from 'gojs-angular';
 import {ApiService} from "./api.service";
 import {Quantity} from "./types";
 import {switchMap} from "rxjs/operators";
@@ -16,18 +15,24 @@ export class AppComponent implements OnInit {
 
     @ViewChild('myDiagram', {static: true}) public myDiagramComponent: DiagramComponent;
 
+    public diagramNodeData: Array<go.ObjectData> = [];
+    public diagramLinkData: Array<go.ObjectData> = [];
+    public horizontal: boolean = true;
+
+    public diagramModelData = {prop: 'value'};
+    fileName: string;
+
     quantities: Quantity[];
-
-
-    // initialize diagram / templates
     arrangedBy: string;
+    tableData: { [key: string]: string }[];
 
     public initDiagram(): go.Diagram {
         // this controls whether the layout is horizontal and the layer bands are vertical, or vice-versa:
         let HORIZONTAL = this.horizontal;  // this constant parameter can only be set here, not dynamically
 
-        // Perform a TreeLayout where commitLayers is overridden to modify the background Part whose key is "_BANDS".
-        function LayeredTreeLayout() {
+        // Perform a TreeLayout where the node's actual tree-layer is specified by the "band" property on the node data.
+        // This implementation only works when angle == 0, but could be easily modified to support other angles.
+        function BandedTreeLayout() {
             go.TreeLayout.call(this);
 
             this.treeStyle = go.TreeLayout.StyleLayered;  // required
@@ -55,12 +60,27 @@ export class AppComponent implements OnInit {
             this.setsChildPortSpot = false;
         }
 
-        go.Diagram.inherit(LayeredTreeLayout, go.TreeLayout);
+        go.Diagram.inherit(BandedTreeLayout, go.TreeLayout);
 
         // Modify the standard LayoutNetwork by making children with the same "band" value as their
         // parents actually be children of the grandparent.
-        LayeredTreeLayout.prototype.makeNetwork = function (coll) {
+        BandedTreeLayout.prototype.makeNetwork = function (coll) {
             var net = go.TreeLayout.prototype.makeNetwork.call(this, coll);
+            // add artificial root and link with all root vertexes
+            var singles = [];
+            for (var it = net.vertexes.iterator; it.next();) {
+                var v = it.value;
+                if (v.node && v.sourceEdges.count === 0) {
+                    singles.push(v);
+                }
+            }
+            if (singles.length > 0) {
+                var dummyroot = net.createVertex();
+                net.addVertex(dummyroot);
+                singles.forEach(function (v) {
+                    net.linkVertexes(dummyroot, v, null);
+                });
+            }
             // annotate every child with an index, used for sorting
             for (var it = net.vertexes.iterator; it.next();) {
                 var parent = it.value;
@@ -74,6 +94,7 @@ export class AppComponent implements OnInit {
             // now look for children with the same band value as their parent
             for (var it = net.vertexes.iterator; it.next();) {
                 var parent = it.value;
+                if (!parent.node) continue;
                 // Should this be recursively looking for grandchildren/greatgrandchildren that
                 // have the same band as this parent node??  Assume that is NOT required.
                 var parentband = parent.node.data.band;
@@ -81,6 +102,7 @@ export class AppComponent implements OnInit {
                 for (var eit = parent.destinationEdges; eit.next();) {
                     var edge = eit.value;
                     var child = edge.toVertex;
+                    if (!child.node) continue;
                     var childband = child.node.data.band;
                     if (childband <= parentband) edges.push(edge);
                 }
@@ -103,14 +125,19 @@ export class AppComponent implements OnInit {
             return net;
         };
 
-        LayeredTreeLayout.prototype.assignTreeVertexValues = function (v) {
+        BandedTreeLayout.prototype.assignTreeVertexValues = function (v) {
             if (v.node && v.node.data && v.node.data.band) {
                 v.originalLevel = v.level;  // remember tree assignment
                 v.level = Math.max(v.level, v.node.data.band);  // shift down to meet band requirement
             }
         };
 
-        LayeredTreeLayout.prototype.commitLayers = function (layerRects, offset) {
+        BandedTreeLayout.prototype.commitLayers = function (layerRects, offset) {
+            // for debugging:
+            //for (var i = 0; i < layerRects.length; i++) {
+            //  if (window.console) window.console.log(layerRects[i].toString());
+            //}
+
             for (var it = this.network.vertexes.iterator; it.next();) {
                 var v = it.value;
                 var n = v.node;
@@ -120,7 +147,7 @@ export class AppComponent implements OnInit {
                     if (diff > 0) {
                         var pos = v.bounds.position;
                         // this assumes that the angle is zero: rightward growth
-                        pos.x = layerRects[v.level].x;
+                        HORIZONTAL ? pos.x = layerRects[v.level].x : pos.y = layerRects[v.level].y;
                         n.move(pos);
                     }
                 }
@@ -134,7 +161,8 @@ export class AppComponent implements OnInit {
                 var model = this.diagram.model;
                 for (var it = this.network.vertexes.iterator; it.next();) {
                     var v = it.value;
-                    model.setDataProperty(v.node.data, "level", v.level);
+                    if (!v.node) continue;
+                    model.setDataProperty(v.node.data, "band", v.level);
                 }
 
                 bands.location = this.arrangementOrigin.copy().add(offset);
@@ -149,36 +177,10 @@ export class AppComponent implements OnInit {
             }
         };
 
-        // BandedTreeLayout.prototype.commitLayers = function(layerRects, offset) {
-        //   // update the background object holding the visual "bands"
-        //   var bands = this.diagram.findPartForKey("_BANDS");
-        //   if (bands) {
-        //     var model = this.diagram.model;
-        //     bands.location = this.arrangementOrigin.copy().add(offset);
-        //
-        //     // make each band visible or not, depending on whether there is a layer for it
-        //     for (var it = bands.elements; it.next();) {
-        //       var idx = it.key;
-        //       var elt = it.value;  // the item panel representing a band
-        //       elt.visible = idx < layerRects.length;
-        //     }
-        //
-        //     // set the bounds of each band via data binding of the "bounds" property
-        //     var arr = bands.data.itemArray;
-        //     for (var i = 0; i < layerRects.length; i++) {
-        //       var itemdata = arr[i];
-        //       if (itemdata) {
-        //         model.setDataProperty(itemdata, "bounds", layerRects[i]);
-        //       }
-        //     }
-        //   }
-        // };
-        // // end BandedTreeLayout
-
         const $ = go.GraphObject.make;
         const dia = $(go.Diagram, {
             // @ts-ignore
-            layout: $(LayeredTreeLayout,  // custom layout is defined above
+            layout: $(BandedTreeLayout,  // custom layout is defined above
                 {
                     angle: HORIZONTAL ? 0 : 90,
                     arrangement: HORIZONTAL ? go.TreeLayout.ArrangementVertical : go.TreeLayout.ArrangementHorizontal
@@ -195,8 +197,6 @@ export class AppComponent implements OnInit {
 
         });
 
-        dia.commandHandler.archetypeGroupData = {key: 'Group', isGroup: true};
-
         var nodeSimpleTemplate =
             $(go.Node, "Auto",
                 {
@@ -209,11 +209,8 @@ export class AppComponent implements OnInit {
                         diagram.clearHighlighteds();
                         // @ts-ignore
                         node.findLinksOutOf().each(function (l) {
-                            if (l.category != 'dummy') {
-                                changeLinkCategory(e, l);
-                                l.isHighlighted = true;
-                            }
-
+                            changeLinkCategory(e, l);
+                            l.isHighlighted = true;
                         });
                         // @ts-ignore
                         node.findNodesOutOf().each(function (n) {
@@ -237,7 +234,7 @@ export class AppComponent implements OnInit {
                         new go.Binding("text", "key"))
                 ));
 
-        var nodeDetailstemplate =
+        var nodeDetailedTemplate =
             $(go.Node, "Auto",
                 {
                     locationSpot: go.Spot.Center,
@@ -249,10 +246,8 @@ export class AppComponent implements OnInit {
                         diagram.clearHighlighteds();
                         // @ts-ignore
                         node.findLinksOutOf().each(function (l) {
-                            if (l.category != 'dummy') {
-                                changeLinkCategory(e, l);
-                                l.isHighlighted = true;
-                            }
+                            changeLinkCategory(e, l);
+                            l.isHighlighted = true;
                         });
                         // @ts-ignore
                         node.findNodesOutOf().each(function (n) {
@@ -288,15 +283,12 @@ export class AppComponent implements OnInit {
                 )
             );
 
-        // create the nodeTemplateMap, holding three node templates:
-        var nodeTemplatemap = new go.Map<string, go.Node>(); // In TypeScript you could write: new go.Map<string, go.Node>();
         // for each of the node categories, specify which template to use
-        nodeTemplatemap.add("simple", nodeSimpleTemplate);
-        nodeTemplatemap.add("detailed", nodeDetailstemplate);
+        dia.nodeTemplateMap.add("simple", nodeSimpleTemplate);
+        dia.nodeTemplateMap.add("detailed", nodeDetailedTemplate);
         // for the default category, "", use the same template that Diagrams use by default;
         // this just shows the key value as a simple TextBlock
         dia.nodeTemplate = nodeSimpleTemplate;
-        dia.nodeTemplateMap = nodeTemplatemap;
 
 
         // when the user clicks on the background of the Diagram, remove all highlighting
@@ -310,13 +302,10 @@ export class AppComponent implements OnInit {
         dia.undoManager.isEnabled = true;
         dia.model.isReadOnly = true;  // Disable adding or removing parts
 
-
-        var linkTemplatemap = new go.Map<string, go.Link>();
-
-        var dummyLinkTemplate = $(go.Link, {toShortLength: 0.01, reshapable: false, resegmentable: false});
+        var linkTemplateMap = new go.Map<string, go.Link>();
 
         var simpleLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true, routing: go.Link.AvoidsNodes},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -338,7 +327,7 @@ export class AppComponent implements OnInit {
             );
 
         var detailsLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true},
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true, routing: go.Link.AvoidsNodes},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -361,11 +350,49 @@ export class AppComponent implements OnInit {
                 $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
             );
 
-        linkTemplatemap.add("simple", simpleLinkTemplate);
-        linkTemplatemap.add("detailed", detailsLinkTemplate);
-        linkTemplatemap.add("dummy", dummyLinkTemplate);
-        dia.linkTemplateMap = linkTemplatemap;
+        linkTemplateMap.add("simple", simpleLinkTemplate);
+        linkTemplateMap.add("detailed", detailsLinkTemplate);
+        dia.linkTemplateMap = linkTemplateMap;
         dia.linkTemplate = simpleLinkTemplate;
+
+        // there should be a single object of this category;
+        // it will be modified by BandedTreeLayout to display visual "bands"
+        // dia.nodeTemplateMap.add("VerticalBands",
+        //     $(go.Part, "Position",
+        //         {
+        //             isLayoutPositioned: false,  // but still in document bounds
+        //             locationSpot: new go.Spot(0, 0, 0, 16),  // account for header height
+        //             layerName: "Background",
+        //             pickable: false,
+        //             selectable: false,
+        //             itemTemplate:
+        //                 $(go.Panel, HORIZONTAL? "Vertical" : "Horizontal",
+        //                     new go.Binding("opacity", "visible", function(v) { return v ? 1 : 0; }),
+        //                     new go.Binding("position", "bounds", function(b) { return b.position; }),
+        //                     $(go.TextBlock,
+        //                         {
+        //                             stretch: HORIZONTAL? go.GraphObject.Horizontal : go.GraphObject.Vertical,
+        //                             textAlign: "center",
+        //                             wrap: go.TextBlock.None,
+        //                             font: "bold 11pt sans-serif",
+        //                             background: $(go.Brush, go.Brush.Linear, { 0: "lightgray", 1: "whitesmoke" })
+        //                         },
+        //                         new go.Binding("text"),
+        //                         new go.Binding("width", "bounds", function(r) { return r.width; })),
+        //                     // for separator lines:
+        //                     //$(go.Shape, "LineV",
+        //                     //  { stroke: "gray", alignment: go.Spot.Left, width: 1 },
+        //                     //  new go.Binding("height", "bounds", function(r) { return r.height; }),
+        //                     //  new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject()),
+        //                     // for rectangular bands:
+        //                     $(go.Shape,
+        //                         { stroke: null, strokeWidth: 0 },
+        //                         new go.Binding("desiredSize", "bounds", function(r) { return r.size; }),
+        //                         new go.Binding("fill", "itemIndex", function(i) { return i % 2 == 0 ? "white" : "whitesmoke"; }).ofObject())
+        //                 )
+        //         },
+        //         new go.Binding("itemArray")
+        //     ));
 
         dia.nodeTemplateMap.add("Bands",
             $(go.Part, "Position",
@@ -378,6 +405,9 @@ export class AppComponent implements OnInit {
                     selectable: false,
                     itemTemplate:
                         $(go.Panel, HORIZONTAL ? "Vertical" : "Horizontal",
+                            new go.Binding("opacity", "visible", function (v) {
+                                return v ? 1 : 0;
+                            }),
                             new go.Binding("position", "bounds", function (b) {
                                 return b.position;
                             }),
@@ -453,69 +483,22 @@ export class AppComponent implements OnInit {
         return dia;
     }
 
-    public diagramNodeData: Array<go.ObjectData> = [];
-    public diagramLinkData: Array<go.ObjectData> = [];
-    public horizontal: boolean = true;
-
-    public diagramModelData = {prop: 'value'};
-
-    public skipsDiagramUpdate = false;
-    showVar: boolean = true;
-
-    // When the diagram model changes, update app data to reflect those changes
-    public diagramModelChange = function (changes: go.IncrementalData) {
-        // when setting state here, be sure to set skipsDiagramUpdate: true since GoJS already has this update
-        // (since this is a GoJS model changed listener event function)
-        // this way, we don't log an unneeded transaction in the Diagram's undoManager history
-        this.skipsDiagramUpdate = true;
-
-        //this.http.get(this.URL).subscribe((data:any) => {this.diagramNodeData = data;});
-        //this.diagramNodeData = DataSyncService.syncNodeData(changes, this.diagramNodeData);
-        //this.diagramLinkData = DataSyncService.syncLinkData(changes, this.diagramLinkData);
-        //this.diagramModelData = DataSyncService.syncModelData(changes, this.diagramModelData);
-    };
-
-    //public diagramNodeData: Array<go.ObjectData>;
-
     constructor(private cdr: ChangeDetectorRef, private apiService: ApiService) {
     }
 
-    public observedDiagram = null;
-
-    // currently selected node; for inspector
-    public selectedNode: go.Node | null = null;
-
     public ngAfterViewInit() {
-        if (this.observedDiagram) return;
-        //this.observedDiagram = this.myDiagramComponent.diagram;
-        this.cdr.detectChanges(); // IMPORTANT: without this, Angular will throw ExpressionChangedAfterItHasBeenCheckedError (dev mode only)
-
-        const appComp: AppComponent = this;
-        // listener for inspector
-        this.myDiagramComponent.diagram.addDiagramListener('ChangedSelection', function (e) {
-            if (e.diagram.selection.count === 0) {
-                appComp.selectedNode = null;
-            }
-            const node = e.diagram.selection.first();
-            if (node instanceof go.Node) {
-                appComp.selectedNode = node;
-            } else {
-                appComp.selectedNode = null;
-            }
-        });
-
-    } // end ngAfterViewInit
-    fileName: string;
-
-
-    ngOnInit(): void {
-        this.getNodeAndEdge();
     }
 
-    private getNodeAndEdge() {
+    ngOnInit(): void {
+        this.getGraph();
+        this.getQuantities();
+        this.getTableData();
+    }
+
+    private getGraph() {
         this.diagramNodeData = [];
         this.diagramLinkData = [];
-        this.apiService.getNodeAndEdge().subscribe(result => {
+        this.apiService.getGraph().subscribe(result => {
             this.diagramNodeData = result?.nodes ? result?.nodes : [];
             this.diagramLinkData = result?.edges ? result?.edges : [];
             this.horizontal = result?.is_horizontal;
@@ -532,10 +515,16 @@ export class AppComponent implements OnInit {
         });
     }
 
+    getTableData() {
+        this.apiService.getTableData().subscribe((tableData:{[key: string]:string}[]) => {
+            this.tableData = tableData;
+        });
+    }
+
     postArrange(name: string) {
         this.apiService.postArrange(name)
             .subscribe(() => {
-                this.getNodeAndEdge();
+                this.getGraph();
             });
     }
 
@@ -543,7 +532,7 @@ export class AppComponent implements OnInit {
     postPlot(name: string) {
         this.apiService.postPlot(name)
             .pipe(switchMap(() => {
-                return this.apiService.getNodeAndEdge()
+                return this.apiService.getGraph()
             }))
             .subscribe((result) => {
                 this.diagramNodeData = result?.nodes ? result?.nodes : [];
@@ -553,6 +542,7 @@ export class AppComponent implements OnInit {
     }
 
 
+    //c://fakepath//a.txt
     fileUpload() {
         console.log((document.getElementById('file-uploader') as any).files[0].name);
     }

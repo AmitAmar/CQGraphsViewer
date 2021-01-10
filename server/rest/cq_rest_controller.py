@@ -1,28 +1,44 @@
+import functools
+
 from flask import jsonify
 
 from formatter import cq_formatter
 from utils.general_utils import read_data
+from .bands_comparator import BandComparator
 
-
+# get-graph
+HORIZONTAL = 'horizontal'
 NODES = 'nodes'
 EDGES = 'edges'
 IS_HORIZONTAL = 'is_horizontal'
+ARRANGE_BY = 'arrange_by'
 
 KEY = 'key'
 
-BAND_KEY = 'band'
-QUANTITIES_NAME_KEY = 'name'
+# Nodes:
+TIME_KEY = 'time'
+PARAMETERS_KEY = 'parameters'
+CATEGORY = 'category'
+SIMPLE_CATEGORY = 'simple'
+DETAILED_CATEGORY = 'detailed'
 
+
+# Edge:
 FROM_KEY = 'from'
 TO_KEY = 'to'
 TEXT_KEY = 'text'
+QUANTITIES_NAME_KEY = 'name'
 
-PARAMETERS_KEY = 'parameters'
-TIME_KEY = 'time'
 
-CATEGORY = 'category'
-SIMPLE_CATEGORY = 'simple'
+# Bands:
+BAND_KEY = 'band'
+BANDS_GOJS_KEY = "_BANDS"
+# BANDS_CATEGORY = "Bands"
+BANDS_CATEGORY = 'VerticalBands'
+BANDS_ITEM_ARRAY = 'itemArray'
+BAND_TEXT = 'text'
 
+# Config:
 CONFIG_FILE_PATH = r"rest_conf\config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
 
@@ -38,55 +54,82 @@ def parse_parameters(params):
     return raw_params
 
 
-def create_nodes_json(nodes, arrange_by_field):
+def create_nodes_list(nodes, arrange_by_field):
     nodes_list = []
     bands = get_nodes_bands(nodes, arrange_by_field)
-    nodes_bands = {}
-
-    if arrange_by_field != 'time':
-        nodes.sort(key=lambda curr_node : curr_node.parameters_dict[arrange_by_field.lower()].value)
-
 
     for node in nodes:
-        if arrange_by_field == 'time':
-            band = bands.index(node.time)
-        else:
-            band = bands.index(node.parameters_dict[arrange_by_field.lower()].value)
+        band = get_node_band_number(arrange_by_field, bands, node)
 
         current_node = {KEY: f"Q{node.node_id}",
                         TIME_KEY: str(node.time),
                         PARAMETERS_KEY: parse_parameters(node.parameters),
-                        BAND_KEY: band,
+                        BAND_KEY: band+1,
                         CATEGORY: SIMPLE_CATEGORY}
-        nodes_bands[node.node_id] = band
         nodes_list.append(current_node)
-
 
     nodes_list.sort(key=lambda curr_node : curr_node[BAND_KEY])
 
+    item_array = [{'visible': 'false'}]
+    item_array.extend([{BAND_TEXT: band} for band in bands])
+
+    nodes_list.insert(0, {KEY: BANDS_GOJS_KEY,
+                          CATEGORY: "Bands",
+                          BANDS_ITEM_ARRAY: item_array})
+
+    return nodes_list
 
 
-    nodes_list.append({KEY: "_BANDS", CATEGORY: "Bands", 'itemArray': [{'text': band} for band in bands]})
+def get_node_band_number(arrange_by_field, bands, node):
+    if arrange_by_field == 'time':
+        band = bands.index(node.time)
+    else:
+        band = bands.index(node.parameters_dict[arrange_by_field.lower()].value)
 
-    return nodes_list, nodes_bands
+    return band
 
 
 def get_nodes_bands(nodes, arrange_by_field):
-    bands = []
-    for node in nodes:
-        field = ""
-        if arrange_by_field.lower() == 'time':
+    if arrange_by_field == 'time':
+        bands = []
+        for node in nodes:
             field = node.time
-        else:
-            field = node.parameters_dict[arrange_by_field.lower()].value
+            if field not in bands:
+                bands.append(field)
 
-        if field not in bands:
-            bands.append(field)
+        return bands
+
+    bands_dict = {}
+    for node in nodes:
+        field = node.parameters_dict[arrange_by_field.lower()].value
+
+        if field not in bands_dict:
+            bands_dict[field] = node.parameters_dict[arrange_by_field.lower()].quantity_space
+            print(field)
+
+    magnitudes_orders = get_magnitudes_order(bands_dict)
+    bands = list(bands_dict.keys())
+
+    band_comparator = BandComparator(magnitudes_orders, ['dec', 'std', 'inc'])
+
+    bands.sort(key=functools.cmp_to_key(band_comparator.compare))
+
+    print("-----------")
+    print(magnitudes_orders)
+    print(bands)
+    print("-----------")
 
     return bands
 
 
-def create_edges_json(nodes, edges, nodes_bands):
+def get_magnitudes_order(bands_dict):
+    longest_quantity_space = max(bands_dict.values(), key=lambda s:len(s))
+    longest_quantity_space = longest_quantity_space[1:-1]  # Remove ()
+
+    return longest_quantity_space.split()
+
+
+def create_edges_list(edges, nodes_list):
     edges_list = []
     nodes_with_parent = set()
 
@@ -99,26 +142,9 @@ def create_edges_json(nodes, edges, nodes_bands):
         nodes_with_parent.add(edge.target)
         edges_list.append(current_edge)
 
-    new_index = len(edges)
-    #create dummy edges:
-
-    # nodes_without_parent = [node_id for node_id in range(0, len(nodes)) if node_id not in nodes_with_parent]
-    #
-    # for node_without_parent in nodes_without_parent:
-    #     if nodes_bands[node_without_parent] != 0:
-    #         edges_list.append({KEY: new_index,
-    #                            FROM_KEY: f"Q0",
-    #                            TO_KEY: f"Q{node_without_parent}",
-    #                            TEXT_KEY: '',
-    #                            CATEGORY: "dummy"})
-    #     else:
-    #         edges_list.append({KEY: new_index,
-    #                            FROM_KEY: f"",
-    #                            TO_KEY: f"Q{node_without_parent}",
-    #                            TEXT_KEY: '',
-    #                            CATEGORY: "dummy"})
-    #     new_index +=1
-
+        for node in nodes_list:
+            if node[KEY] == current_edge[TO_KEY]:
+                node['parent'] = current_edge[FROM_KEY]
 
     return edges_list
 
@@ -126,6 +152,7 @@ def create_edges_json(nodes, edges, nodes_bands):
 def get_graph(user_graph):
     # TODO: create a wizard for choosing the input file
     input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
+    # cq_data_path = 'cq_data_2.txt'
     cq_data_path = 'cq_data.txt'
 
     raw_cq_data = read_data(input_dir_path, cq_data_path)
@@ -134,6 +161,10 @@ def get_graph(user_graph):
     # Init quantities:
 
     nodes = gml.nodes
+    edges = gml.edges
+
+    user_graph.nodes = gml.nodes
+    user_graph.edges = gml.edges
 
     params = nodes[0].parameters
 
@@ -141,10 +172,13 @@ def get_graph(user_graph):
     for param in params:
         user_graph.add_quantity(param)
 
-    nodes_json, nodes_bands = create_nodes_json(nodes, user_graph.arrange_by)
-    edges_json = create_edges_json(nodes, gml.edges, nodes_bands)
+    nodes_list = create_nodes_list(nodes, user_graph.arrange_by)
+    edges_list = create_edges_list(edges, nodes_list)
 
-    return jsonify({NODES: nodes_json, EDGES: edges_json, IS_HORIZONTAL: user_graph.is_horizontal, 'arrange_by' : user_graph.arrange_by})
+    return jsonify({NODES: nodes_list,
+                    EDGES: edges_list,
+                    IS_HORIZONTAL: user_graph.is_horizontal,
+                    ARRANGE_BY: user_graph.arrange_by})
 
 
 def get_quantities(user_graph):
@@ -153,20 +187,20 @@ def get_quantities(user_graph):
     for quantity in user_graph.quantities:
         quantity = str(quantity)
         quantity = quantity[0: quantity.index('"')]
-        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity)})
+        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity).strip()})
 
     return jsonify(quantities_result)
 
 
 def arrange_by(field, user_graph):
     parts = field.split("_")
-    user_graph.is_horizontal = parts[0].lower() == 'horizontal'
+    user_graph.is_horizontal = parts[0].lower() == HORIZONTAL
     user_graph.arrange_by = parts[1]
 
     print("arrange by : ", user_graph.arrange_by)
     print("is_horizontal : ", user_graph.is_horizontal)
 
-    if 'horizontal' in field:
+    if HORIZONTAL in field:
         user_graph.is_horizontal = True
     else:
         user_graph.is_horizontal = False
@@ -178,3 +212,17 @@ def plot(name, user_graph):
     print("Plot : ", name)
 
     return jsonify(name)
+
+
+def get_table(user_graph):
+    rows = []
+
+    for node in user_graph.nodes:
+        current_row = {'index': node.node_id}
+
+        for param_name, param_value in node.parameters_dict.items():
+            current_row[param_name] = param_value.value
+
+        rows.append(current_row)
+
+    return jsonify(rows)

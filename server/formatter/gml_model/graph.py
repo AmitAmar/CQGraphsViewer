@@ -25,6 +25,14 @@ class Graph:
     def edges(self):
         return self.__edges
 
+    @nodes.setter
+    def nodes(self, new_nodes):
+        self.__nodes = new_nodes
+
+    @edges.setter
+    def edges(self, new_edges):
+        self.__edges = new_edges
+
     def __str__(self):
         result = "graph [\n"
         # Load Nodes:

@@ -14,7 +14,7 @@ class Node:
         self.__parameters = dict()
 
         for param in parameters:
-            self.__parameters[param.name] = param
+            self.__parameters[param.name.lower()] = param
 
     @property
     def node_id(self):

@@ -24,6 +24,10 @@ gojs-diagram {
   grid-area: graph;
 }
 
+.table {
+  grid-area: table;
+}
+
 .myDiagramDiv {
   background: whitesmoke;
   height: 100%;

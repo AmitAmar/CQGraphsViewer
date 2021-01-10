@@ -29,6 +29,16 @@ def get_quantities():
 def arrange_by(field):
     return cq_rest_controller.arrange_by(field, user_graph)
 
+#TODO:!!!!!
+@app.route('/create-graph/<f>', methods=['POST'])
+def create_graph(f):
+    print(f)
+    return "TODO"
+
+
+@app.route('/get-table', methods=['GET'])
+def get_table():
+    return cq_rest_controller.get_table(user_graph)
 
 @app.route('/plot/<name>', methods=['POST'])
 def plot(name):
