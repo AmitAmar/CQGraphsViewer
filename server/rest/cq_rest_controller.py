@@ -71,11 +71,9 @@ def create_nodes_list(nodes, arrange_by_horizontal, arrange_by_vertical):
         nodes_list.append(current_node)
 
     for index, row in enumerate(rows):
-        nodes_list.append({'isGroup' : 'true', 'row' : index+1, 'category' : "Row"})
         nodes_list.append({'text' : row, 'row' : index+1, 'category' : "RowHeader"})
 
     for index, col in enumerate(columns):
-        nodes_list.append({'isGroup' : 'true', 'col' : index+1, 'category' : "Column"})
         nodes_list.append({'text' : col, 'col' : index+1, 'category' : "ColumnHeader"})
 
     return nodes_list

@@ -30,178 +30,241 @@ export class AppComponent implements OnInit {
     tableData: { [key: string]: string }[];
 
     public initDiagram(): go.Diagram {
-        // define a custom ResizingTool to limit how far one can shrink a row or column
-        function LaneResizingTool() {
-            go.ResizingTool.call(this);
+      function TableCellLayout() {
+        TableLayout.call(this);
+        this._cellLayout = null;  // this is applied to each table cell's collection of Parts, if there is more than one
+      }
+      go.Diagram.inherit(TableCellLayout, TableLayout);
+
+      Object.defineProperty(TableCellLayout.prototype, "cellLayout", {
+        get: function() { return this._cellLayout; },
+        set: function(val) {
+          if (val !== null && !(val instanceof go.Layout)) throw new Error("new TableCellLayout.cellLayout must be a Layout or null");
+          if (val !== this._cellLayout) {
+            this._cellLayout = val;
+            this.invalidateLayout();
+          }
         }
-        go.Diagram.inherit(LaneResizingTool, go.ResizingTool);
+      });
 
-        LaneResizingTool.prototype.computeMinSize = function() {
-            var diagram = this.diagram;
-            var lane = this.adornedObject.part;  // might be row or column
-            var horiz = (lane.rowSpan >= 9999);  // column header
-            var margin = diagram.nodeTemplate.margin;
-            var bounds = new go.Rect();
-            diagram.findTopLevelGroups().each(function(g) {
-                if (horiz ? (g.column === lane.column) : (g.row === lane.row)) {
-                    var b = diagram.computePartsBounds(g.memberParts);
-                    if (b.isEmpty()) return;  // nothing in there?  ignore it
-                    b.unionPoint(g.location);  // keep any empty space on the left and top
-                    b.addMargin(margin);  // assume the same node margin applies to all nodes
-                    if (bounds.isEmpty()) {
-                        bounds = b;
-                    } else {
-                        bounds.unionRect(b);
-                    }
-                }
-            });
+      // don't have the cellLayout layout Parts for which this is true --
+      // Parts that span cells
+      TableCellLayout.prototype.isNotInCell = function(part) {
+        return (part.rowSpan > 1 || part.columnSpan > 1);
+      }
 
-            // limit the result by the standard value of computeMinSize
-            var msz = go.ResizingTool.prototype.computeMinSize.call(this);
-            if (bounds.isEmpty()) return msz;
-            return new go.Size(Math.max(msz.width, bounds.width), Math.max(msz.height, bounds.height));
-        };
-
-        LaneResizingTool.prototype.resize = function(newr) {
-            var lane = this.adornedObject.part;
-            var horiz = (lane.rowSpan >= 9999);
-            var lay = this.diagram.layout;  // the TableLayout
-            if (horiz) {
-                var col = lane.column;
-                var coldef = lay.getColumnDefinition(col);
-                coldef.width = newr.width;
-            } else {
-                var row = lane.row;
-                var rowdef = lay.getRowDefinition(row);
-                rowdef.height = newr.height;
+      TableCellLayout.prototype.beforeMeasure = function(parts, rowcol) {
+        var lay = this.cellLayout;
+        if (!lay) return;
+        lay.diagram = this.diagram;
+        var coll = new go.List();
+        var bnds = new go.Rect();
+        var tmp = new go.Rect();
+        // for each row i ...
+        for (var i = 0; i < rowcol.length; i++) {
+          var rows = rowcol[i];
+          if (!rows) continue;
+          var rowDef = this.getRowDefinition(i);
+          rowDef.originalMinimum = rowDef.minimum;
+          rowDef.minimum = 0;
+          for (var j = 0; j < rows.length; j++) {
+            // for each column j in row i ...
+            var parts = rows[j];
+            if (!parts) continue;
+            if (parts.length === 0) continue;  // don't bother laying out just one node in a cell
+            if (parts.length === 1) {
+              parts[0].alignment = go.Spot.Default;  // respect TableLayout.defaultAlignment
+              continue;
             }
-            lay.invalidateLayout();
-        };
-        // end LaneResizingTool class
-
-        function AlignmentDraggingTool() {
-            go.DraggingTool.call(this);
-        }
-        go.Diagram.inherit(AlignmentDraggingTool, go.DraggingTool);
-
-        AlignmentDraggingTool.prototype.moveParts = function(parts, offset, check) {
-            go.DraggingTool.prototype.moveParts.call(this, parts, offset, check);
-            var tool = this;
-            parts.iteratorKeys.each(function(part) {
-                if (part instanceof go.Link) return;
-                var col = part.column;
-                var row = part.row;
-                if (typeof col === "number" && typeof row === "number") {
-                    var b = computeCellBounds(col, row);
-                    part.alignment = new go.Spot(0.5, 0.5, b.centerX, b.centerY);  // offset from center of cell
-                }
-            })
-        }
-        // end AlignmentDraggingTool
-
-        // Utility functions, assuming the Diagram.layout is a TableLayout,
-        // and that the rows and columns are implemented as Groups
-
-        function computeCellBounds(col, row) {  // this is only valid after a layout
+            // collect the Parts to be laid out within the cell
+            coll.clear();
+            for (var k = 0; k < parts.length; k++) {
+              var part = parts[k];
+              if (this.isNotInCell(part)) continue;
+              coll.add(part);
+              if (part instanceof go.Node) {
+                // add Links that connect with another Node in this same cell
+                part.findLinksConnected().each(function(link) {
+                  if (!link.isLayoutPositioned) return;
+                  var other = link.getOtherNode(part);
+                  if (other && other.row === i && other.column === j && other.rowSpan === 1 && other.columnSpan === 1) {
+                    coll.add(link);
+                  }
+                })
+              }
+            }
+            if (coll.count <= 1) continue;
+            lay.doLayout(coll);  // do the layout of just this cell's Parts
+            // determine the area occupied by the laid-out parts
+            bnds.setTo(0, 0, 0, 0);
+            var colDef = this.getColumnDefinition(j);
+            colDef.originalMinimum = colDef.minimum;
+            colDef.minimum = 0;
             //@ts-ignore
-            var coldef = dia.layout.getColumnDefinition(col);
+            for (var k = coll.iterator; k.next(); ) {
+              //@ts-ignore
+              var part = k.value;
+              tmp.set(part.actualBounds);
+              tmp.addMargin(part.margin);
+              if (k === 0) {
+                bnds.set(tmp);
+              } else {
+                bnds.unionRect(tmp);
+              }
+            }
+            // now make sure the RowColDefinitions are expanded if needed
+            rowDef.minimum = Math.max(rowDef.minimum, bnds.height);
+            colDef.minimum = Math.max(colDef.minimum, bnds.width);
+            // and assign alignment on each of the Parts
+            var mx = bnds.centerX;
+            var my = bnds.centerY;
             //@ts-ignore
-            var rowdef = dia.layout.getRowDefinition(row);
-            return new go.Rect(coldef.position, rowdef.position, coldef.total, rowdef.total);
-        }
-
-        function findColumnGroup(col) {
-            var it = dia.findTopLevelGroups();
-            while (it.next()) {
-                var g = it.value;
-                if (g.column === col && g.rowSpan >= 9999) return g;
+            for (var k = coll.iterator; k.next(); ) {
+              //@ts-ignore
+              var part = k.value;
+              part.alignment = new go.Spot(0.5, 0.5, part.actualBounds.centerX - mx, part.actualBounds.centerY - my);
             }
-            return null;
+          }
         }
+      }
 
-        function findRowGroup(row) {
-            var it = dia.findTopLevelGroups();
-            while (it.next()) {
-                var g = it.value;
-                if (g.row === row && g.columnSpan >= 9999) return g;
+      TableCellLayout.prototype.afterArrange = function(parts, rowcol) {
+        if (this.cellLayout) {
+          // restore all RowColDefinition.minimum
+          for (var i = 0; i < rowcol.length; i++) {
+            var columns = rowcol[i];
+            if (!columns) continue;
+            var rowDef = this.getRowDefinition(i);
+            if (typeof rowDef.originalMinimum === "number") rowDef.minimum = rowDef.originalMinimum;
+            for (var j = 0; j < columns.length; j++) {
+              var parts = columns[j];
+              if (!parts) continue;
+              if (parts.length <= 1) continue;  // don't bother laying out just one node in a cell
+              var colDef = this.getColumnDefinition(j);
+              if (typeof colDef.originalMinimum === "number") colDef.minimum = colDef.originalMinimum;
             }
-            return null;
+          }
         }
+        this.updateTableGrid();
+      }
 
-        function mouseEventHandlers() {  // standard mouse drag-and-drop event handlers
-            return {
-                mouseDragEnter: function(e) { mouseInCell(e, true); },
-                mouseDragLeave: function(e) { mouseInCell(e, false); },
-                mouseDrop: function(e) { mouseDropInCell(e, e.diagram.selection); }
-            };
+      TableCellLayout.prototype.updateTableGrid = function() {
+        var lay = this;
+        var part = null;
+        lay.diagram.findLayer("Background").parts.each(function(p) { if (p.name === "TABLEGRID") part = p; });
+        if (!part) return;
+        var numcols = lay.columnCount;
+        var numrows = lay.rowCount;
+        var firstcolindex = 1;
+        var firstrowindex = 1;
+        var firstcoldef = lay.getColumnDefinition(firstcolindex);
+        var firstrowdef = lay.getRowDefinition(firstrowindex);
+        var lastcoldef = lay.getColumnDefinition(numcols-1);
+        var lastrowdef = lay.getRowDefinition(numrows-1);
+        // determine the extent of the grid
+        var left = firstcoldef.position;
+        var width = lastcoldef.position + lastcoldef.total - firstcoldef.position;
+        var top = firstrowdef.position;
+        var top = firstrowdef.position;
+        var height = lastrowdef.position + lastrowdef.total - firstrowdef.position;
+        var eltIdx = 0;
+        var prevLine = part.elements.count > 0 ? part.elt(0) : new go.Shape();
+        function nextLine(fig, w, h) {  // reuse any existing Shapes
+          var shp = null;
+          if (eltIdx < part.elements.count) {
+            shp = part.elt(eltIdx++);
+          } else {
+            shp = prevLine.copy();
+            eltIdx++;
+            part.add(shp);
+          }
+          shp.figure = fig;
+          shp.width = w;
+          shp.height = h;
+          return shp;
         }
-
-        function mouseInCell(e, highlight) {
-            e.diagram.clearHighlighteds();
-
-            var col = e.diagram.layout.findColumnForDocumentX(e.documentPoint.x);
-            if (col < 1) col = 1;  // disallow dropping in headers
-            var g = findColumnGroup(col);
-            if (g !== null) g.isHighlighted = highlight;
-
-            var row = e.diagram.layout.findRowForDocumentY(e.documentPoint.y);
-            if (row < 1) row = 1;
-            g = findRowGroup(row);
-            if (g !== null) g.isHighlighted = highlight;
+        // set up the verticals
+        for (var i = firstcolindex; i < numcols; i++) {
+          var def = lay.getColumnDefinition(i);
+          var shp = nextLine("LineV", 0, height);
+          shp.position = new go.Point(def.position, top);
         }
-
-        function mouseDropInCell(e, coll) {
-            var col = e.diagram.layout.findColumnForDocumentX(e.documentPoint.x);
-            if (col < 1) col = 1;  // disallow dropping in headers
-            var row = e.diagram.layout.findRowForDocumentY(e.documentPoint.y);
-            if (row < 1) row = 1;
-            coll.each(function(node) {
-                if (node instanceof go.Node) {
-                    node.column = col;
-                    node.row = row;
-                    // adjust the alignment to the new cell's center point
-                    var cb = computeCellBounds(col, row);
-                    var ab = node.actualBounds.copy();
-                    //@ts-ignore
-                    if (ab.right > cb.right-node.margin.right) ab.x -= (ab.right - cb.right + node.margin.right);
-                    //@ts-ignore
-                    if (ab.left < cb.left+node.margin.left) ab.x = cb.left + node.margin.left;
-                    //@ts-ignore
-                    if (ab.bottom > cb.bottom-node.margin.bottom) ab.y -= (ab.bottom - cb.bottom + node.margin.bottom);
-                    //@ts-ignore
-                    if (ab.top < cb.top+node.margin.top) ab.y = cb.top + node.margin.top;
-                    var off = ab.center.subtract(cb.center);
-                    node.alignment = new go.Spot(0.5, 0.5, off.x, off.y);
-                }
-            });
-            dia.layoutDiagram(true);
+        // final line on right side
+        var shp = nextLine("LineV", 0, height);
+        shp.position = new go.Point(lastcoldef.position + lastcoldef.total, top);
+        // set up the horizontals
+        for (var i = firstrowindex; i < numrows; i++) {
+          var def = lay.getRowDefinition(i);
+          var shp = nextLine("LineH", width, 0);
+          shp.position = new go.Point(left, def.position);
         }
+        // final line at bottom
+        var shp = nextLine("LineH", width, 0);
+        shp.position = new go.Point(left, lastrowdef.position + lastrowdef.total);
+        // get rid of any unneeded shapes
+        while (part.elements.count > eltIdx) part.removeAt(eltIdx);
+      }
 
         const $ = go.GraphObject.make;
-        const dia = $(go.Diagram, {
-            layout: $(TableLayout,
-                $(go.RowColumnDefinition, { row: 0, height: 50, minimum: 50 }),
-                $(go.RowColumnDefinition, { column: 0, width: 100, minimum: 100 })
-            ),
-            'initialContentAlignment': go.Spot.Center,
-            'undoManager.isEnabled': true,
-            resizingTool: new LaneResizingTool(),
-            model: $(go.GraphLinksModel,
-                {
-                    linkToPortIdProperty: 'toPort',
-                    linkFromPortIdProperty: 'fromPort',
-                    linkKeyProperty: 'key' // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
-                }
-            ),
 
+
+      const dia =
+        $(go.Diagram,
+          {
+            layout:
+            // @ts-ignore
+              $(TableCellLayout,
+                $(go.RowColumnDefinition, { row: 0, height: 50, minimum: 50, alignment: go.Spot.Bottom }),
+                $(go.RowColumnDefinition, { column: 0, width: 100, minimum: 100, alignment: go.Spot.Right }),
+                {
+                  cellLayout: $(go.GridLayout, {wrappingColumn: 2, spacing: new go.Size(100, 100) })
+                }
+              ),
+            "SelectionCopied": updateCells,  // reassign cell of each copied or moved node
+            "SelectionMoved": updateCells,
+            "animationManager.isInitial": true,
+            "undoManager.isEnabled": true,
+            "initialContentAlignment": go.Spot.Center,
+            model: $(go.GraphLinksModel,
+              {
+                linkToPortIdProperty: 'toPort',
+                linkFromPortIdProperty: 'fromPort',
+                linkKeyProperty: 'key' // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
+              }
+            ),
+          });
+
+      function updateCells(e) {
+        var lay = e.diagram.layout;
+        e.subject.each(function(node) {
+          if (node instanceof go.Node) {
+            var c = lay.findColumnForDocumentX(node.location.x);
+            node.column = Math.min(Math.max(1, c), lay.columnCount-1);  // not into first column
+            var r = lay.findRowForDocumentY(node.location.y);
+            node.row = Math.min(Math.max(1, r), lay.rowCount-1);  // not into first row
+          }
         });
+        lay.invalidateLayout();
+      }
+
+      // the background grid
+      dia.add(
+        $(go.Part,
+          { name: "TABLEGRID", layerName: "Background",
+            pickable: false, selectable: false,
+            position: new go.Point(0, 0), isLayoutPositioned: false },
+          // an archetype line:
+          $(go.Shape, { fill: null, stroke: "blue", strokeDashArray: [3, 3] })
+        ));
 
         var nodeSimpleTemplate =
-            $(go.Node, "Auto",mouseEventHandlers(),
-                new go.Binding("row").makeTwoWay(),
-                new go.Binding("column", "col").makeTwoWay(),
-                new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
-                new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
+            $(go.Node, "Auto",
+              { locationSpot: go.Spot.Center },
+              {margin: 20 },  // assume uniform size and margin, all around
+              new go.Binding("row").makeTwoWay(),
+              new go.Binding("column", "col").makeTwoWay(),
+              new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+              new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
                 {
                     //locationSpot: go.Spot.Center,
                     // when the user clicks on a Node, highlight all Links coming out of the node
@@ -238,11 +301,13 @@ export class AppComponent implements OnInit {
                 ));
 
         var nodeDetailedTemplate =
-            $(go.Node, "Auto",mouseEventHandlers(),
-                new go.Binding("row").makeTwoWay(),
-                new go.Binding("column", "col").makeTwoWay(),
-                new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
-                new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
+            $(go.Node, "Auto",
+              { locationSpot: go.Spot.Center },
+              {margin: 4 },  // assume uniform size and margin, all around
+              new go.Binding("row").makeTwoWay(),
+              new go.Binding("column", "col").makeTwoWay(),
+              new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+              new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
                 {
                     //locationSpot: go.Spot.Center,
                     // when the user clicks on a Node, highlight all Links coming out of the node
@@ -297,94 +362,27 @@ export class AppComponent implements OnInit {
         // this just shows the key value as a simple TextBlock
         dia.nodeTemplate = nodeSimpleTemplate;
 
-        function groupStyle() {  // shared style for column groups and row groups
-            return [
-                mouseEventHandlers(),
-                {
-                    layerName: "Background",
-                    stretch: go.GraphObject.Fill,
-                    alignment: go.Spot.TopLeft,
-                    minSize: new go.Size(110, 60),
-                    movable: false,
-                    copyable: false,
-                    deletable: false,
-                    resizable: true,
-                    handlesDragDropForMembers: true
-                },
-                new go.Binding("width", "width").makeTwoWay(),
-                new go.Binding("height", "height").makeTwoWay(),
-                $(go.Shape,
-                    { fill: "transparent", stretch: go.GraphObject.Fill },
-                    new go.Binding("fill", "isHighlighted", function(h) { return h ? "rgba(0,255,0,0.15)" : "transparent"; }).ofObject())
-            ];
-        }
+      function headerStyle() {  // shared style for header cell contents
+        return [
+          {
+            row: 0, column: 0,
+            pickable: false,
+            selectable: false
+          },
+          $(go.TextBlock, { font: "bold 12pt sans-serif" },
+            new go.Binding("text"))
+        ];
+      }
 
-        dia.groupTemplateMap.add("Column",
-            $(go.Group, groupStyle(),
-                new go.Binding("column", "col"),
-                {
-                    row: 0,
-                    rowSpan: 9999,
-                  //avoidable:false,
-                  resizeAdornmentTemplate:
-                        $(go.Adornment, "Spot",
-                            $(go.Placeholder),
-                            $(go.Shape,  // for changing the width of a column
-                                {
-                                    alignment: new go.Spot(1, 0.0001), alignmentFocus: go.Spot.Top,
-                                    desiredSize: new go.Size(7, 50),
-                                    fill: "lightblue", stroke: "dodgerblue",
-                                    cursor: "col-resize"
-                                })
-                        )
-                }
-            ));
+      dia.nodeTemplateMap.add("ColumnHeader",
+        $(go.Node, headerStyle(),
+          new go.Binding("column", "col")
+        ));
 
-        dia.groupTemplateMap.add("Row",
-            $(go.Group, groupStyle(),
-                new go.Binding("row"),
-                {
-                    column: 0,
-                    columnSpan: 9999,
-                  //avoidable:false,
-                    resizeAdornmentTemplate:
-                        $(go.Adornment, "Spot",
-                            $(go.Placeholder),
-                            $(go.Shape,  // for changing the height of a row
-                                {
-                                    alignment: new go.Spot(0.0001, 1), alignmentFocus: go.Spot.Left,
-                                    desiredSize: new go.Size(100, 7),
-                                    fill: "lightblue", stroke: "dodgerblue",
-                                    cursor: "row-resize"
-                                })
-                        )
-                }
-            ));
-
-
-        function headerStyle() {  // shared style for header cell contents
-            return [
-                {
-                    pickable: false,
-                    selectable: false,
-                    alignment: go.Spot.Center
-                },
-                $(go.TextBlock, { font: "bold 12pt sans-serif" },
-                    new go.Binding("text"))
-            ];
-        }
-
-        dia.nodeTemplateMap.add("ColumnHeader",
-            $(go.Node, headerStyle(),
-                new go.Binding("column", "col"),
-                { row: 0 }
-            ));
-
-        dia.nodeTemplateMap.add("RowHeader",
-            $(go.Node, headerStyle(),
-                new go.Binding("row"),
-                { column: 0 }
-            ));
+      dia.nodeTemplateMap.add("RowHeader",
+        $(go.Node, headerStyle(),
+          new go.Binding("row")
+        ));
 
 
         // when the user clicks on the background of the Diagram, remove all highlighting
@@ -401,7 +399,7 @@ export class AppComponent implements OnInit {
         var linkTemplateMap = new go.Map<string, go.Link>();
 
         var simpleLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes },
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -413,6 +411,10 @@ export class AppComponent implements OnInit {
                         return h ? 3 : 1;
                     })
                         .ofObject()),
+              new go.Binding("fromEndSegmentLength", "curviness"),
+              new go.Binding("toEndSegmentLength", "curviness"),
+              $(go.Shape,  // the arrowhead, at the mid point of the link
+                { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
 
                 $(go.Shape,
                     {toArrow: "Standard", strokeWidth: 0},
@@ -423,7 +425,7 @@ export class AppComponent implements OnInit {
             );
 
         var detailsLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
+            $(go.Link, {toShortLength: 1, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -441,8 +443,13 @@ export class AppComponent implements OnInit {
                     new go.Binding("fill", "isHighlighted", function (h) {
                         return h ? "red" : "black";
                     })
-                        .ofObject())
-                ,
+                        .ofObject()),
+
+              new go.Binding("fromEndSegmentLength", "curviness"),
+              new go.Binding("toEndSegmentLength", "curviness"),
+                  $(go.Shape,  // the arrowhead, at the mid point of the link
+                    { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
+
                 $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
             );
 
