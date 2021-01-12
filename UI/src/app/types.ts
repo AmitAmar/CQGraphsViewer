@@ -1,7 +1,6 @@
 export interface Node {
   key: string,
   color: string,
-  arr: number[]
 }
 
 export interface Link {
@@ -12,10 +11,10 @@ export interface Link {
 }
 
 export interface ApiGraph {
-  arrange_by: string;
   nodes: Node[];
   edges: Link[];
-  is_horizontal: boolean;
+  arrange_by_horizontal: string;
+  arrange_by_vertical: string;
 }
 
 export interface Quantity {

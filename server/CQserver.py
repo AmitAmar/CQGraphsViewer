@@ -27,7 +27,8 @@ def get_quantities():
 
 @app.route('/arranged-by/<field>', methods=['POST'])
 def arrange_by(field):
-    return cq_rest_controller.arrange_by(field, user_graph)
+    layout,field = field.split("_")
+    return cq_rest_controller.arrange_by(layout, field, user_graph)
 
 #TODO:!!!!!
 @app.route('/create-graph/<f>', methods=['POST'])

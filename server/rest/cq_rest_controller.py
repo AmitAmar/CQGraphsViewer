@@ -7,11 +7,10 @@ from utils.general_utils import read_data
 from .bands_comparator import BandComparator
 
 # get-graph
-HORIZONTAL = 'horizontal'
 NODES = 'nodes'
 EDGES = 'edges'
-IS_HORIZONTAL = 'is_horizontal'
-ARRANGE_BY = 'arrange_by'
+ARRANGE_BY_HORIZONTAL = 'arrange_by_horizontal'
+ARRANGE_BY_VERTICAL = 'arrange_by_vertical'
 
 KEY = 'key'
 
@@ -54,33 +53,35 @@ def parse_parameters(params):
     return raw_params
 
 
-def create_nodes_list(nodes, arrange_by_field):
+def create_nodes_list(nodes, arrange_by_horizontal, arrange_by_vertical):
     nodes_list = []
-    bands = get_nodes_bands(nodes, arrange_by_field)
+    rows = get_nodes_bands(nodes, arrange_by_horizontal)
+    columns = get_nodes_bands(nodes, arrange_by_vertical)
 
     for node in nodes:
-        band = get_node_band_number(arrange_by_field, bands, node)
+        row = get_node_location(arrange_by_horizontal, rows, node)
+        col = get_node_location(arrange_by_vertical, columns, node)
 
         current_node = {KEY: f"Q{node.node_id}",
                         TIME_KEY: str(node.time),
                         PARAMETERS_KEY: parse_parameters(node.parameters),
-                        BAND_KEY: band+1,
+                        'row' : row+1,
+                        'col' : col+1,
                         CATEGORY: SIMPLE_CATEGORY}
         nodes_list.append(current_node)
 
-    nodes_list.sort(key=lambda curr_node : curr_node[BAND_KEY])
+    for index, row in enumerate(rows):
+        nodes_list.append({'isGroup' : 'true', 'row' : index+1, 'category' : "Row"})
+        nodes_list.append({'text' : row, 'row' : index+1, 'category' : "RowHeader"})
 
-    item_array = [{'visible': 'false'}]
-    item_array.extend([{BAND_TEXT: band} for band in bands])
-
-    nodes_list.insert(0, {KEY: BANDS_GOJS_KEY,
-                          CATEGORY: "Bands",
-                          BANDS_ITEM_ARRAY: item_array})
+    for index, col in enumerate(columns):
+        nodes_list.append({'isGroup' : 'true', 'col' : index+1, 'category' : "Column"})
+        nodes_list.append({'text' : col, 'col' : index+1, 'category' : "ColumnHeader"})
 
     return nodes_list
 
 
-def get_node_band_number(arrange_by_field, bands, node):
+def get_node_location(arrange_by_field, bands, node):
     if arrange_by_field == 'time':
         band = bands.index(node.time)
     else:
@@ -129,7 +130,7 @@ def get_magnitudes_order(bands_dict):
     return longest_quantity_space.split()
 
 
-def create_edges_list(edges, nodes_list):
+def create_edges_list(edges):
     edges_list = []
     nodes_with_parent = set()
 
@@ -141,10 +142,6 @@ def create_edges_list(edges, nodes_list):
                         CATEGORY: SIMPLE_CATEGORY}
         nodes_with_parent.add(edge.target)
         edges_list.append(current_edge)
-
-        for node in nodes_list:
-            if node[KEY] == current_edge[TO_KEY]:
-                node['parent'] = current_edge[FROM_KEY]
 
     return edges_list
 
@@ -172,13 +169,13 @@ def get_graph(user_graph):
     for param in params:
         user_graph.add_quantity(param)
 
-    nodes_list = create_nodes_list(nodes, user_graph.arrange_by)
-    edges_list = create_edges_list(edges, nodes_list)
+    nodes_list = create_nodes_list(nodes, user_graph.arrange_by_horizontal, user_graph.arrange_by_vertical)
+    edges_list = create_edges_list(edges)
 
     return jsonify({NODES: nodes_list,
                     EDGES: edges_list,
-                    IS_HORIZONTAL: user_graph.is_horizontal,
-                    ARRANGE_BY: user_graph.arrange_by})
+                    ARRANGE_BY_HORIZONTAL: user_graph.arrange_by_horizontal,
+                    ARRANGE_BY_VERTICAL: user_graph.arrange_by_vertical})
 
 
 def get_quantities(user_graph):
@@ -192,21 +189,12 @@ def get_quantities(user_graph):
     return jsonify(quantities_result)
 
 
-def arrange_by(field, user_graph):
-    parts = field.split("_")
-    user_graph.is_horizontal = parts[0].lower() == HORIZONTAL
-    user_graph.arrange_by = parts[1]
-
-    print("arrange by : ", user_graph.arrange_by)
-    print("is_horizontal : ", user_graph.is_horizontal)
-
-    if HORIZONTAL in field:
-        user_graph.is_horizontal = True
-    else:
-        user_graph.is_horizontal = False
-
+def arrange_by(layout, field, user_graph):
+    if layout == 'horizontal':
+        user_graph.arrange_by_horizontal = field
+    elif layout == 'vertical':
+        user_graph.arrange_by_vertical = field
     return jsonify(field)
-
 
 def plot(name, user_graph):
     print("Plot : ", name)

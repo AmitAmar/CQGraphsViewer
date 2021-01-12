@@ -10,16 +10,17 @@
 
     <div class="example-button-row">
 
-      <button mat-button [matMenuTriggerFor]="menu">Arrange By...</button>
+      <button mat-button [matMenuTriggerFor]="HorizontalMenu">Arrange Horizontally...</button>
+      <button mat-button [matMenuTriggerFor]="VerticalMenu">Arrange Vertically...</button>
 
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="horizontally">Horizontally</button>
-        <button mat-menu-item [matMenuTriggerFor]="vertically">Vertically</button>
-      </mat-menu>
-
-      <mat-menu #horizontally="matMenu">
+      <mat-menu #HorizontalMenu="matMenu">
         <button mat-menu-item (click)="postArrange('horizontal_time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="horizontalQuantitiesMenu">Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #VerticalMenu="matMenu">
+        <button mat-menu-item (click)="postArrange('vertical_time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu">Quantities list</button>
       </mat-menu>
 
       <mat-menu #horizontalQuantitiesMenu="matMenu">
@@ -29,15 +30,10 @@
       <mat-menu #verticalQuantitiesMenu="matMenu">
         <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange('vertical_' + quantity.name)">{{quantity.name}}</button>
       </mat-menu>
-
-      <mat-menu #vertically="matMenu">
-        <button mat-menu-item (click)="postArrange('vertical_time')">Time</button>
-        <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu">Quantities list</button>
-      </mat-menu>
     </div>
 
-    <h3 align="center">Arrange By: {{arrangedBy}}</h3>
-    <h3 align="center" *ngIf="horizontal === true || horizontal === false">Layout: {{horizontal ? 'horizontal' : 'vertical'}}</h3>
+    <h3 align="center">Arrange By Horizontal: {{arrangedByHorizontal}}</h3>
+    <h3 align="center">Arrange By Vertical: {{arrangedByVertical}}</h3>
   </div>
 
   <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"

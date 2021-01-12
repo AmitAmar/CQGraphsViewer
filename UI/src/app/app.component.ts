@@ -1,9 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as go from 'gojs';
+import {TableLayout} from './TableLayout'
 import {DiagramComponent} from 'gojs-angular';
 import {ApiService} from "./api.service";
 import {Quantity} from "./types";
 import {switchMap} from "rxjs/operators";
+
 
 @Component({
     selector: 'app-root',
@@ -23,170 +25,167 @@ export class AppComponent implements OnInit {
     fileName: string;
 
     quantities: Quantity[];
-    arrangedBy: string;
+    arrangedByHorizontal: string;
+    arrangedByVertical: string;
     tableData: { [key: string]: string }[];
 
     public initDiagram(): go.Diagram {
-        // this controls whether the layout is horizontal and the layer bands are vertical, or vice-versa:
-        let HORIZONTAL = this.horizontal;  // this constant parameter can only be set here, not dynamically
+        // define a custom ResizingTool to limit how far one can shrink a row or column
+        function LaneResizingTool() {
+            go.ResizingTool.call(this);
+        }
+        go.Diagram.inherit(LaneResizingTool, go.ResizingTool);
 
-        // Perform a TreeLayout where the node's actual tree-layer is specified by the "band" property on the node data.
-        // This implementation only works when angle == 0, but could be easily modified to support other angles.
-        function BandedTreeLayout() {
-            go.TreeLayout.call(this);
+        LaneResizingTool.prototype.computeMinSize = function() {
+            var diagram = this.diagram;
+            var lane = this.adornedObject.part;  // might be row or column
+            var horiz = (lane.rowSpan >= 9999);  // column header
+            var margin = diagram.nodeTemplate.margin;
+            var bounds = new go.Rect();
+            diagram.findTopLevelGroups().each(function(g) {
+                if (horiz ? (g.column === lane.column) : (g.row === lane.row)) {
+                    var b = diagram.computePartsBounds(g.memberParts);
+                    if (b.isEmpty()) return;  // nothing in there?  ignore it
+                    b.unionPoint(g.location);  // keep any empty space on the left and top
+                    b.addMargin(margin);  // assume the same node margin applies to all nodes
+                    if (bounds.isEmpty()) {
+                        bounds = b;
+                    } else {
+                        bounds.unionRect(b);
+                    }
+                }
+            });
 
-            this.treeStyle = go.TreeLayout.StyleLayered;  // required
-            // new in GoJS v1.4
-            this.layerStyle = go.TreeLayout.LayerUniform;
+            // limit the result by the standard value of computeMinSize
+            var msz = go.ResizingTool.prototype.computeMinSize.call(this);
+            if (bounds.isEmpty()) return msz;
+            return new go.Size(Math.max(msz.width, bounds.width), Math.max(msz.height, bounds.height));
+        };
 
-            // don't move subtrees closer together, to maintain possible empty spaces between layers
-            this.compaction = go.TreeLayout.CompactionNone;
-            // move the parent node towards the top of its subtree area
-            this.alignment = go.TreeLayout.AlignmentStart;
-
-            // sort a parent's child vertexes by the value of the index property
-            function compareIndexes(v, w) {
-                var vidx = v.index;
-                if (vidx === undefined) vidx = 0;
-                var widx = w.index;
-                if (widx === undefined) widx = 0;
-                return vidx - widx;
+        LaneResizingTool.prototype.resize = function(newr) {
+            var lane = this.adornedObject.part;
+            var horiz = (lane.rowSpan >= 9999);
+            var lay = this.diagram.layout;  // the TableLayout
+            if (horiz) {
+                var col = lane.column;
+                var coldef = lay.getColumnDefinition(col);
+                coldef.width = newr.width;
+            } else {
+                var row = lane.row;
+                var rowdef = lay.getRowDefinition(row);
+                rowdef.height = newr.height;
             }
+            lay.invalidateLayout();
+        };
+        // end LaneResizingTool class
 
-            this.sorting = go.TreeLayout.SortingAscending;
-            this.comparer = compareIndexes;
+        function AlignmentDraggingTool() {
+            go.DraggingTool.call(this);
+        }
+        go.Diagram.inherit(AlignmentDraggingTool, go.DraggingTool);
 
-            //this.setsPortSpot = false;
-            this.setsChildPortSpot = false;
+        AlignmentDraggingTool.prototype.moveParts = function(parts, offset, check) {
+            go.DraggingTool.prototype.moveParts.call(this, parts, offset, check);
+            var tool = this;
+            parts.iteratorKeys.each(function(part) {
+                if (part instanceof go.Link) return;
+                var col = part.column;
+                var row = part.row;
+                if (typeof col === "number" && typeof row === "number") {
+                    var b = computeCellBounds(col, row);
+                    part.alignment = new go.Spot(0.5, 0.5, b.centerX, b.centerY);  // offset from center of cell
+                }
+            })
+        }
+        // end AlignmentDraggingTool
+
+        // Utility functions, assuming the Diagram.layout is a TableLayout,
+        // and that the rows and columns are implemented as Groups
+
+        function computeCellBounds(col, row) {  // this is only valid after a layout
+            //@ts-ignore
+            var coldef = dia.layout.getColumnDefinition(col);
+            //@ts-ignore
+            var rowdef = dia.layout.getRowDefinition(row);
+            return new go.Rect(coldef.position, rowdef.position, coldef.total, rowdef.total);
         }
 
-        go.Diagram.inherit(BandedTreeLayout, go.TreeLayout);
-
-        // Modify the standard LayoutNetwork by making children with the same "band" value as their
-        // parents actually be children of the grandparent.
-        BandedTreeLayout.prototype.makeNetwork = function (coll) {
-            var net = go.TreeLayout.prototype.makeNetwork.call(this, coll);
-            // add artificial root and link with all root vertexes
-            var singles = [];
-            for (var it = net.vertexes.iterator; it.next();) {
-                var v = it.value;
-                if (v.node && v.sourceEdges.count === 0) {
-                    singles.push(v);
-                }
+        function findColumnGroup(col) {
+            var it = dia.findTopLevelGroups();
+            while (it.next()) {
+                var g = it.value;
+                if (g.column === col && g.rowSpan >= 9999) return g;
             }
-            if (singles.length > 0) {
-                var dummyroot = net.createVertex();
-                net.addVertex(dummyroot);
-                singles.forEach(function (v) {
-                    net.linkVertexes(dummyroot, v, null);
-                });
+            return null;
+        }
+
+        function findRowGroup(row) {
+            var it = dia.findTopLevelGroups();
+            while (it.next()) {
+                var g = it.value;
+                if (g.row === row && g.columnSpan >= 9999) return g;
             }
-            // annotate every child with an index, used for sorting
-            for (var it = net.vertexes.iterator; it.next();) {
-                var parent = it.value;
-                var idx = 0;
-                for (var cit = parent.destinationVertexes; cit.next();) {
-                    var child = cit.value;
-                    child.index = idx;
-                    idx += 10000;
+            return null;
+        }
+
+        function mouseEventHandlers() {  // standard mouse drag-and-drop event handlers
+            return {
+                mouseDragEnter: function(e) { mouseInCell(e, true); },
+                mouseDragLeave: function(e) { mouseInCell(e, false); },
+                mouseDrop: function(e) { mouseDropInCell(e, e.diagram.selection); }
+            };
+        }
+
+        function mouseInCell(e, highlight) {
+            e.diagram.clearHighlighteds();
+
+            var col = e.diagram.layout.findColumnForDocumentX(e.documentPoint.x);
+            if (col < 1) col = 1;  // disallow dropping in headers
+            var g = findColumnGroup(col);
+            if (g !== null) g.isHighlighted = highlight;
+
+            var row = e.diagram.layout.findRowForDocumentY(e.documentPoint.y);
+            if (row < 1) row = 1;
+            g = findRowGroup(row);
+            if (g !== null) g.isHighlighted = highlight;
+        }
+
+        function mouseDropInCell(e, coll) {
+            var col = e.diagram.layout.findColumnForDocumentX(e.documentPoint.x);
+            if (col < 1) col = 1;  // disallow dropping in headers
+            var row = e.diagram.layout.findRowForDocumentY(e.documentPoint.y);
+            if (row < 1) row = 1;
+            coll.each(function(node) {
+                if (node instanceof go.Node) {
+                    node.column = col;
+                    node.row = row;
+                    // adjust the alignment to the new cell's center point
+                    var cb = computeCellBounds(col, row);
+                    var ab = node.actualBounds.copy();
+                    //@ts-ignore
+                    if (ab.right > cb.right-node.margin.right) ab.x -= (ab.right - cb.right + node.margin.right);
+                    //@ts-ignore
+                    if (ab.left < cb.left+node.margin.left) ab.x = cb.left + node.margin.left;
+                    //@ts-ignore
+                    if (ab.bottom > cb.bottom-node.margin.bottom) ab.y -= (ab.bottom - cb.bottom + node.margin.bottom);
+                    //@ts-ignore
+                    if (ab.top < cb.top+node.margin.top) ab.y = cb.top + node.margin.top;
+                    var off = ab.center.subtract(cb.center);
+                    node.alignment = new go.Spot(0.5, 0.5, off.x, off.y);
                 }
-            }
-            // now look for children with the same band value as their parent
-            for (var it = net.vertexes.iterator; it.next();) {
-                var parent = it.value;
-                if (!parent.node) continue;
-                // Should this be recursively looking for grandchildren/greatgrandchildren that
-                // have the same band as this parent node??  Assume that is NOT required.
-                var parentband = parent.node.data.band;
-                var edges = [];
-                for (var eit = parent.destinationEdges; eit.next();) {
-                    var edge = eit.value;
-                    var child = edge.toVertex;
-                    if (!child.node) continue;
-                    var childband = child.node.data.band;
-                    if (childband <= parentband) edges.push(edge);
-                }
-                // for each LayoutEdge that connects the parent vertex with a child vertex
-                // whose node has the same band #, reconnect the edge with the parent's parent vertex
-                var grandparent = parent.sourceVertexes.first();
-                if (grandparent !== null) {
-                    var cidx = 1;
-                    for (var i = 0; i < edges.length; i++) {
-                        var e = edges[i];
-                        parent.deleteDestinationEdge(e);
-                        e.fromVertex = grandparent;
-                        grandparent.addDestinationEdge(e);
-                        var child = e.toVertex;
-                        child.index = parent.index + cidx;
-                        cidx++;
-                    }
-                }
-            }
-            return net;
-        };
-
-        BandedTreeLayout.prototype.assignTreeVertexValues = function (v) {
-            if (v.node && v.node.data && v.node.data.band) {
-                v.originalLevel = v.level;  // remember tree assignment
-                v.level = Math.max(v.level, v.node.data.band);  // shift down to meet band requirement
-            }
-        };
-
-        BandedTreeLayout.prototype.commitLayers = function (layerRects, offset) {
-            // for debugging:
-            //for (var i = 0; i < layerRects.length; i++) {
-            //  if (window.console) window.console.log(layerRects[i].toString());
-            //}
-
-            for (var it = this.network.vertexes.iterator; it.next();) {
-                var v = it.value;
-                var n = v.node;
-                if (n && v.originalLevel) {
-                    // the band specifies the horizontal position
-                    var diff = n.data.band - v.originalLevel;
-                    if (diff > 0) {
-                        var pos = v.bounds.position;
-                        // this assumes that the angle is zero: rightward growth
-                        HORIZONTAL ? pos.x = layerRects[v.level].x : pos.y = layerRects[v.level].y;
-                        n.move(pos);
-                    }
-                }
-            }
-
-            // update the background object holding the visual "bands"
-            var bands = this.diagram.findPartForKey("_BANDS");
-            if (bands) {
-                bands.layerRects = layerRects;  // remember the Array of Rect
-
-                var model = this.diagram.model;
-                for (var it = this.network.vertexes.iterator; it.next();) {
-                    var v = it.value;
-                    if (!v.node) continue;
-                    model.setDataProperty(v.node.data, "band", v.level);
-                }
-
-                bands.location = this.arrangementOrigin.copy().add(offset);
-
-                var arr = bands.data.itemArray;
-                for (var i = 0; i < layerRects.length; i++) {
-                    var itemdata = arr[i];
-                    if (itemdata) {
-                        model.setDataProperty(itemdata, "bounds", layerRects[i]);
-                    }
-                }
-            }
-        };
+            });
+            dia.layoutDiagram(true);
+        }
 
         const $ = go.GraphObject.make;
         const dia = $(go.Diagram, {
-            // @ts-ignore
-            layout: $(BandedTreeLayout,  // custom layout is defined above
-                {
-                    angle: HORIZONTAL ? 0 : 90,
-                    arrangement: HORIZONTAL ? go.TreeLayout.ArrangementVertical : go.TreeLayout.ArrangementHorizontal
-                }),
+            layout: $(TableLayout,
+                $(go.RowColumnDefinition, { row: 0, height: 50, minimum: 50 }),
+                $(go.RowColumnDefinition, { column: 0, width: 100, minimum: 100 })
+            ),
             'initialContentAlignment': go.Spot.Center,
             'undoManager.isEnabled': true,
+            resizingTool: new LaneResizingTool(),
             model: $(go.GraphLinksModel,
                 {
                     linkToPortIdProperty: 'toPort',
@@ -198,9 +197,13 @@ export class AppComponent implements OnInit {
         });
 
         var nodeSimpleTemplate =
-            $(go.Node, "Auto",
+            $(go.Node, "Auto",mouseEventHandlers(),
+                new go.Binding("row").makeTwoWay(),
+                new go.Binding("column", "col").makeTwoWay(),
+                new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+                new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
                 {
-                    locationSpot: go.Spot.Center,
+                    //locationSpot: go.Spot.Center,
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
@@ -235,9 +238,13 @@ export class AppComponent implements OnInit {
                 ));
 
         var nodeDetailedTemplate =
-            $(go.Node, "Auto",
+            $(go.Node, "Auto",mouseEventHandlers(),
+                new go.Binding("row").makeTwoWay(),
+                new go.Binding("column", "col").makeTwoWay(),
+                new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+                new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
                 {
-                    locationSpot: go.Spot.Center,
+                    //locationSpot: go.Spot.Center,
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
@@ -290,6 +297,95 @@ export class AppComponent implements OnInit {
         // this just shows the key value as a simple TextBlock
         dia.nodeTemplate = nodeSimpleTemplate;
 
+        function groupStyle() {  // shared style for column groups and row groups
+            return [
+                mouseEventHandlers(),
+                {
+                    layerName: "Background",
+                    stretch: go.GraphObject.Fill,
+                    alignment: go.Spot.TopLeft,
+                    minSize: new go.Size(110, 60),
+                    movable: false,
+                    copyable: false,
+                    deletable: false,
+                    resizable: true,
+                    handlesDragDropForMembers: true
+                },
+                new go.Binding("width", "width").makeTwoWay(),
+                new go.Binding("height", "height").makeTwoWay(),
+                $(go.Shape,
+                    { fill: "transparent", stretch: go.GraphObject.Fill },
+                    new go.Binding("fill", "isHighlighted", function(h) { return h ? "rgba(0,255,0,0.15)" : "transparent"; }).ofObject())
+            ];
+        }
+
+        dia.groupTemplateMap.add("Column",
+            $(go.Group, groupStyle(),
+                new go.Binding("column", "col"),
+                {
+                    row: 0,
+                    rowSpan: 9999,
+                  //avoidable:false,
+                  resizeAdornmentTemplate:
+                        $(go.Adornment, "Spot",
+                            $(go.Placeholder),
+                            $(go.Shape,  // for changing the width of a column
+                                {
+                                    alignment: new go.Spot(1, 0.0001), alignmentFocus: go.Spot.Top,
+                                    desiredSize: new go.Size(7, 50),
+                                    fill: "lightblue", stroke: "dodgerblue",
+                                    cursor: "col-resize"
+                                })
+                        )
+                }
+            ));
+
+        dia.groupTemplateMap.add("Row",
+            $(go.Group, groupStyle(),
+                new go.Binding("row"),
+                {
+                    column: 0,
+                    columnSpan: 9999,
+                  //avoidable:false,
+                    resizeAdornmentTemplate:
+                        $(go.Adornment, "Spot",
+                            $(go.Placeholder),
+                            $(go.Shape,  // for changing the height of a row
+                                {
+                                    alignment: new go.Spot(0.0001, 1), alignmentFocus: go.Spot.Left,
+                                    desiredSize: new go.Size(100, 7),
+                                    fill: "lightblue", stroke: "dodgerblue",
+                                    cursor: "row-resize"
+                                })
+                        )
+                }
+            ));
+
+
+        function headerStyle() {  // shared style for header cell contents
+            return [
+                {
+                    pickable: false,
+                    selectable: false,
+                    alignment: go.Spot.Center
+                },
+                $(go.TextBlock, { font: "bold 12pt sans-serif" },
+                    new go.Binding("text"))
+            ];
+        }
+
+        dia.nodeTemplateMap.add("ColumnHeader",
+            $(go.Node, headerStyle(),
+                new go.Binding("column", "col"),
+                { row: 0 }
+            ));
+
+        dia.nodeTemplateMap.add("RowHeader",
+            $(go.Node, headerStyle(),
+                new go.Binding("row"),
+                { column: 0 }
+            ));
+
 
         // when the user clicks on the background of the Diagram, remove all highlighting
         dia.click = function (e) {
@@ -305,7 +401,7 @@ export class AppComponent implements OnInit {
         var linkTemplateMap = new go.Map<string, go.Link>();
 
         var simpleLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true, routing: go.Link.AvoidsNodes},
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -327,7 +423,7 @@ export class AppComponent implements OnInit {
             );
 
         var detailsLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: true, routing: go.Link.AvoidsNodes},
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -354,100 +450,6 @@ export class AppComponent implements OnInit {
         linkTemplateMap.add("detailed", detailsLinkTemplate);
         dia.linkTemplateMap = linkTemplateMap;
         dia.linkTemplate = simpleLinkTemplate;
-
-        // there should be a single object of this category;
-        // it will be modified by BandedTreeLayout to display visual "bands"
-        // dia.nodeTemplateMap.add("VerticalBands",
-        //     $(go.Part, "Position",
-        //         {
-        //             isLayoutPositioned: false,  // but still in document bounds
-        //             locationSpot: new go.Spot(0, 0, 0, 16),  // account for header height
-        //             layerName: "Background",
-        //             pickable: false,
-        //             selectable: false,
-        //             itemTemplate:
-        //                 $(go.Panel, HORIZONTAL? "Vertical" : "Horizontal",
-        //                     new go.Binding("opacity", "visible", function(v) { return v ? 1 : 0; }),
-        //                     new go.Binding("position", "bounds", function(b) { return b.position; }),
-        //                     $(go.TextBlock,
-        //                         {
-        //                             stretch: HORIZONTAL? go.GraphObject.Horizontal : go.GraphObject.Vertical,
-        //                             textAlign: "center",
-        //                             wrap: go.TextBlock.None,
-        //                             font: "bold 11pt sans-serif",
-        //                             background: $(go.Brush, go.Brush.Linear, { 0: "lightgray", 1: "whitesmoke" })
-        //                         },
-        //                         new go.Binding("text"),
-        //                         new go.Binding("width", "bounds", function(r) { return r.width; })),
-        //                     // for separator lines:
-        //                     //$(go.Shape, "LineV",
-        //                     //  { stroke: "gray", alignment: go.Spot.Left, width: 1 },
-        //                     //  new go.Binding("height", "bounds", function(r) { return r.height; }),
-        //                     //  new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject()),
-        //                     // for rectangular bands:
-        //                     $(go.Shape,
-        //                         { stroke: null, strokeWidth: 0 },
-        //                         new go.Binding("desiredSize", "bounds", function(r) { return r.size; }),
-        //                         new go.Binding("fill", "itemIndex", function(i) { return i % 2 == 0 ? "white" : "whitesmoke"; }).ofObject())
-        //                 )
-        //         },
-        //         new go.Binding("itemArray")
-        //     ));
-
-        dia.nodeTemplateMap.add("Bands",
-            $(go.Part, "Position",
-                new go.Binding("itemArray"),
-                {
-                    isLayoutPositioned: false,  // but still in document bounds
-                    locationSpot: new go.Spot(0, 0, HORIZONTAL ? 0 : 16, HORIZONTAL ? 16 : 0),  // account for header height
-                    layerName: "Background",
-                    pickable: false,
-                    selectable: false,
-                    itemTemplate:
-                        $(go.Panel, HORIZONTAL ? "Vertical" : "Horizontal",
-                            new go.Binding("opacity", "visible", function (v) {
-                                return v ? 1 : 0;
-                            }),
-                            new go.Binding("position", "bounds", function (b) {
-                                return b.position;
-                            }),
-                            $(go.TextBlock,
-                                {
-                                    angle: HORIZONTAL ? 0 : 270,
-                                    textAlign: "center",
-                                    wrap: go.TextBlock.None,
-                                    font: "bold 11pt sans-serif",
-                                    background: $(go.Brush, "Linear", {0: "aqua", 1: go.Brush.darken("aqua")})
-                                },
-                                new go.Binding("text"),
-                                // always bind "width" because the angle does the rotation
-                                new go.Binding("width", "bounds", function (r) {
-                                    return HORIZONTAL ? r.width : r.height;
-                                })
-                            ),
-                            // option 1: rectangular bands:
-                            $(go.Shape,
-                                {stroke: null, strokeWidth: 0},
-                                new go.Binding("desiredSize", "bounds", function (r) {
-                                    return r.size;
-                                }),
-                                new go.Binding("fill", "itemIndex", function (i) {
-                                    return i % 2 == 0 ? "whitesmoke" : go.Brush.darken("whitesmoke");
-                                }).ofObject())
-                            // option 2: separator lines:
-                            //(HORIZONTAL
-                            //  ? $(go.Shape, "LineV",
-                            //      { stroke: "gray", alignment: go.Spot.TopLeft, width: 1 },
-                            //      new go.Binding("height", "bounds", function(r) { return r.height; }),
-                            //      new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject())
-                            //  : $(go.Shape, "LineH",
-                            //      { stroke: "gray", alignment: go.Spot.TopLeft, height: 1 },
-                            //      new go.Binding("width", "bounds", function(r) { return r.width; }),
-                            //      new go.Binding("visible", "itemIndex", function(i) { return i > 0; }).ofObject())
-                            //)
-                        )
-                }
-            ));
 
         function changeNodeCategory(e, obj) {
             var node = obj.part;
@@ -479,7 +481,6 @@ export class AppComponent implements OnInit {
             }
         }
 
-        //dia.grid.visible = true;
         return dia;
     }
 
@@ -501,8 +502,8 @@ export class AppComponent implements OnInit {
         this.apiService.getGraph().subscribe(result => {
             this.diagramNodeData = result?.nodes ? result?.nodes : [];
             this.diagramLinkData = result?.edges ? result?.edges : [];
-            this.horizontal = result?.is_horizontal;
-            this.arrangedBy = result?.arrange_by;
+            this.arrangedByHorizontal = result?.arrange_by_horizontal;
+            this.arrangedByVertical = result?.arrange_by_vertical;
         }, error => {
             console.error(error)
         });
@@ -537,7 +538,6 @@ export class AppComponent implements OnInit {
             .subscribe((result) => {
                 this.diagramNodeData = result?.nodes ? result?.nodes : [];
                 this.diagramLinkData = result?.edges ? result?.edges : [];
-                this.horizontal = result?.is_horizontal;
             });
     }
 

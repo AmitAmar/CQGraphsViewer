@@ -5,28 +5,28 @@ class ExtendedGraph(Graph):
     def __init__(self):
         super().__init__()
         self.__quantities = []
-        self.__is_horizontal = True
-        self.__arrange_by = "time"
+        self.__arrange_by_horizontal = "time"
+        self.__arrange_by_vertical = "time"
 
     @property
     def quantities(self):
         return self.__quantities
 
     @property
-    def is_horizontal(self):
-        return self.__is_horizontal
+    def arrange_by_horizontal(self):
+        return self.__arrange_by_horizontal
+
+    @arrange_by_horizontal.setter
+    def arrange_by_horizontal(self, arrange_by_horizontal):
+        self.__arrange_by_horizontal = arrange_by_horizontal
 
     @property
-    def arrange_by(self):
-        return self.__arrange_by
+    def arrange_by_vertical(self):
+        return self.__arrange_by_vertical
 
-    @is_horizontal.setter
-    def is_horizontal(self, is_horizontal):
-        self.__is_horizontal = is_horizontal
-
-    @arrange_by.setter
-    def arrange_by(self, new_arrange_by):
-        self.__arrange_by = new_arrange_by
+    @arrange_by_vertical.setter
+    def arrange_by_vertical(self, arrange_by_vertical):
+        self.__arrange_by_vertical = arrange_by_vertical
 
     def add_quantity(self, quantity):
         self.__quantities.append(quantity)
