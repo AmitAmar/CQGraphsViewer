@@ -124,10 +124,23 @@ def get_nodes_bands(nodes, arrange_by_field):
 
 
 def get_magnitudes_order(bands_dict):
-    longest_quantity_space = max(bands_dict.values(), key=lambda s:len(s))
-    longest_quantity_space = longest_quantity_space[1:-1]  # Remove ()
+    raw_quantities_ranges = bands_dict.values()
+    quantities_ranges = []
+    final_result = []
 
-    return longest_quantity_space.split()
+    for q_range in raw_quantities_ranges:
+        q_range = q_range[1:-1]
+        current_range = q_range.split()
+        quantities_ranges.append(current_range)
+
+    final_result = list(quantities_ranges[0])
+
+    for current_range in quantities_ranges:
+        for index, current_mag in enumerate(current_range):
+            if current_mag not in final_result:
+                final_result.insert(index, current_mag)
+
+    return final_result
 
 
 def create_edges_list(edges):
@@ -139,7 +152,8 @@ def create_edges_list(edges):
                         FROM_KEY: f"Q{edge.source}",
                         TO_KEY: f"Q{edge.target}",
                         TEXT_KEY: edge.changed_quantities,
-                        CATEGORY: SIMPLE_CATEGORY}
+                        CATEGORY: SIMPLE_CATEGORY,
+                        'curviness' : 4}
         nodes_with_parent.add(edge.target)
         edges_list.append(current_edge)
 
