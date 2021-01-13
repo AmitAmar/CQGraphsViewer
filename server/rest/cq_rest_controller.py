@@ -11,6 +11,8 @@ NODES = 'nodes'
 EDGES = 'edges'
 ARRANGE_BY_HORIZONTAL = 'arrange_by_horizontal'
 ARRANGE_BY_VERTICAL = 'arrange_by_vertical'
+COLOR_SPECIFIC_FIELD_NAME = 'color_specific_field_name'
+COLOR_SPECIFIC_FIELD_VALUE = 'color_specific_field_value'
 
 KEY = 'key'
 
@@ -18,16 +20,17 @@ KEY = 'key'
 TIME_KEY = 'time'
 PARAMETERS_KEY = 'parameters'
 CATEGORY = 'category'
-SIMPLE_CATEGORY = 'simple'
-DETAILED_CATEGORY = 'detailed'
 
+#Nodes Categories
+SIMPLE_CATEGORY = 'simple'
+SIMPLE_LIGHTED_CATEGORY = 'simpleLighted'
+DETAILED_CATEGORY = 'detailed'
 
 # Edge:
 FROM_KEY = 'from'
 TO_KEY = 'to'
 TEXT_KEY = 'text'
 QUANTITIES_NAME_KEY = 'name'
-
 
 # Bands:
 BAND_KEY = 'band'
@@ -53,8 +56,11 @@ def parse_parameters(params):
     return raw_params
 
 
-def create_nodes_list(nodes, arrange_by_horizontal, arrange_by_vertical):
+def create_nodes_list(nodes, user_graph):
     nodes_list = []
+    arrange_by_horizontal = user_graph.arrange_by_horizontal
+    arrange_by_vertical = user_graph.arrange_by_vertical
+
     rows = get_nodes_bands(nodes, arrange_by_horizontal)
     columns = get_nodes_bands(nodes, arrange_by_vertical)
 
@@ -65,16 +71,28 @@ def create_nodes_list(nodes, arrange_by_horizontal, arrange_by_vertical):
         current_node = {KEY: f"Q{node.node_id}",
                         TIME_KEY: str(node.time),
                         PARAMETERS_KEY: parse_parameters(node.parameters),
-                        'row' : row+1,
-                        'col' : col+1,
-                        CATEGORY: SIMPLE_CATEGORY}
+                        'row': row + 1,
+                        'col': col + 1}
+
+        if user_graph.color_specific_field_name == 'time':
+            if node.time == user_graph.color_specific_field_value:
+                current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+            else:
+                current_node[CATEGORY] = SIMPLE_CATEGORY
+
+        else:
+            if node.parameters_dict[user_graph.color_specific_field_name]['value'] == user_graph.color_specific_field_value:
+                current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+            else:
+                current_node[CATEGORY] = SIMPLE_CATEGORY
+
         nodes_list.append(current_node)
 
     for index, row in enumerate(rows):
-        nodes_list.append({'text' : row, 'row' : index+1, 'category' : "RowHeader"})
+        nodes_list.append({'text': row, 'row': index + 1, CATEGORY: "RowHeader"})
 
     for index, col in enumerate(columns):
-        nodes_list.append({'text' : col, 'col' : index+1, 'category' : "ColumnHeader"})
+        nodes_list.append({'text': col, 'col': index + 1, CATEGORY: "ColumnHeader"})
 
     return nodes_list
 
@@ -151,7 +169,7 @@ def create_edges_list(edges):
                         TO_KEY: f"Q{edge.target}",
                         TEXT_KEY: edge.changed_quantities,
                         CATEGORY: SIMPLE_CATEGORY,
-                        'curviness' : 4}
+                        'curviness': 4}
         nodes_with_parent.add(edge.target)
         edges_list.append(current_edge)
 
@@ -161,8 +179,8 @@ def create_edges_list(edges):
 def get_graph(user_graph):
     # TODO: create a wizard for choosing the input file
     input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
-    # cq_data_path = 'cq_data_2.txt'
-    cq_data_path = 'cq_data.txt'
+    cq_data_path = 'cq_data_2.txt'
+    # cq_data_path = 'cq_data.txt'
 
     raw_cq_data = read_data(input_dir_path, cq_data_path)
     gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
@@ -181,13 +199,15 @@ def get_graph(user_graph):
     for param in params:
         user_graph.add_quantity(param)
 
-    nodes_list = create_nodes_list(nodes, user_graph.arrange_by_horizontal, user_graph.arrange_by_vertical)
+    nodes_list = create_nodes_list(nodes, user_graph)
     edges_list = create_edges_list(edges)
 
     return jsonify({NODES: nodes_list,
                     EDGES: edges_list,
                     ARRANGE_BY_HORIZONTAL: user_graph.arrange_by_horizontal,
-                    ARRANGE_BY_VERTICAL: user_graph.arrange_by_vertical})
+                    ARRANGE_BY_VERTICAL: user_graph.arrange_by_vertical,
+                    COLOR_SPECIFIC_FIELD_NAME: user_graph.color_specific_field_name,
+                    COLOR_SPECIFIC_FIELD_VALUE: user_graph.color_specific_field_value})
 
 
 def get_quantities(user_graph):
@@ -196,7 +216,7 @@ def get_quantities(user_graph):
     for quantity in user_graph.quantities:
         quantity = str(quantity)
         quantity = quantity[0: quantity.index('"')]
-        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity).strip()})
+        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity).strip().upper()})
 
     return jsonify(quantities_result)
 
@@ -221,7 +241,7 @@ def get_table(user_graph):
         current_row = {'index': node.node_id, 'time': node.time}
 
         for param_name, param_value in node.parameters_dict.items():
-            current_row[param_name] = param_value.value
+            current_row[param_name.upper()] = param_value.value
 
         rows.append(current_row)
 

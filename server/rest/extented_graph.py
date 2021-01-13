@@ -7,6 +7,8 @@ class ExtendedGraph(Graph):
         self.__quantities = []
         self.__arrange_by_horizontal = "time"
         self.__arrange_by_vertical = "time"
+        self.__color_specific_field_name = "time"
+        self.__color_specific_field_value = "0"
 
     @property
     def quantities(self):
@@ -27,6 +29,22 @@ class ExtendedGraph(Graph):
     @arrange_by_vertical.setter
     def arrange_by_vertical(self, arrange_by_vertical):
         self.__arrange_by_vertical = arrange_by_vertical
+
+    @property
+    def color_specific_field_name(self):
+        return self.__color_specific_field_name
+
+    @color_specific_field_name.setter
+    def color_specific_field_name(self, color_specific_field_name):
+        self.__color_specific_field_name = color_specific_field_name
+
+    @property
+    def color_specific_field_value(self):
+        return self.__color_specific_field_value
+
+    @color_specific_field_value.setter
+    def color_specific_field_value(self, color_specific_field_value):
+        self.__color_specific_field_value = color_specific_field_value
 
     def add_quantity(self, quantity):
         self.__quantities.append(quantity)

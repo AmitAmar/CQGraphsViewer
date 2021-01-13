@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
     quantities: Quantity[];
     arrangedByHorizontal: string;
     arrangedByVertical: string;
+    colorSpecificFieldValue: string;
+    colorSpecificFieldName: string;
     tableData: { [key: string]: string }[];
 
     public initDiagram(): go.Diagram {
@@ -71,11 +73,7 @@ export class AppComponent implements OnInit {
             // for each column j in row i ...
             var parts = rows[j];
             if (!parts) continue;
-            if (parts.length === 0) continue;  // don't bother laying out just one node in a cell
-            if (parts.length === 1) {
-              parts[0].alignment = go.Spot.Default;  // respect TableLayout.defaultAlignment
-              continue;
-            }
+            if (parts.length === 0) continue;
             // collect the Parts to be laid out within the cell
             coll.clear();
             for (var k = 0; k < parts.length; k++) {
@@ -93,7 +91,12 @@ export class AppComponent implements OnInit {
                 })
               }
             }
-            if (coll.count <= 1) continue;
+            if (coll.count === 0) continue;
+            if (coll.count === 1) {
+              //@ts-ignore
+              coll.first().alignment = go.Spot.Default;
+              continue;
+            }
             lay.doLayout(coll);  // do the layout of just this cell's Parts
             // determine the area occupied by the laid-out parts
             bnds.setTo(0, 0, 0, 0);
@@ -104,8 +107,10 @@ export class AppComponent implements OnInit {
             for (var k = coll.iterator; k.next(); ) {
               //@ts-ignore
               var part = k.value;
+              if (part instanceof go.Link) continue;
               tmp.set(part.actualBounds);
               tmp.addMargin(part.margin);
+              if (!tmp.isReal()) continue;
               if (k === 0) {
                 bnds.set(tmp);
               } else {
@@ -122,6 +127,7 @@ export class AppComponent implements OnInit {
             for (var k = coll.iterator; k.next(); ) {
               //@ts-ignore
               var part = k.value;
+              if (part instanceof go.Link) continue;
               part.alignment = new go.Spot(0.5, 0.5, part.actualBounds.centerX - mx, part.actualBounds.centerY - my);
             }
           }
@@ -164,7 +170,6 @@ export class AppComponent implements OnInit {
         // determine the extent of the grid
         var left = firstcoldef.position;
         var width = lastcoldef.position + lastcoldef.total - firstcoldef.position;
-        var top = firstrowdef.position;
         var top = firstrowdef.position;
         var height = lastrowdef.position + lastrowdef.total - firstrowdef.position;
         var eltIdx = 0;
@@ -300,6 +305,49 @@ export class AppComponent implements OnInit {
                         new go.Binding("text", "key"))
                 ));
 
+      var nodeSimpleLightedTemplate =
+        $(go.Node, "Auto",
+          { locationSpot: go.Spot.Center },
+          {margin: 30 },  // assume uniform size and margin, all around
+          new go.Binding("row").makeTwoWay(),
+          new go.Binding("column", "col").makeTwoWay(),
+          new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+          new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
+          {
+            //locationSpot: go.Spot.Center,
+            // when the user clicks on a Node, highlight all Links coming out of the node
+            // and all of the Nodes at the other ends of those Links.
+            click: function (e, node) {
+              var diagram = node.diagram;
+              diagram.startTransaction("Click SimpleLighted node");
+              diagram.clearHighlighteds();
+              // @ts-ignore
+              node.findLinksOutOf().each(function (l) {
+                HighLightLink(e, l);
+                l.isHighlighted = true;
+              });
+              // @ts-ignore
+              node.findNodesOutOf().each(function (n) {
+                n.isHighlighted = true;
+              });
+              changeNodeLightedCategory(e, node);
+              diagram.commitTransaction("Click SimpleLighted node");
+            }
+          },
+          $(go.Shape, "Ellipse",
+            {
+              fill: $(go.Brush, "Linear", {0: "white", 1: "yellow"}),
+              stroke: "darkblue", strokeWidth: 2
+            }),
+          $(go.Panel, "Table",
+            {defaultAlignment: go.Spot.Left, margin: 4},
+            $(go.RowColumnDefinition, {column: 1, width: 4}),
+            $(go.TextBlock,
+              {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
+              {font: "bold 14pt sans-serif"},
+              new go.Binding("text", "key"))
+          ));
+
         var nodeDetailedTemplate =
             $(go.Node, "Auto",
               { locationSpot: go.Spot.Center },
@@ -355,9 +403,67 @@ export class AppComponent implements OnInit {
                 )
             );
 
+      var nodeDetailedLightedTemplate =
+        $(go.Node, "Auto",
+          { locationSpot: go.Spot.Center },
+          {margin: 4 },  // assume uniform size and margin, all around
+          new go.Binding("row").makeTwoWay(),
+          new go.Binding("column", "col").makeTwoWay(),
+          new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
+          new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
+          {
+            //locationSpot: go.Spot.Center,
+            // when the user clicks on a Node, highlight all Links coming out of the node
+            // and all of the Nodes at the other ends of those Links.
+            click: function (e, node) {
+              var diagram = node.diagram;
+              diagram.startTransaction("Click DetailedLighted node");
+              diagram.clearHighlighteds();
+              // @ts-ignore
+              node.findLinksOutOf().each(function (l) {
+                HighLightLink(e, l);
+                l.isHighlighted = true;
+              });
+              // @ts-ignore
+              node.findNodesOutOf().each(function (n) {
+                n.isHighlighted = true;
+              });
+              changeNodeLightedCategory(e, node);
+              diagram.commitTransaction("Click DetailedLighted node");
+            }
+          },
+
+          $(go.Shape, "Ellipse",
+            {
+              fill: $(go.Brush, "Linear", {0: "white", 1: "yellow"}),
+              stroke: "darkblue", strokeWidth: 2
+            }),
+          $(go.Panel, "Table",
+            {defaultAlignment: go.Spot.Left, margin: 4},
+            $(go.RowColumnDefinition, {column: 1, width: 4}),
+            $(go.TextBlock,
+              {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
+              {font: "bold 14pt sans-serif"},
+              new go.Binding("text", "key")),
+            $(go.TextBlock, "Time: ",
+              {row: 1, column: 0}, {font: "bold 10pt sans-serif"}),
+            $(go.TextBlock,
+              {row: 1, column: 2},
+              new go.Binding("text", "time")),
+            $(go.TextBlock, "Parameters: ",
+              {row: 2, column: 0}, {font: "bold 10pt sans-serif"}),
+            $(go.TextBlock,
+              {row: 2, column: 2},
+              new go.Binding("text", "parameters"))
+          )
+        );
+
         // for each of the node categories, specify which template to use
         dia.nodeTemplateMap.add("simple", nodeSimpleTemplate);
+        dia.nodeTemplateMap.add("simpleLighted", nodeSimpleLightedTemplate);
         dia.nodeTemplateMap.add("detailed", nodeDetailedTemplate);
+        dia.nodeTemplateMap.add("detailedLighted", nodeDetailedLightedTemplate);
+
         // for the default category, "", use the same template that Diagrams use by default;
         // this just shows the key value as a simple TextBlock
         dia.nodeTemplate = nodeSimpleTemplate;
@@ -502,6 +608,21 @@ export class AppComponent implements OnInit {
             }
         }
 
+        function changeNodeLightedCategory(e, obj) {
+            var node = obj.part;
+            if (node) {
+                var diagram = node.diagram;
+                diagram.startTransaction("changeCategory");
+                var cat = diagram.model.getCategoryForNodeData(node.data);
+                if (cat === "simpleLighted")
+                    cat = "detailedLighted";
+                else
+                    cat = "simpleLighted";
+                diagram.model.setCategoryForNodeData(node.data, cat);
+                diagram.commitTransaction("changeCategory");
+            }
+        }
+
         function showFullLink(e, obj) {
             var link = obj.part;
             if (link) {
@@ -552,6 +673,8 @@ export class AppComponent implements OnInit {
             this.diagramLinkData = result?.edges ? result?.edges : [];
             this.arrangedByHorizontal = result?.arrange_by_horizontal;
             this.arrangedByVertical = result?.arrange_by_vertical;
+            this.colorSpecificFieldValue = result?.color_specific_field_value;
+            this.colorSpecificFieldName = result?.color_specific_field_name;
         }, error => {
             console.error(error)
         });
