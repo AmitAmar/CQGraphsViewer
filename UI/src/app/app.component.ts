@@ -260,7 +260,7 @@ export class AppComponent implements OnInit {
         var nodeSimpleTemplate =
             $(go.Node, "Auto",
               { locationSpot: go.Spot.Center },
-              {margin: 20 },  // assume uniform size and margin, all around
+              {margin: 30 },  // assume uniform size and margin, all around
               new go.Binding("row").makeTwoWay(),
               new go.Binding("column", "col").makeTwoWay(),
               new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
@@ -275,7 +275,7 @@ export class AppComponent implements OnInit {
                         diagram.clearHighlighteds();
                         // @ts-ignore
                         node.findLinksOutOf().each(function (l) {
-                            changeLinkCategory(e, l);
+                          HighLightLink(e, l);
                             l.isHighlighted = true;
                         });
                         // @ts-ignore
@@ -318,7 +318,7 @@ export class AppComponent implements OnInit {
                         diagram.clearHighlighteds();
                         // @ts-ignore
                         node.findLinksOutOf().each(function (l) {
-                            changeLinkCategory(e, l);
+                          HighLightLink(e, l);
                             l.isHighlighted = true;
                         });
                         // @ts-ignore
@@ -399,7 +399,8 @@ export class AppComponent implements OnInit {
         var linkTemplateMap = new go.Map<string, go.Link>();
 
         var simpleLinkTemplate =
-            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes },
+            $(go.Link, {toShortLength: 4, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
+              {click: showFullLink},
 
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
@@ -430,7 +431,7 @@ export class AppComponent implements OnInit {
                 $(go.Shape,
                     // when highlighted, draw as a thick red line
                     new go.Binding("stroke", "isHighlighted", function (h) {
-                        return h ? "red" : "black";
+                        return "green";
                     })
                         .ofObject(),
                     new go.Binding("strokeWidth", "isHighlighted", function (h) {
@@ -441,7 +442,7 @@ export class AppComponent implements OnInit {
                 $(go.Shape,
                     {toArrow: "Standard", strokeWidth: 0},
                     new go.Binding("fill", "isHighlighted", function (h) {
-                        return h ? "red" : "black";
+                      return "green";
                     })
                         .ofObject()),
 
@@ -453,8 +454,36 @@ export class AppComponent implements OnInit {
                 $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
             );
 
+      var highLightLinkTemplate =
+        $(go.Link, {toShortLength: 1, reshapable: true, resegmentable: false, routing: go.Link.AvoidsNodes},
+
+          $(go.Shape,
+            // when highlighted, draw as a thick red line
+            new go.Binding("stroke", "isHighlighted", function (h) {
+              return h ? "red" : "black";
+            })
+              .ofObject(),
+            new go.Binding("strokeWidth", "isHighlighted", function (h) {
+              return h ? 3 : 1;
+            })
+              .ofObject()),
+
+          $(go.Shape,
+            {toArrow: "Standard", strokeWidth: 0},
+            new go.Binding("fill", "isHighlighted", function (h) {
+              return h ? "red" : "black";
+            })
+              .ofObject()),
+
+          new go.Binding("fromEndSegmentLength", "curviness"),
+          new go.Binding("toEndSegmentLength", "curviness"),
+          $(go.Shape,  // the arrowhead, at the mid point of the link
+            { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
+        );
+
         linkTemplateMap.add("simple", simpleLinkTemplate);
         linkTemplateMap.add("detailed", detailsLinkTemplate);
+        linkTemplateMap.add("highLight", highLightLinkTemplate);
         dia.linkTemplateMap = linkTemplateMap;
         dia.linkTemplate = simpleLinkTemplate;
 
@@ -473,7 +502,7 @@ export class AppComponent implements OnInit {
             }
         }
 
-        function changeLinkCategory(e, obj) {
+        function showFullLink(e, obj) {
             var link = obj.part;
             if (link) {
                 var diagram = link.diagram;
@@ -487,6 +516,18 @@ export class AppComponent implements OnInit {
                 diagram.commitTransaction("changeCategory");
             }
         }
+
+      function HighLightLink(e, obj) {
+        var link = obj.part;
+        if (link) {
+          var diagram = link.diagram;
+          diagram.startTransaction("changeCategory");
+          var cat = diagram.model.getCategoryForLinkData(link.data);
+          cat = "highLight";
+          diagram.model.setCategoryForLinkData(link.data, cat);
+          diagram.commitTransaction("changeCategory");
+        }
+      }
 
         return dia;
     }
