@@ -5,6 +5,13 @@ from flask import jsonify
 from formatter import cq_formatter
 from utils.general_utils import read_data
 from .bands_comparator import BandComparator
+from .rest_util import parse_parameters
+
+DIRECTION_ORDER = ['dec', 'std', 'inc']
+
+KEY = 'key'
+TEXT = 'text'
+CATEGORY = 'category'
 
 # get-graph
 NODES = 'nodes'
@@ -14,14 +21,14 @@ ARRANGE_BY_VERTICAL = 'arrange_by_vertical'
 COLOR_SPECIFIC_FIELD_NAME = 'color_specific_field_name'
 COLOR_SPECIFIC_FIELD_VALUE = 'color_specific_field_value'
 
-KEY = 'key'
-
 # Nodes:
-TIME_KEY = 'time'
+TIME_KEY = 'Time'
 PARAMETERS_KEY = 'parameters'
-CATEGORY = 'category'
 
-#Nodes Categories
+COL = 'col'
+ROW = 'row'
+
+# Nodes Categories
 SIMPLE_CATEGORY = 'simple'
 SIMPLE_LIGHTED_CATEGORY = 'simpleLighted'
 DETAILED_CATEGORY = 'detailed'
@@ -31,38 +38,33 @@ FROM_KEY = 'from'
 TO_KEY = 'to'
 TEXT_KEY = 'text'
 QUANTITIES_NAME_KEY = 'name'
+CURVINESS = 'curviness'
 
-# Bands:
-BAND_KEY = 'band'
-BANDS_GOJS_KEY = "_BANDS"
-# BANDS_CATEGORY = "Bands"
-BANDS_CATEGORY = 'VerticalBands'
-BANDS_ITEM_ARRAY = 'itemArray'
-BAND_TEXT = 'text'
+
+# CellTableLayout Categories:
+ROW_HEADER_CATEGORY = "RowHeader"
+COLUMN_HEADER_CATEGORY = "ColumnHeader"
 
 # Config:
 CONFIG_FILE_PATH = r"rest_conf\config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
 
+# Layouts:
+VERTICAL = 'vertical'
+HORIZONTAL = 'horizontal'
 
-def parse_parameters(params):
-    raw_params = ""
-
-    for param in params:
-        param = str(param)
-        param = param.replace('"', '')
-        raw_params += param + "\n"
-
-    return raw_params
+# Table:
+TABLE_INDEX_FIELD = 'index'
 
 
-def create_nodes_list(nodes, user_graph):
+def create_nodes_list(user_graph):
+    nodes = user_graph.nodes
     nodes_list = []
     arrange_by_horizontal = user_graph.arrange_by_horizontal
     arrange_by_vertical = user_graph.arrange_by_vertical
 
-    rows = get_nodes_bands(nodes, arrange_by_horizontal)
-    columns = get_nodes_bands(nodes, arrange_by_vertical)
+    rows = user_graph.quantities_options[arrange_by_horizontal]
+    columns = user_graph.quantities_options[arrange_by_vertical]
 
     for node in nodes:
         row = get_node_location(arrange_by_horizontal, rows, node)
@@ -71,50 +73,46 @@ def create_nodes_list(nodes, user_graph):
         current_node = {KEY: f"Q{node.node_id}",
                         TIME_KEY: str(node.time),
                         PARAMETERS_KEY: parse_parameters(node.parameters),
-                        'row': row + 1,
-                        'col': col + 1}
+                        ROW: row,
+                        COL: col}
 
-        if user_graph.color_specific_field_name == 'time':
-            if node.time == user_graph.color_specific_field_value:
-                current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
-            else:
-                current_node[CATEGORY] = SIMPLE_CATEGORY
-
-        else:
-            if node.parameters_dict[user_graph.color_specific_field_name]['value'] == user_graph.color_specific_field_value:
-                current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
-            else:
-                current_node[CATEGORY] = SIMPLE_CATEGORY
+        init_node_category(current_node, node, user_graph)
 
         nodes_list.append(current_node)
 
     for index, row in enumerate(rows):
-        nodes_list.append({'text': row, 'row': index + 1, CATEGORY: "RowHeader"})
+        nodes_list.append({TEXT: row, ROW: index + 1, CATEGORY: ROW_HEADER_CATEGORY})
 
     for index, col in enumerate(columns):
-        nodes_list.append({'text': col, 'col': index + 1, CATEGORY: "ColumnHeader"})
+        nodes_list.append({TEXT: col, COL: index + 1, CATEGORY: COLUMN_HEADER_CATEGORY})
 
     return nodes_list
 
 
-def get_node_location(arrange_by_field, bands, node):
-    if arrange_by_field == 'time':
-        band = bands.index(node.time)
+def init_node_category(current_node, node, user_graph):
+    current_node[CATEGORY] = SIMPLE_CATEGORY
+
+    if user_graph.color_specific_field_name == TIME_KEY:
+        if node.time == user_graph.color_specific_field_value:
+            current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+
     else:
-        band = bands.index(node.parameters_dict[arrange_by_field.lower()].value)
+        if node.parameters_dict[user_graph.color_specific_field_name.lower()].value == user_graph.color_specific_field_value:
+            current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+
+
+def get_node_location(arrange_by_field, bands, node):
+    if arrange_by_field == TIME_KEY:
+        band = bands.index(node.time) + 1
+    else:
+        band = bands.index(node.parameters_dict[arrange_by_field.lower()].value) + 1
 
     return band
 
 
 def get_nodes_bands(nodes, arrange_by_field):
-    if arrange_by_field == 'time':
-        bands = []
-        for node in nodes:
-            field = node.time
-            if field not in bands:
-                bands.append(field)
-
-        return bands
+    if arrange_by_field == TIME_KEY:
+        return get_time_bands(nodes)
 
     bands_dict = {}
     for node in nodes:
@@ -122,20 +120,21 @@ def get_nodes_bands(nodes, arrange_by_field):
 
         if field not in bands_dict:
             bands_dict[field] = node.parameters_dict[arrange_by_field.lower()].quantity_space
-            print(field)
 
     magnitudes_orders = get_magnitudes_order(bands_dict)
     bands = list(bands_dict.keys())
-
-    band_comparator = BandComparator(magnitudes_orders, ['dec', 'std', 'inc'])
-
+    band_comparator = BandComparator(magnitudes_orders, DIRECTION_ORDER)
     bands.sort(key=functools.cmp_to_key(band_comparator.compare))
 
-    print("-----------")
-    print(magnitudes_orders)
-    print(bands)
-    print("-----------")
+    return bands
 
+
+def get_time_bands(nodes):
+    bands = []
+    for node in nodes:
+        field = node.time
+        if field not in bands:
+            bands.append(field)
     return bands
 
 
@@ -169,7 +168,7 @@ def create_edges_list(edges):
                         TO_KEY: f"Q{edge.target}",
                         TEXT_KEY: edge.changed_quantities,
                         CATEGORY: SIMPLE_CATEGORY,
-                        'curviness': 4}
+                        CURVINESS: 4}
         nodes_with_parent.add(edge.target)
         edges_list.append(current_edge)
 
@@ -177,60 +176,70 @@ def create_edges_list(edges):
 
 
 def get_graph(user_graph):
-    # TODO: create a wizard for choosing the input file
-    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
-    cq_data_path = 'cq_data_2.txt'
-    # cq_data_path = 'cq_data.txt'
+    init_user_graph(user_graph)
 
-    raw_cq_data = read_data(input_dir_path, cq_data_path)
-    gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
-
-    # Init quantities:
-
-    nodes = gml.nodes
-    edges = gml.edges
-
-    user_graph.nodes = gml.nodes
-    user_graph.edges = gml.edges
-
-    params = nodes[0].parameters
-
-    user_graph.quantities.clear()
-    for param in params:
-        user_graph.add_quantity(param)
-
-    nodes_list = create_nodes_list(nodes, user_graph)
-    edges_list = create_edges_list(edges)
-
-    return jsonify({NODES: nodes_list,
-                    EDGES: edges_list,
+    return jsonify({NODES: create_nodes_list(user_graph),
+                    EDGES: create_edges_list(user_graph.edges),
                     ARRANGE_BY_HORIZONTAL: user_graph.arrange_by_horizontal,
                     ARRANGE_BY_VERTICAL: user_graph.arrange_by_vertical,
                     COLOR_SPECIFIC_FIELD_NAME: user_graph.color_specific_field_name,
                     COLOR_SPECIFIC_FIELD_VALUE: user_graph.color_specific_field_value})
 
 
+def init_user_graph(user_graph):
+    gml = get_gml_graph()
+
+    user_graph.nodes = gml.nodes
+    user_graph.edges = gml.edges
+
+    # Init quantities:
+    params = user_graph.nodes[0].parameters
+    user_graph.quantities.clear()
+
+    for param in params:
+        quantity = str(param)
+        quantity = quantity[0: quantity.index('"')]
+        quantity = str(quantity).strip().capitalize()
+        user_graph.add_quantity(quantity)
+
+    # Init Quantities options:
+    time_options = get_nodes_bands(user_graph.nodes, TIME_KEY)
+    user_graph.quantities_options[TIME_KEY] = time_options
+
+    for quantity in user_graph.quantities:
+        quantity_options = get_nodes_bands(user_graph.nodes, quantity)
+        user_graph.quantities_options[quantity] = quantity_options
+
+
+def get_gml_graph():
+    # TODO: create a wizard for choosing the input file
+    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
+    # cq_data_path = 'cq_data_2.txt'
+    cq_data_path = 'cq_data.txt'
+    raw_cq_data = read_data(input_dir_path, cq_data_path)
+    gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
+    return gml
+
+
 def get_quantities(user_graph):
     quantities_result = []
 
     for quantity in user_graph.quantities:
-        quantity = str(quantity)
-        quantity = quantity[0: quantity.index('"')]
-        quantities_result.append({QUANTITIES_NAME_KEY: str(quantity).strip().upper()})
+        quantities_result.append({QUANTITIES_NAME_KEY: quantity})
 
     return jsonify(quantities_result)
 
 
 def arrange_by(layout, field, user_graph):
-    if layout == 'horizontal':
+    if layout == HORIZONTAL:
         user_graph.arrange_by_horizontal = field
-    elif layout == 'vertical':
+    elif layout == VERTICAL:
         user_graph.arrange_by_vertical = field
     return jsonify(field)
 
+
 def plot(name, user_graph):
     print("Plot : ", name)
-
     return jsonify(name)
 
 
@@ -238,11 +247,22 @@ def get_table(user_graph):
     rows = []
 
     for node in user_graph.nodes:
-        current_row = {'index': node.node_id, 'time': node.time}
+        current_row = {TABLE_INDEX_FIELD: node.node_id, TIME_KEY: node.time}
 
         for param_name, param_value in node.parameters_dict.items():
-            current_row[param_name.upper()] = param_value.value
+            current_row[param_name.capitalize()] = param_value.value
 
         rows.append(current_row)
 
     return jsonify(rows)
+
+
+def get_quantities_options(user_graph):
+    return jsonify(user_graph.quantities_options)
+
+
+# TODO: field should be: 'level_(0 std)'
+def set_specific_magnitude(field, user_graph):
+    print("set_specific_magnitude: ", field)
+    # user_graph.color_specific_field_name = field
+    return jsonify(field)

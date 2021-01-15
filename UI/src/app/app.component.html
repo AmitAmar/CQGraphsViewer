@@ -14,12 +14,12 @@
       <button mat-button [matMenuTriggerFor]="VerticalMenu">Arrange Vertically...</button>
 
       <mat-menu #HorizontalMenu="matMenu">
-        <button mat-menu-item (click)="postArrange('horizontal_time')">Time</button>
+        <button mat-menu-item (click)="postArrange('horizontal_Time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="horizontalQuantitiesMenu">Quantities list</button>
       </mat-menu>
 
       <mat-menu #VerticalMenu="matMenu">
-        <button mat-menu-item (click)="postArrange('vertical_time')">Time</button>
+        <button mat-menu-item (click)="postArrange('vertical_Time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu">Quantities list</button>
       </mat-menu>
 
@@ -30,10 +30,19 @@
       <mat-menu #verticalQuantitiesMenu="matMenu">
         <button mat-menu-item *ngFor="let quantity of quantities" (click)="postArrange('vertical_' + quantity.name)">{{quantity.name}}</button>
       </mat-menu>
+
+      <mat-menu #setSpecificMagnitudeNameMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities.concat({name:'Time'})" (click)="setSpecificMagnitude(quantity.name)">{{quantity.name}}</button>
+      </mat-menu>
     </div>
 
     <h3 align="center">Arrange By Horizontal: {{arrangedByHorizontal}}</h3>
     <h3 align="center">Arrange By Vertical: {{arrangedByVertical}}</h3>
+
+    <div class="example-button-row">
+      <button mat-button [matMenuTriggerFor]="setSpecificMagnitudeNameMenu">Select Specific Magnitude...</button>
+    </div>
+
     <h3 align="center">Color specific magnitude field Name : {{colorSpecificFieldName}}</h3>
     <h3 align="center">Color specific magnitude field value : {{colorSpecificFieldValue}}</h3>
   </div>
@@ -55,7 +64,7 @@
     </tr>
     <tr *ngFor="let data of tableData">
       <td>{{data.index}}</td>
-      <td>{{data.time}}</td>
+      <td>{{data.Time}}</td>
       <td *ngFor="let quantity of quantities">{{data[quantity.name]}}</td>
     </tr>
   </table>

@@ -27,10 +27,16 @@ def get_quantities():
 
 @app.route('/arranged-by/<field>', methods=['POST'])
 def arrange_by(field):
-    layout,field = field.split("_")
+    layout, field = field.split("_")
     return cq_rest_controller.arrange_by(layout, field, user_graph)
 
-#TODO:!!!!!
+
+@app.route('/set-specific-magnitude/<field>', methods=['POST'])
+def set_specific_magnitude(field):
+    return cq_rest_controller.set_specific_magnitude(field, user_graph)
+
+
+# TODO:!!!!!
 @app.route('/create-graph/<f>', methods=['POST'])
 def create_graph(f):
     print(f)
@@ -40,6 +46,12 @@ def create_graph(f):
 @app.route('/get-table', methods=['GET'])
 def get_table():
     return cq_rest_controller.get_table(user_graph)
+
+
+@app.route('/get-quantities-options', methods=['GET'])
+def get_quantities_options():
+    return cq_rest_controller.get_quantities_options(user_graph)
+
 
 @app.route('/plot/<name>', methods=['POST'])
 def plot(name):

@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
     fileName: string;
 
     quantities: Quantity[];
+    quantitiesOptions: { [key: string]: string }[];
     arrangedByHorizontal: string;
     arrangedByVertical: string;
     colorSpecificFieldValue: string;
@@ -380,7 +381,7 @@ export class AppComponent implements OnInit {
 
                 $(go.Shape, "Ellipse",
                     {
-                        fill: $(go.Brush, "Linear", {0: "white", 1: "lightblue"}),
+                        fill: $(go.Brush, "Linear", {0: "white", 1: "lightgreen"}),
                         stroke: "darkblue", strokeWidth: 2
                     }),
                 $(go.Panel, "Table",
@@ -394,7 +395,7 @@ export class AppComponent implements OnInit {
                         {row: 1, column: 0}, {font: "bold 10pt sans-serif"}),
                     $(go.TextBlock,
                         {row: 1, column: 2},
-                        new go.Binding("text", "time")),
+                        new go.Binding("text", "Time")),
                     $(go.TextBlock, "Parameters: ",
                         {row: 2, column: 0}, {font: "bold 10pt sans-serif"}),
                     $(go.TextBlock,
@@ -449,7 +450,7 @@ export class AppComponent implements OnInit {
               {row: 1, column: 0}, {font: "bold 10pt sans-serif"}),
             $(go.TextBlock,
               {row: 1, column: 2},
-              new go.Binding("text", "time")),
+              new go.Binding("text", "Time")),
             $(go.TextBlock, "Parameters: ",
               {row: 2, column: 0}, {font: "bold 10pt sans-serif"}),
             $(go.TextBlock,
@@ -687,6 +688,12 @@ export class AppComponent implements OnInit {
         });
     }
 
+    getQuantitiesOptions() {
+      this.apiService.getQuantitiesOptions().subscribe((quantitiesOptions:{[key: string]:string}[]) => {
+        this.quantitiesOptions = quantitiesOptions;
+      });
+    }
+
     getTableData() {
         this.apiService.getTableData().subscribe((tableData:{[key: string]:string}[]) => {
             this.tableData = tableData;
@@ -699,6 +706,13 @@ export class AppComponent implements OnInit {
                 this.getGraph();
             });
     }
+
+  setSpecificMagnitude(name: string) {
+    this.apiService.setSpecificMagnitude(name)
+      .subscribe(() => {
+        this.getGraph();
+      });
+  }
 
 
     postPlot(name: string) {
