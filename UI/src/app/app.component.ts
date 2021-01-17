@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
     colorSpecificFieldValue: string;
     colorSpecificFieldName: string;
     tableData: { [key: string]: string }[];
+    columns: string[];
 
     public initDiagram(): go.Diagram {
       function TableCellLayout() {
@@ -664,6 +665,7 @@ export class AppComponent implements OnInit {
         this.getGraph();
         this.getQuantities();
         this.getTableData();
+        this.getQuantitiesOptions();
     }
 
     private getGraph() {
@@ -685,6 +687,7 @@ export class AppComponent implements OnInit {
     getQuantities() {
         this.apiService.getQuantities().subscribe((quantities: Quantity[]) => {
             this.quantities = quantities;
+            this.columns = ['index', 'time', ...this.quantities.map((quantity: Quantity) => quantity.name)];
         });
     }
 
@@ -731,5 +734,9 @@ export class AppComponent implements OnInit {
     fileUpload() {
         console.log((document.getElementById('file-uploader') as any).files[0].name);
     }
+
+  goToLink(url: string){
+    window.open(url, "_blank");
+  }
 }
 

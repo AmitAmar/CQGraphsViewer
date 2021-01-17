@@ -96,9 +96,8 @@ def init_node_category(current_node, node, user_graph):
         if node.time == user_graph.color_specific_field_value:
             current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
 
-    else:
-        if node.parameters_dict[user_graph.color_specific_field_name.lower()].value == user_graph.color_specific_field_value:
-            current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+    elif node.parameters_dict[user_graph.color_specific_field_name.lower()].value == user_graph.color_specific_field_value:
+        current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
 
 
 def get_node_location(arrange_by_field, bands, node):
@@ -131,17 +130,18 @@ def get_nodes_bands(nodes, arrange_by_field):
 
 def get_time_bands(nodes):
     bands = []
+
     for node in nodes:
         field = node.time
         if field not in bands:
             bands.append(field)
+
     return bands
 
 
 def get_magnitudes_order(bands_dict):
     raw_quantities_ranges = bands_dict.values()
     quantities_ranges = []
-    final_result = []
 
     for q_range in raw_quantities_ranges:
         q_range = q_range[1:-1]
@@ -239,7 +239,7 @@ def arrange_by(layout, field, user_graph):
 
 
 def plot(name, user_graph):
-    print("Plot : ", name)
+    print("TODO REMOVE Plot : ", name)
     return jsonify(name)
 
 
@@ -261,8 +261,10 @@ def get_quantities_options(user_graph):
     return jsonify(user_graph.quantities_options)
 
 
-# TODO: field should be: 'level_(0 std)'
 def set_specific_magnitude(field, user_graph):
-    print("set_specific_magnitude: ", field)
-    # user_graph.color_specific_field_name = field
+    magnitude_name, magnitude_value = field.split("_")
+    user_graph.color_specific_field_name = magnitude_name.capitalize()
+    user_graph.color_specific_field_value = magnitude_value
+
+    print("TODO: set_specific_magnitude: ", field)
     return jsonify(field)

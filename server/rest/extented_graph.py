@@ -7,8 +7,8 @@ class ExtendedGraph(Graph):
         self.__quantities = []
         self.__arrange_by_horizontal = "Time"
         self.__arrange_by_vertical = "Time"
-        self.__color_specific_field_name = "Level"
-        self.__color_specific_field_value = "(0 std)"
+        self.__color_specific_field_name = "Time"
+        self.__color_specific_field_value = "0"
         self.__quantities_options = {}
 
     @property

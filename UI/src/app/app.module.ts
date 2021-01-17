@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import {ApiService} from "./api.service";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {ApiService} from "./api.service";
     BrowserAnimationsModule,
     MatMenuModule,
     GojsAngularModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

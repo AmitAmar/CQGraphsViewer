@@ -13,19 +13,73 @@ html, body, app-root, .wrapper {
 }
 
 .header {
-  /*height: calc(30vh - 20px);*/
   grid-area: drawer;
 }
 
 gojs-diagram {
   /*background: whitesmoke;*/
-  /*height: calc(70vh - 20px);*/
-  /*border: 1px solid black;*/
   grid-area: graph;
 }
 
-.table {
+.example-container {
+  max-width: 100%;
+  overflow: auto;
+}
+
+.table-wrapper {
   grid-area: table;
+  overflow: auto;
+  width: 100%;
+
+}
+
+tr[mat-header-row].mat-header-row {
+  height: 28px;
+}
+
+.table-wrapper th.mat-header-cell {
+  font-size: 14px;
+  color: black;
+  padding: 15px;
+  text-align: center;
+
+
+}
+
+.mat-header-row.bottom-shadow th {
+  box-shadow: 4px 0px 5px 0 rgba(0, 0, 0, 12);
+}
+
+.table-wrapper td.mat-footer-cell {
+}
+
+
+.mat-sort-header-content {
+  text-align: left;
+}
+
+table.mat-table {
+  display: table;
+}
+
+td , th {
+  white-space: nowrap;
+  padding-left: 20px;
+  padding-right: 20px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+
+.mat-cell {
+  border-right: 1px solid rgba(0,0,0,.12);
+  vertical-align: middle;
+}
+
+.table-wrapper tr.mat-cell {
+  padding: 0 5px;
+  white-space: nowrap;
+
 }
 
 .myDiagramDiv {
@@ -38,7 +92,6 @@ gojs-diagram {
 .table {
   grid-area: table;
 }
-
 
 .left {
   float: left;
@@ -62,20 +115,6 @@ gojs-diagram {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.clear {
-  clear: both;
-}
-
-section {
-  display: table;
-}
-
-.example-label {
-  display: table-cell;
-  font-size: 14px;
-  margin-left: 8px;
-  min-width: 120px;
-}
 
 .example-button-row {
   display: flex;
@@ -85,16 +124,4 @@ section {
 
 .example-button-row .mat-button-base {
   margin: 8px 8px 8px 0;
-}
-
-.example-flex-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.example-button-container {
-  display: flex;
-  justify-content: center;
-  width: 120px;
 }
