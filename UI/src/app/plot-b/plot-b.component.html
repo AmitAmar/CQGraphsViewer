@@ -1,0 +1,12 @@
+
+<h1 align="center">Quantities Dependencies</h1>
+
+  <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"
+                [initDiagram]=initDiagram.bind(this)
+                [nodeDataArray]='diagramNodeData'
+                [linkDataArray]='diagramLinkData'
+                divClassName='plotBGraph'
+                [modelData]='diagramModelData'
+  >
+  </gojs-diagram>
+

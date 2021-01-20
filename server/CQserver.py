@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from rest import cq_rest_controller
+from rest import cq_rest_controller,quantities_dependencies_rest_controller
 from rest.extented_graph import ExtendedGraph
 
 HOSTNAME = 'localhost'
@@ -15,6 +15,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 user_graph = ExtendedGraph()
 
 
+# Home Page:
 @app.route('/get-graph', methods=['GET'])
 def get_graph():
     return cq_rest_controller.get_graph(user_graph)
@@ -53,9 +54,10 @@ def get_quantities_options():
     return cq_rest_controller.get_quantities_options(user_graph)
 
 
-@app.route('/plot/<name>', methods=['POST'])
-def plot(name):
-    return cq_rest_controller.plot(name, user_graph)
+# Plot B:
+@app.route('/get-plot-b-graph', methods=['GET'])
+def get_plot_b_graph():
+    return quantities_dependencies_rest_controller.get_graph()
 
 
 if __name__ == '__main__':

@@ -238,11 +238,6 @@ def arrange_by(layout, field, user_graph):
     return jsonify(field)
 
 
-def plot(name, user_graph):
-    print("TODO REMOVE Plot : ", name)
-    return jsonify(name)
-
-
 def get_table(user_graph):
     rows = []
 

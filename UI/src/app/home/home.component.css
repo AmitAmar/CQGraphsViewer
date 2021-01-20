@@ -7,7 +7,7 @@ html, body, app-root, .wrapper {
 .wrapper {
   display: grid;
   grid-template-areas: "drawer graph"
-                        "drawer table";
+                        "table table";
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 3fr 1fr;
 }

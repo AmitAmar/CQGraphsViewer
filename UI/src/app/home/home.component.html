@@ -1,0 +1,95 @@
+<div class="wrapper">
+  <div class="header">
+    <h1 align="center">CQ States</h1>
+
+    <div class="example-button-row">
+      <button mat-raised-button color="primary">Create/modify the model</button>
+      <button mat-raised-button color="primary" (click)="goToLink('/plot-b')">Quantities Dependencies
+      </button>
+    </div>
+
+    <div class="example-button-row">
+
+      <button mat-button [matMenuTriggerFor]="HorizontalMenu">Arrange Horizontally...</button>
+      <button mat-button [matMenuTriggerFor]="VerticalMenu">Arrange Vertically...</button>
+
+      <mat-menu #HorizontalMenu="matMenu">
+        <button mat-menu-item (click)="postArrange('horizontal_Time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="horizontalQuantitiesMenu">Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #VerticalMenu="matMenu">
+        <button mat-menu-item (click)="postArrange('vertical_Time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu">Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #horizontalQuantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities"
+                (click)="postArrange('horizontal_' + quantity.name)">{{quantity.name}}</button>
+      </mat-menu>
+
+      <mat-menu #verticalQuantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities"
+                (click)="postArrange('vertical_' + quantity.name)">{{quantity.name}}</button>
+      </mat-menu>
+
+      <!--      <mat-menu #setSpecificMagnitudeNameMenu="matMenu">-->
+      <!--        <button mat-menu-item *ngFor="let quantity of quantitiesOptions | keyvalue">{{quantity.key}}</button>-->
+      <!--      </mat-menu>-->
+
+      <!--      <ng-template #subMatMenu>-->
+      <!--        <mat-menu #setSpecificMagnitudeNameMenu="matMenu">-->
+      <!--          <button mat-menu-item *ngFor="let quantity of quantitiesOptions | keyvalue">{{quantity.key}}</button>-->
+      <!--        </mat-menu>-->
+      <!--      </ng-template>-->
+    </div>
+
+
+    <h3 align="center">Arrange By Horizontal: {{arrangedByHorizontal}}</h3>
+    <h3 align="center">Arrange By Vertical: {{arrangedByVertical}}</h3>
+
+    <!--    <div class="example-button-row">-->
+    <!--      <button mat-button [matMenuTriggerFor]="setSpecificMagnitudeNameMenu">Select Specific Magnitude...</button>-->
+    <!--    </div>-->
+
+    <h3 align="center">Color specific magnitude field Name : {{colorSpecificFieldName}}</h3>
+    <h3 align="center">Color specific magnitude field value : {{colorSpecificFieldValue}}</h3>
+  </div>
+
+  <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"
+                [initDiagram]=initDiagram.bind(this)
+                [nodeDataArray]='diagramNodeData'
+                [linkDataArray]='diagramLinkData'
+                divClassName='myDiagramDiv'
+                [modelData]='diagramModelData'
+  >
+  </gojs-diagram>
+
+  <div class="table-wrapper">
+    <table *ngIf="tableData" mat-table [dataSource]="tableData" class="table-wrapper mat-elevation-z8">
+
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>Index</th>
+        <td mat-cell *matCellDef="let element"> {{element.index}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>Time</th>
+        <td mat-cell *matCellDef="let element"> {{element.Time}} </td>
+      </ng-container>
+
+      <ng-container *ngFor="let quantity of quantities" >
+        <ng-container [matColumnDef]="quantity.name">
+          <th mat-header-cell *matHeaderCellDef>{{quantity.name}}</th>
+          <td mat-cell *matCellDef="let element"> {{element[quantity.name]}} </td>
+        </ng-container>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="columns; sticky:true"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    </table>
+  </div>
+
+
+</div>

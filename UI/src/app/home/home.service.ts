@@ -1,18 +1,16 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {ApiGraph, Quantity} from "./types";
+import {ApiGraph, Quantity} from "../types";
 import {Observable} from "rxjs";
 
 @Injectable({providedIn: 'root'})
-export class ApiService {
+export class HomeService {
   private readonly url = 'http://localhost:8080';
   private readonly graphUrl = `${this.url}/get-graph`;
   private readonly quantitiesUrl = `${this.url}/get-quantities`;
   private readonly quantitiesOptionsUrl = `${this.url}/get-quantities-options`;
   private readonly tableUrl = `${this.url}/get-table`;
   private readonly arrangedByUrl = `${this.url}/arranged-by`;
-  //TODO: remove plot
-  private readonly plotUrl = `${this.url}/plot`;
   private readonly setSpecificMagnitudeUrl = `${this.url}/set-specific-magnitude`;
 
 
@@ -39,9 +37,5 @@ export class ApiService {
 
   setSpecificMagnitude(name: string) {
     return this.http.post(`${this.setSpecificMagnitudeUrl}/${name}`, {});
-  }
-
-  postPlot(name: string) {
-    return this.http.post(`${this.plotUrl}/${name}`, {});
   }
 }
