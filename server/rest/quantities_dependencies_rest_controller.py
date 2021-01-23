@@ -18,6 +18,7 @@ TEXT = 'text'
 CURVINESS = 'curviness'
 
 
+
 def get_graph():
     nodes, edges = get_nodes_and_edges()
     return jsonify({NODES: nodes, EDGES: edges})
@@ -25,7 +26,7 @@ def get_graph():
 
 def get_nodes_and_edges():
     # TODO: create a wizard for choosing the input file
-    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
+    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs\constraints'
     constraints_data_path = 'constraints_1.txt'
     # constraints_data_path = 'constraints_2.txt'
 

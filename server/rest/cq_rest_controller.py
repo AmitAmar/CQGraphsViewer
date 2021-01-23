@@ -214,7 +214,7 @@ def init_user_graph(user_graph):
 
 def get_gml_graph():
     # TODO: create a wizard for choosing the input file
-    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
+    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs\cq_outputs'
     # cq_data_path = 'cq_data_2.txt'
     cq_data_path = 'cq_data.txt'
     raw_cq_data = read_data(os.path.join(input_dir_path, cq_data_path))
