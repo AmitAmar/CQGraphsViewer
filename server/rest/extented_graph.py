@@ -1,4 +1,4 @@
-from formatter.gml_model.graph import Graph
+from cq_formatter.gml_model.graph import Graph
 
 
 class ExtendedGraph(Graph):
@@ -14,6 +14,9 @@ class ExtendedGraph(Graph):
     @property
     def quantities(self):
         return self.__quantities
+
+    def add_quantity(self, quantity):
+        self.__quantities.append(quantity)
 
     @property
     def quantities_options(self):
@@ -51,6 +54,5 @@ class ExtendedGraph(Graph):
     def color_specific_field_value(self, color_specific_field_value):
         self.__color_specific_field_value = color_specific_field_value
 
-    def add_quantity(self, quantity):
-        self.__quantities.append(quantity)
+
 

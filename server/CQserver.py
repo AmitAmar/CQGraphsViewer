@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from rest import cq_rest_controller,quantities_dependencies_rest_controller
+from rest import cq_rest_controller, quantities_dependencies_rest_controller
 from rest.extented_graph import ExtendedGraph
 
 HOSTNAME = 'localhost'
@@ -13,7 +13,6 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 user_graph = ExtendedGraph()
-
 
 # Home Page:
 @app.route('/get-graph', methods=['GET'])

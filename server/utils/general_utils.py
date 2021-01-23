@@ -48,8 +48,8 @@ def is_not_empty(string):
     return string is not None and len(string) > 0
 
 
-def read_data(input_dir_path, input_cq_path):
-    with open(os.path.join(input_dir_path, input_cq_path)) as in_file:
+def read_data(path):
+    with open(path) as in_file:
         data = in_file.read()
 
     return data

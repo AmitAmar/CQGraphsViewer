@@ -1,8 +1,9 @@
 import functools
+import os
 
 from flask import jsonify
 
-from formatter import cq_formatter
+from cq_formatter import cq_formatter
 from utils.general_utils import read_data
 from .bands_comparator import BandComparator
 from .rest_util import parse_parameters
@@ -216,7 +217,7 @@ def get_gml_graph():
     input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs'
     # cq_data_path = 'cq_data_2.txt'
     cq_data_path = 'cq_data.txt'
-    raw_cq_data = read_data(input_dir_path, cq_data_path)
+    raw_cq_data = read_data(os.path.join(input_dir_path, cq_data_path))
     gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
     return gml
 
@@ -246,6 +247,7 @@ def get_table(user_graph):
 
         for param_name, param_value in node.parameters_dict.items():
             current_row[param_name.capitalize()] = param_value.value
+            # current_row['is_highlight']=True
 
         rows.append(current_row)
 

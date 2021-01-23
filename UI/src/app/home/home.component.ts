@@ -18,7 +18,6 @@ export class HomeComponent implements OnInit {
 
     public diagramNodeData: Array<go.ObjectData> = [];
     public diagramLinkData: Array<go.ObjectData> = [];
-    public horizontal: boolean = true;
 
     public diagramModelData = {prop: 'value'};
     fileName: string;
@@ -213,7 +212,7 @@ export class HomeComponent implements OnInit {
 
         const $ = go.GraphObject.make;
 
-
+      // var selectedRowIndex = -1;
       const dia =
         $(go.Diagram,
           {
@@ -276,20 +275,35 @@ export class HomeComponent implements OnInit {
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
-                        var diagram = node.diagram;
-                        diagram.startTransaction("Click simple node");
-                        diagram.clearHighlighteds();
-                        // @ts-ignore
-                        node.findLinksOutOf().each(function (l) {
+                      var diagram = node.diagram;
+
+
+                      //
+                      //   //@ts-ignore
+                      // let table = document.getElementById('myTable');
+                      // //@ts-ignore
+                      // var rows = table.rows;
+                      // //@ts-ignore
+                      // console.error(node.key.slice(1))
+                      // //@ts-ignore
+                      // rows[node.key.slice(1)].is_highlight = true;
+                      //
+                      //
+                      // console.error(rows)
+
+                      diagram.startTransaction("Click simple node");
+                      diagram.clearHighlighteds();
+                      // @ts-ignore
+                      node.findLinksOutOf().each(function (l) {
                           HighLightLink(e, l);
                             l.isHighlighted = true;
                         });
-                        // @ts-ignore
-                        node.findNodesOutOf().each(function (n) {
+                      // @ts-ignore
+                      node.findNodesOutOf().each(function (n) {
                             n.isHighlighted = true;
                         });
-                        changeNodeCategory(e, node);
-                        diagram.commitTransaction("Click simple node");
+                      changeNodeCategory(e, node);
+                      diagram.commitTransaction("Click simple node");
                     }
                 },
                 $(go.Shape, "Ellipse",
@@ -717,6 +731,7 @@ export class HomeComponent implements OnInit {
   }
 
     //c://fakepath//a.txt
+
     fileUpload() {
         console.log((document.getElementById('file-uploader') as any).files[0].name);
     }
