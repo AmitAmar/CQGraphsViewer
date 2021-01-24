@@ -13,6 +13,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 user_graph = ExtendedGraph()
+cq_rest_controller.init_user_graph(user_graph)
 
 
 # Home Page:

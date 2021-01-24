@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
       function TableCellLayout() {
         TableLayout.call(this);
         this._cellLayout = null;  // this is applied to each table cell's collection of Parts, if there is more than one
+        //this.isOngoing= false;
       }
       go.Diagram.inherit(TableCellLayout, TableLayout);
 
@@ -218,7 +219,7 @@ export class HomeComponent implements OnInit {
         $(go.Diagram,
           {
             layout:
-            // @ts-ignore
+        // @ts-ignore
               $(TableCellLayout,
                 $(go.RowColumnDefinition, { row: 0, height: 50, minimum: 50, alignment: go.Spot.Bottom }),
                 $(go.RowColumnDefinition, { column: 0, width: 100, minimum: 100, alignment: go.Spot.Right }),

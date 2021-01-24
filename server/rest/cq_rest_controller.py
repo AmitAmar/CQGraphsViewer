@@ -177,8 +177,6 @@ def create_edges_list(edges):
 
 
 def get_graph(user_graph):
-    init_user_graph(user_graph)
-
     return jsonify({NODES: create_nodes_list(user_graph),
                     EDGES: create_edges_list(user_graph.edges),
                     ARRANGE_BY_HORIZONTAL: user_graph.arrange_by_horizontal,
