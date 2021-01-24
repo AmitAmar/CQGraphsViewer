@@ -213,7 +213,7 @@ def init_user_graph(user_graph):
 
 
 def get_gml_graph():
-    # TODO: create a wizard for choosing the input file
+    # TODO: TAKE FROM INPUT PATH!!!!
     input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs\cq_outputs'
     # cq_data_path = 'cq_data_2.txt'
     cq_data_path = 'cq_data.txt'
@@ -224,6 +224,8 @@ def get_gml_graph():
 
 def get_quantities(user_graph):
     quantities_result = []
+
+    print(user_graph.quantities)
 
     for quantity in user_graph.quantities:
         quantities_result.append({QUANTITIES_NAME_KEY: quantity})

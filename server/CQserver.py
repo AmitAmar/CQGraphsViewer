@@ -14,6 +14,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 user_graph = ExtendedGraph()
 
+
 # Home Page:
 @app.route('/get-graph', methods=['GET'])
 def get_graph():
@@ -34,13 +35,6 @@ def arrange_by(field):
 @app.route('/set-specific-magnitude/<field>', methods=['POST'])
 def set_specific_magnitude(field):
     return cq_rest_controller.set_specific_magnitude(field, user_graph)
-
-
-# TODO:!!!!!
-@app.route('/create-graph/<f>', methods=['POST'])
-def create_graph(f):
-    print(f)
-    return "TODO"
 
 
 @app.route('/get-table', methods=['GET'])

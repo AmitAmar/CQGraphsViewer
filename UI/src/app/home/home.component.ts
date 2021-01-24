@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
     public diagramLinkData: Array<go.ObjectData> = [];
 
     public diagramModelData = {prop: 'value'};
-    fileName: string;
 
     quantities: Quantity[];
     quantitiesOptions: { [key: string]: string }[];
@@ -30,6 +29,8 @@ export class HomeComponent implements OnInit {
     colorSpecificFieldName: string;
     tableData: { [key: string]: string }[];
     columns: string[];
+    selectedIndexes: number[];
+    that = this;
 
     public initDiagram(): go.Diagram {
       function TableCellLayout() {
@@ -275,22 +276,19 @@ export class HomeComponent implements OnInit {
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
+
+                      //First, highlight row in the table:
+
+                        //@ts-ignore
+                      let table = document.getElementById('myTable');
+                      //@ts-ignore
+                      var rows = table.rows;
+                      //@ts-ignore
+                      var index = node.key.slice(1);
+
+                      rows[+index + 1].classList.add('highlight');
+
                       var diagram = node.diagram;
-
-
-                      //
-                      //   //@ts-ignore
-                      // let table = document.getElementById('myTable');
-                      // //@ts-ignore
-                      // var rows = table.rows;
-                      // //@ts-ignore
-                      // console.error(node.key.slice(1))
-                      // //@ts-ignore
-                      // rows[node.key.slice(1)].is_highlight = true;
-                      //
-                      //
-                      // console.error(rows)
-
                       diagram.startTransaction("Click simple node");
                       diagram.clearHighlighteds();
                       // @ts-ignore
@@ -333,6 +331,17 @@ export class HomeComponent implements OnInit {
             // when the user clicks on a Node, highlight all Links coming out of the node
             // and all of the Nodes at the other ends of those Links.
             click: function (e, node) {
+              //First, highlight row in the table:
+
+              //@ts-ignore
+              let table = document.getElementById('myTable');
+              //@ts-ignore
+              var rows = table.rows;
+              //@ts-ignore
+              var index = node.key.slice(1);
+
+              rows[+index + 1].classList.add('highlight');
+
               var diagram = node.diagram;
               diagram.startTransaction("Click SimpleLighted node");
               diagram.clearHighlighteds();
@@ -376,6 +385,19 @@ export class HomeComponent implements OnInit {
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
+
+                      //First, remove highlight row in the table:
+
+                      //@ts-ignore
+                      let table = document.getElementById('myTable');
+                      //@ts-ignore
+                      var rows = table.rows;
+                      //@ts-ignore
+                      var index = node.key.slice(1);
+
+                      rows[+index + 1].classList.remove('highlight');
+
+
                         var diagram = node.diagram;
                         diagram.startTransaction("Click Details node");
                         diagram.clearHighlighteds();
@@ -431,6 +453,18 @@ export class HomeComponent implements OnInit {
             // when the user clicks on a Node, highlight all Links coming out of the node
             // and all of the Nodes at the other ends of those Links.
             click: function (e, node) {
+              //First, remove highlight row in the table:
+
+              //@ts-ignore
+              let table = document.getElementById('myTable');
+              //@ts-ignore
+              var rows = table.rows;
+              //@ts-ignore
+              var index = node.key.slice(1);
+
+              rows[+index + 1].classList.remove('highlight');
+
+
               var diagram = node.diagram;
               diagram.startTransaction("Click DetailedLighted node");
               diagram.clearHighlighteds();

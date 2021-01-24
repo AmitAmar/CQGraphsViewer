@@ -67,11 +67,7 @@ export class PlotBComponent implements OnInit {
     }
     // end ContinuousForceDirectedLayout
 
-
-
-
     const $ = go.GraphObject.make;
-
 
     const dia =
       $(go.Diagram,
@@ -145,7 +141,7 @@ export class PlotBComponent implements OnInit {
         $(go.TextBlock,
           { margin: 8, font: "bold 14px sans-serif", stroke: '#333' }, // Specify a margin to add some room around the text
           // TextBlock.text is bound to Node.data.key
-          new go.Binding("text", "key"))
+          new go.Binding("text", "text"))
       );
 
     //Prevent deleting nodes from the graph!

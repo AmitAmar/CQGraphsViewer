@@ -70,13 +70,10 @@ td , th {
   text-align: center;
 }
 
-/*tr.highlight {*/
-/*  background-color: lightgreen;*/
-/*}*/
 
-/*.highlight{*/
-/*  background: lightgreen; !* green *!*/
-/*}*/
+.highlight{
+  background: lightgreen;
+}
 
 .mat-cell {
   border-right: 1px solid rgba(0,0,0,.12);
