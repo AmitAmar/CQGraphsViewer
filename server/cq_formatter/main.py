@@ -4,7 +4,7 @@
     Written by Amit Amar (2020)
 """
 import os
-from server.cq_formatter import cq_formatter
+from server.cq_formatter import cq_formatter_manager
 from server.utils.general_utils import load_user_config,read_data
 
 
@@ -32,7 +32,7 @@ def main():
 
     init_output_directory(output_dir_path)
     raw_cq_data = read_data(os.path.join(input_dir_path, cq_data_path))
-    gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
+    gml = cq_formatter_manager.convert_cq_to_gml(raw_cq_data)
     write_results(output_dir_path, gml_output_path, str(gml))
 
 

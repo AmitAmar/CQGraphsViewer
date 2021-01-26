@@ -1,5 +1,5 @@
-from server.cq_formatter.gml_model.node import Node
-from server.cq_formatter.gml_model.edge import Edge
+from .edge import Edge
+from .node import Node
 
 
 class Graph:

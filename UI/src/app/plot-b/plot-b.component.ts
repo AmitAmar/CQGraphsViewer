@@ -90,49 +90,6 @@ export class PlotBComponent implements OnInit {
         });
 
 
-    var nodeSimpleTemplate =
-      $(go.Node, "Auto",
-        { locationSpot: go.Spot.Center },
-        {margin: 30 },  // assume uniform size and margin, all around
-        new go.Binding("row").makeTwoWay(),
-        new go.Binding("column", "col").makeTwoWay(),
-        new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
-        new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
-        {
-          //locationSpot: go.Spot.Center,
-          // when the user clicks on a Node, highlight all Links coming out of the node
-          // and all of the Nodes at the other ends of those Links.
-          click: function (e, node) {
-            var diagram = node.diagram;
-            diagram.startTransaction("Click SimpleLighted node");
-            diagram.clearHighlighteds();
-            // @ts-ignore
-            node.findLinksOutOf().each(function (l) {
-              l.isHighlighted = true;
-            });
-            // @ts-ignore
-            node.findNodesOutOf().each(function (n) {
-              n.isHighlighted = true;
-            });
-            diagram.commitTransaction("Click SimpleLighted node");
-          }
-        },
-        $(go.Shape, "Ellipse",
-          {
-            fill: $(go.Brush, "Linear", {0: "white", 1: "lightgreen"}),
-            stroke: "darkblue", strokeWidth: 2
-          }),
-        $(go.Panel, "Table",
-          {defaultAlignment: go.Spot.Left, margin: 4},
-          $(go.RowColumnDefinition, {column: 1, width: 4}),
-          $(go.TextBlock,
-            {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
-            {font: "bold 14pt sans-serif"},
-            new go.Binding("text", "key"))
-        ));
-
-    // dia.nodeTemplate = nodeSimpleTemplate;
-
     dia.nodeTemplate =
       $(go.Node, "Auto",  // the Shape will go around the TextBlock
         $(go.Shape, "RoundedRectangle", { strokeWidth: 0, fill: "white" },
@@ -148,36 +105,32 @@ export class PlotBComponent implements OnInit {
     dia.undoManager.isEnabled = true;
     dia.model.isReadOnly = true;  // Disable adding or removing parts
 
-    var detailsLinkTemplate =
-      $(go.Link,
 
-        $(go.Shape,
-          // when highlighted, draw as a thick red line
-          new go.Binding("stroke", "isHighlighted", function (h) {
-            return "green";
-          })
-            .ofObject(),
-          new go.Binding("strokeWidth", "isHighlighted", function (h) {
-            return h ? 3 : 1;
-          })
-            .ofObject()),
+    dia.linkTemplate =  $(go.Link, $(go.Shape,
+        // when highlighted, draw as a thick red line
+        new go.Binding("stroke", "isHighlighted", function (h) {
+          return "green";
+        })
+          .ofObject(),
+        new go.Binding("strokeWidth", "isHighlighted", function (h) {
+          return h ? 3 : 1;
+        })
+          .ofObject()),
 
-        $(go.Shape,
-          {toArrow: "Standard", strokeWidth: 0},
-          new go.Binding("fill", "isHighlighted", function (h) {
-            return "green";
-          })
-            .ofObject()),
+      $(go.Shape,
+        {toArrow: "Standard", strokeWidth: 0},
+        new go.Binding("fill", "isHighlighted", function (h) {
+          return "green";
+        })
+          .ofObject()),
 
-        new go.Binding("fromEndSegmentLength", "curviness"),
-        new go.Binding("toEndSegmentLength", "curviness"),
-        $(go.Shape,  // the arrowhead, at the mid point of the link
-          { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
+      new go.Binding("fromEndSegmentLength", "curviness"),
+      new go.Binding("toEndSegmentLength", "curviness"),
+      $(go.Shape,  // the arrowhead, at the mid point of the link
+        { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
 
-        $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
-      );
-
-    dia.linkTemplate = detailsLinkTemplate;
+      $(go.TextBlock, new go.Binding("text", "text"), {segmentOffset: new go.Point(0, -10)}),
+    );
 
     return dia;
   }

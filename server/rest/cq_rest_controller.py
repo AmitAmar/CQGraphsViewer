@@ -1,12 +1,11 @@
 import functools
-import os
 
 from flask import jsonify
 
-from cq_formatter import cq_formatter
+from cq_formatter import cq_formatter_manager
 from utils.general_utils import read_data
 from .bands_comparator import BandComparator
-from .rest_util import parse_parameters
+from .rest_util import parse_parameters, get_cq_file_path
 
 DIRECTION_ORDER = ['dec', 'std', 'inc']
 
@@ -211,12 +210,8 @@ def init_user_graph(user_graph):
 
 
 def get_gml_graph():
-    # TODO: TAKE FROM INPUT PATH!!!!
-    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs\cq_outputs'
-    # cq_data_path = 'cq_data_2.txt'
-    cq_data_path = 'cq_data.txt'
-    raw_cq_data = read_data(os.path.join(input_dir_path, cq_data_path))
-    gml = cq_formatter.convert_cq_to_gml(raw_cq_data)
+    raw_cq_data = read_data(get_cq_file_path())
+    gml = cq_formatter_manager.convert_cq_to_gml(raw_cq_data)
     return gml
 
 

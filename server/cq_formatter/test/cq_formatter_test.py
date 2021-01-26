@@ -1,6 +1,6 @@
 import unittest
 import os
-from server.cq_formatter.cq_formatter import convert_cq_to_gml
+from server.cq_formatter.cq_formatter_manager import convert_cq_to_gml
 from server.utils.general_utils import read_data
 
 INPUTS_DIRECTORY = "tests_inputs"

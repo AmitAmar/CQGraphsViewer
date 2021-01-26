@@ -1,0 +1,28 @@
+  (quantity-spaces
+    (amount   	 (0  full))
+    (level   	 (0  top  inf))
+    (pressure    (0  inf))
+    (outflow    (0  inf))
+    (inflow   	 (0  if*  inf))
+    (netflow    (minf  0  inf)))
+
+(independent inflow)
+
+  (constraints
+    ((M+  amount  level)    (0 0) (full top))
+    ((M+  level  pressure)    (0 0) (inf inf))
+    ((M+  pressure outflow)    (0 0) (inf inf))
+    ((ADD-MANY netflow outflow inflow)  (minf inf 0))
+    ((d//dt  amount  netflow)))
+
+  (print-names
+    (amount   	 "amt(water,tub)"   	 A)
+    (level   	 "level(water,tub)"   	 L)
+    (pressure    "pressure(water,bottom(tub))"    P)
+    (outflow    "flow(water,tub->out)"   	 OF)
+    (inflow   	 "flow(water,in->tub)"   	 IF)
+    (netflow    "net flow(water,out->tub)"    NF))
+
+  (make-initial-state
+    (inflow  (if* std))
+    (amount  (0   nil)))

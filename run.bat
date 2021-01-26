@@ -1,3 +1,2 @@
-cd angular
+cd UI
 ng serve
-echo "22"

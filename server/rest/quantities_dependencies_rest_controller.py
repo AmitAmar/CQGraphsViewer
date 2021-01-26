@@ -1,7 +1,7 @@
 import os
 from flask import jsonify
 from constraints_formatter.cons_formatter import parse_file
-
+from .rest_util import get_input_file_path
 
 NODES = 'nodes'
 EDGES = 'edges'
@@ -18,20 +18,13 @@ TEXT = 'text'
 CURVINESS = 'curviness'
 
 
-
 def get_graph():
     nodes, edges = get_nodes_and_edges()
     return jsonify({NODES: nodes, EDGES: edges})
 
 
 def get_nodes_and_edges():
-    # TODO: TAKE FROM INPUT PATH!!!!
-    input_dir_path = r'C:\Users\AXA1124\PycharmProjects\CQFormatter\inputs\constraints'
-    # constraints_data_path = 'constraints_1.txt'
-    constraints_data_path = 'constraints_2.txt'
-
-    consts = parse_file(os.path.join(input_dir_path, constraints_data_path))
-
+    consts = parse_file(get_input_file_path())
     return create_nodes_and_edges(consts)
 
 

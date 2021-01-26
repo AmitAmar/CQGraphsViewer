@@ -1,7 +1,7 @@
-from server.cq_formatter.gml_model.edge import Edge
-from server.cq_formatter.gml_model.graph import Graph
-from server.cq_formatter.gml_model.node import Node
-from server.cq_formatter.cq.parser.cq_parser import *
+from .gml_model.edge import Edge
+from .gml_model.graph import Graph
+from .gml_model.node import Node
+from .cq.parser.cq_parser import *
 
 
 def convert_cq_to_gml(raw_cq_output):
