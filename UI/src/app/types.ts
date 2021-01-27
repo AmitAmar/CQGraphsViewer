@@ -16,7 +16,6 @@ export interface ApiGraph {
   arrange_by_horizontal: string;
   arrange_by_vertical: string;
   color_specific_field_name: string;
-  color_specific_field_value: string;
 }
 
 export interface Quantity {

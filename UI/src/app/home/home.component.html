@@ -11,6 +11,7 @@
 
       <button mat-button [matMenuTriggerFor]="HorizontalMenu">Arrange Horizontally...</button>
       <button mat-button [matMenuTriggerFor]="VerticalMenu">Arrange Vertically...</button>
+      <button mat-button [matMenuTriggerFor]="colorMenu">Color Specific Field...</button>
 
       <mat-menu #HorizontalMenu="matMenu">
         <button mat-menu-item (click)="postArrange('horizontal_Time')">Time</button>
@@ -20,6 +21,11 @@
       <mat-menu #VerticalMenu="matMenu">
         <button mat-menu-item (click)="postArrange('vertical_Time')">Time</button>
         <button mat-menu-item [matMenuTriggerFor]="verticalQuantitiesMenu">Quantities list</button>
+      </mat-menu>
+
+      <mat-menu #colorMenu="matMenu">
+        <button mat-menu-item (click)="setSpecificMagnitude('Time')">Time</button>
+        <button mat-menu-item [matMenuTriggerFor]="colorQuantitiesMenu">Quantities list</button>
       </mat-menu>
 
       <mat-menu #horizontalQuantitiesMenu="matMenu">
@@ -32,27 +38,15 @@
                 (click)="postArrange('vertical_' + quantity.name)">{{quantity.name}}</button>
       </mat-menu>
 
-      <!--      <mat-menu #setSpecificMagnitudeNameMenu="matMenu">-->
-      <!--        <button mat-menu-item *ngFor="let quantity of quantitiesOptions | keyvalue">{{quantity.key}}</button>-->
-      <!--      </mat-menu>-->
-
-      <!--      <ng-template #subMatMenu>-->
-      <!--        <mat-menu #setSpecificMagnitudeNameMenu="matMenu">-->
-      <!--          <button mat-menu-item *ngFor="let quantity of quantitiesOptions | keyvalue">{{quantity.key}}</button>-->
-      <!--        </mat-menu>-->
-      <!--      </ng-template>-->
+      <mat-menu #colorQuantitiesMenu="matMenu">
+        <button mat-menu-item *ngFor="let quantity of quantities"
+                (click)="setSpecificMagnitude(quantity.name)">{{quantity.name}}</button>
+      </mat-menu>
     </div>
-
 
     <h3 align="center">Arrange By Horizontal: {{arrangedByHorizontal}}</h3>
     <h3 align="center">Arrange By Vertical: {{arrangedByVertical}}</h3>
-
-    <!--    <div class="example-button-row">-->
-    <!--      <button mat-button [matMenuTriggerFor]="setSpecificMagnitudeNameMenu">Select Specific Magnitude...</button>-->
-    <!--    </div>-->
-
-    <h3 align="center">Color specific magnitude field Name : {{colorSpecificFieldName}}</h3>
-    <h3 align="center">Color specific magnitude field value : {{colorSpecificFieldValue}}</h3>
+    <h3 align="center">Color Specific Field : {{colorSpecificFieldName}}</h3>
   </div>
 
   <gojs-diagram *ngIf="diagramNodeData.length > 0 && diagramLinkData.length > 0"
@@ -83,7 +77,6 @@
           <td mat-cell *matCellDef="let element"> {{element[quantity.name]}} </td>
         </ng-container>
       </ng-container>
-
 
       <tr mat-header-row *matHeaderRowDef="columns; sticky:true"></tr>
       <tr mat-row *matRowDef="let row; columns: columns; let i = index"></tr>

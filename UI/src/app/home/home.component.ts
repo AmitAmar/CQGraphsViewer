@@ -25,11 +25,9 @@ export class HomeComponent implements OnInit {
     quantitiesOptions: { [key: string]: string }[];
     arrangedByHorizontal: string;
     arrangedByVertical: string;
-    colorSpecificFieldValue: string;
     colorSpecificFieldName: string;
     tableData: { [key: string]: string }[];
     columns: string[];
-    selectedIndexes: number[];
     that = this;
 
     public initDiagram(): go.Diagram {
@@ -305,11 +303,11 @@ export class HomeComponent implements OnInit {
                       diagram.commitTransaction("Click simple node");
                     }
                 },
-                $(go.Shape, "Ellipse",
+                $(go.Shape, "Ellipse",new go.Binding("fill", "color"),
                     {
-                        fill: $(go.Brush, "Linear", {0: "white", 1: "lightblue"}),
                         stroke: "darkblue", strokeWidth: 2
                     }),
+
                 $(go.Panel, "Table",
                     {defaultAlignment: go.Spot.Left, margin: 4},
                     $(go.RowColumnDefinition, {column: 1, width: 4}),
@@ -318,60 +316,6 @@ export class HomeComponent implements OnInit {
                         {font: "bold 14pt sans-serif"},
                         new go.Binding("text", "key"))
                 ));
-
-      var nodeSimpleLightedTemplate =
-        $(go.Node, "Auto",
-          { locationSpot: go.Spot.Center },
-          {margin: 30 },  // assume uniform size and margin, all around
-          new go.Binding("row").makeTwoWay(),
-          new go.Binding("column", "col").makeTwoWay(),
-          new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
-          new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
-          {
-            //locationSpot: go.Spot.Center,
-            // when the user clicks on a Node, highlight all Links coming out of the node
-            // and all of the Nodes at the other ends of those Links.
-            click: function (e, node) {
-              //First, highlight row in the table:
-
-              //@ts-ignore
-              let table = document.getElementById('myTable');
-              //@ts-ignore
-              var rows = table.rows;
-              //@ts-ignore
-              var index = node.key.slice(1);
-
-              rows[+index + 1].classList.add('highlight');
-
-              var diagram = node.diagram;
-              diagram.startTransaction("Click SimpleLighted node");
-              diagram.clearHighlighteds();
-              // @ts-ignore
-              node.findLinksOutOf().each(function (l) {
-                HighLightLink(e, l);
-                l.isHighlighted = true;
-              });
-              // @ts-ignore
-              node.findNodesOutOf().each(function (n) {
-                n.isHighlighted = true;
-              });
-              changeNodeLightedCategory(e, node);
-              diagram.commitTransaction("Click SimpleLighted node");
-            }
-          },
-          $(go.Shape, "Ellipse",
-            {
-              fill: $(go.Brush, "Linear", {0: "white", 1: "yellow"}),
-              stroke: "darkblue", strokeWidth: 2
-            }),
-          $(go.Panel, "Table",
-            {defaultAlignment: go.Spot.Left, margin: 4},
-            $(go.RowColumnDefinition, {column: 1, width: 4}),
-            $(go.TextBlock,
-              {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
-              {font: "bold 14pt sans-serif"},
-              new go.Binding("text", "key"))
-          ));
 
         var nodeDetailedTemplate =
             $(go.Node, "Auto",
@@ -441,78 +385,9 @@ export class HomeComponent implements OnInit {
                 )
             );
 
-      var nodeDetailedLightedTemplate =
-        $(go.Node, "Auto",
-          { locationSpot: go.Spot.Center },
-          {margin: 4 },  // assume uniform size and margin, all around
-          new go.Binding("row").makeTwoWay(),
-          new go.Binding("column", "col").makeTwoWay(),
-          new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
-          new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
-          {
-            //locationSpot: go.Spot.Center,
-            // when the user clicks on a Node, highlight all Links coming out of the node
-            // and all of the Nodes at the other ends of those Links.
-            click: function (e, node) {
-              //First, remove highlight row in the table:
-
-              //@ts-ignore
-              let table = document.getElementById('myTable');
-              //@ts-ignore
-              var rows = table.rows;
-              //@ts-ignore
-              var index = node.key.slice(1);
-
-              rows[+index + 1].classList.remove('highlight');
-
-
-              var diagram = node.diagram;
-              diagram.startTransaction("Click DetailedLighted node");
-              diagram.clearHighlighteds();
-              // @ts-ignore
-              node.findLinksOutOf().each(function (l) {
-                HighLightLink(e, l);
-                l.isHighlighted = true;
-              });
-              // @ts-ignore
-              node.findNodesOutOf().each(function (n) {
-                n.isHighlighted = true;
-              });
-              changeNodeLightedCategory(e, node);
-              diagram.commitTransaction("Click DetailedLighted node");
-            }
-          },
-
-          $(go.Shape, "Ellipse",
-            {
-              fill: $(go.Brush, "Linear", {0: "white", 1: "yellow"}),
-              stroke: "darkblue", strokeWidth: 2
-            }),
-          $(go.Panel, "Table",
-            {defaultAlignment: go.Spot.Left, margin: 4},
-            $(go.RowColumnDefinition, {column: 1, width: 4}),
-            $(go.TextBlock,
-              {row: 0, column: 0, columnSpan: 3, alignment: go.Spot.Center},
-              {font: "bold 14pt sans-serif"},
-              new go.Binding("text", "key")),
-            $(go.TextBlock, "Time: ",
-              {row: 1, column: 0}, {font: "bold 10pt sans-serif"}),
-            $(go.TextBlock,
-              {row: 1, column: 2},
-              new go.Binding("text", "Time")),
-            $(go.TextBlock, "Parameters: ",
-              {row: 2, column: 0}, {font: "bold 10pt sans-serif"}),
-            $(go.TextBlock,
-              {row: 2, column: 2},
-              new go.Binding("text", "parameters"))
-          )
-        );
-
         // for each of the node categories, specify which template to use
         dia.nodeTemplateMap.add("simple", nodeSimpleTemplate);
-        dia.nodeTemplateMap.add("simpleLighted", nodeSimpleLightedTemplate);
         dia.nodeTemplateMap.add("detailed", nodeDetailedTemplate);
-        dia.nodeTemplateMap.add("detailedLighted", nodeDetailedLightedTemplate);
 
         // for the default category, "", use the same template that Diagrams use by default;
         // this just shows the key value as a simple TextBlock
@@ -658,21 +533,6 @@ export class HomeComponent implements OnInit {
             }
         }
 
-        function changeNodeLightedCategory(e, obj) {
-            var node = obj.part;
-            if (node) {
-                var diagram = node.diagram;
-                diagram.startTransaction("changeCategory");
-                var cat = diagram.model.getCategoryForNodeData(node.data);
-                if (cat === "simpleLighted")
-                    cat = "detailedLighted";
-                else
-                    cat = "simpleLighted";
-                diagram.model.setCategoryForNodeData(node.data, cat);
-                diagram.commitTransaction("changeCategory");
-            }
-        }
-
         function showFullLink(e, obj) {
             var link = obj.part;
             if (link) {
@@ -703,7 +563,7 @@ export class HomeComponent implements OnInit {
         return dia;
     }
 
-    constructor(private cdr: ChangeDetectorRef, private apiService: HomeService) {
+    constructor(private apiService: HomeService) {
     }
 
     public ngAfterViewInit() {
@@ -724,7 +584,6 @@ export class HomeComponent implements OnInit {
             this.diagramLinkData = result?.edges ? result?.edges : [];
             this.arrangedByHorizontal = result?.arrange_by_horizontal;
             this.arrangedByVertical = result?.arrange_by_vertical;
-            this.colorSpecificFieldValue = result?.color_specific_field_value;
             this.colorSpecificFieldName = result?.color_specific_field_name;
         }, error => {
             console.error(error)
@@ -764,12 +623,6 @@ export class HomeComponent implements OnInit {
         this.getGraph();
       });
   }
-
-    //c://fakepath//a.txt
-
-    fileUpload() {
-        console.log((document.getElementById('file-uploader') as any).files[0].name);
-    }
 
   goToLink(url: string){
     window.open(url, "_blank");

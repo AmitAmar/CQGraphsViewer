@@ -8,6 +8,19 @@ from .bands_comparator import BandComparator
 from .rest_util import parse_parameters, get_cq_file_path
 
 DIRECTION_ORDER = ['dec', 'std', 'inc']
+COLORS = {0: "fuchsia",
+          1: "lightGrey",
+          2: "lightblue",
+          3: "lightgreen",
+          4: "orange",
+          5: "pink",
+          6: "gold",
+          7: "red",
+          8: "green",
+          9: "blue",
+          10: "purple",
+}
+
 
 KEY = 'key'
 TEXT = 'text'
@@ -19,18 +32,20 @@ EDGES = 'edges'
 ARRANGE_BY_HORIZONTAL = 'arrange_by_horizontal'
 ARRANGE_BY_VERTICAL = 'arrange_by_vertical'
 COLOR_SPECIFIC_FIELD_NAME = 'color_specific_field_name'
-COLOR_SPECIFIC_FIELD_VALUE = 'color_specific_field_value'
 
 # Nodes:
 TIME_KEY = 'Time'
 PARAMETERS_KEY = 'parameters'
+
+# Colors:
+DEFAULT_NODE_COLOR = "lightblue"
+COLOR = "color"
 
 COL = 'col'
 ROW = 'row'
 
 # Nodes Categories
 SIMPLE_CATEGORY = 'simple'
-SIMPLE_LIGHTED_CATEGORY = 'simpleLighted'
 DETAILED_CATEGORY = 'detailed'
 
 # Edge:
@@ -74,9 +89,14 @@ def create_nodes_list(user_graph):
                         TIME_KEY: str(node.time),
                         PARAMETERS_KEY: parse_parameters(node.parameters),
                         ROW: row,
-                        COL: col}
+                        COL: col,
+                        CATEGORY: SIMPLE_CATEGORY}
 
-        init_node_category(current_node, node, user_graph)
+        if user_graph.color_specific_field_name is not None:
+            specific_field_values = user_graph.quantities_options[user_graph.color_specific_field_name]
+            init_node_color(current_node, node, specific_field_values, user_graph)
+        else:
+            current_node[COLOR] = DEFAULT_NODE_COLOR
 
         nodes_list.append(current_node)
 
@@ -89,15 +109,12 @@ def create_nodes_list(user_graph):
     return nodes_list
 
 
-def init_node_category(current_node, node, user_graph):
-    current_node[CATEGORY] = SIMPLE_CATEGORY
-
+def init_node_color(current_node, node, specific_field_values, user_graph):
     if user_graph.color_specific_field_name == TIME_KEY:
-        if node.time == user_graph.color_specific_field_value:
-            current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
-
-    elif node.parameters_dict[user_graph.color_specific_field_name.lower()].value == user_graph.color_specific_field_value:
-        current_node[CATEGORY] = SIMPLE_LIGHTED_CATEGORY
+        current_node[COLOR] = COLORS[specific_field_values.index(node.time)]
+    else:
+        current_node_value = node.parameters_dict[user_graph.color_specific_field_name.lower()].value
+        current_node[COLOR] = COLORS[specific_field_values.index(current_node_value)]
 
 
 def get_node_location(arrange_by_field, bands, node):
@@ -180,8 +197,7 @@ def get_graph(user_graph):
                     EDGES: create_edges_list(user_graph.edges),
                     ARRANGE_BY_HORIZONTAL: user_graph.arrange_by_horizontal,
                     ARRANGE_BY_VERTICAL: user_graph.arrange_by_vertical,
-                    COLOR_SPECIFIC_FIELD_NAME: user_graph.color_specific_field_name,
-                    COLOR_SPECIFIC_FIELD_VALUE: user_graph.color_specific_field_value})
+                    COLOR_SPECIFIC_FIELD_NAME: user_graph.color_specific_field_name})
 
 
 def init_user_graph(user_graph):
@@ -242,7 +258,6 @@ def get_table(user_graph):
 
         for param_name, param_value in node.parameters_dict.items():
             current_row[param_name.capitalize()] = param_value.value
-            # current_row['is_highlight']=True
 
         rows.append(current_row)
 
@@ -254,9 +269,5 @@ def get_quantities_options(user_graph):
 
 
 def set_specific_magnitude(field, user_graph):
-    magnitude_name, magnitude_value = field.split("_")
-    user_graph.color_specific_field_name = magnitude_name.capitalize()
-    user_graph.color_specific_field_value = magnitude_value
-
-    print("TODO: set_specific_magnitude: ", field)
+    user_graph.color_specific_field_name = field
     return jsonify(field)

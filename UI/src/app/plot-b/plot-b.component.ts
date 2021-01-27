@@ -135,7 +135,7 @@ export class PlotBComponent implements OnInit {
     return dia;
   }
 
-  constructor(private cdr: ChangeDetectorRef, private plotBService: PlotBService) {
+  constructor(private plotBService: PlotBService) {
   }
 
   public ngAfterViewInit() {
