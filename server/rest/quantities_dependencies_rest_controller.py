@@ -31,13 +31,16 @@ def get_nodes_and_edges():
 def create_nodes_and_edges(consts):
     nodes_list = []
     edges_list = []
+    quantities = dict()
 
     for index, const in enumerate(consts):
         # Adding nodes:
         for quantity in const.quantities:
-            nodes_list.append({KEY: quantity,
-                               COLOR: QUANTITY_COLOR,
-                               TEXT: quantity})
+            current_quantity = {KEY: quantity,
+                         COLOR: QUANTITY_COLOR,
+                         TEXT: quantity}
+            if quantity not in quantities:
+                quantities[quantity] = current_quantity
 
         if not const.is_one_to_one():
             nodes_list.append({KEY: const.relation + "_" + str(index),
@@ -60,4 +63,5 @@ def create_nodes_and_edges(consts):
                                TO: const.quantities[-1],
                                CURVINESS: 4})
 
+    nodes_list.extend(list(quantities.values()))
     return nodes_list, edges_list
