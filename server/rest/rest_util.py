@@ -7,7 +7,7 @@ COLOR_HEX_PATTERN = '#%02x%02x%02x'
 
 # Config:
 USER_PREFERENCES_SECTION = 'USER_PREFERENCES'
-project_folder = path.abspath(path.join(__file__, "../../.."))
+project_folder = path.abspath(path.join(__file__, "../../../conf"))
 CONFIG_FILE_PATH = path.join(project_folder, 'config.ini')
 
 
