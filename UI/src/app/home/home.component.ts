@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as go from 'gojs';
 import {DiagramComponent} from 'gojs-angular';
 import {HomeService} from "./home.service";
@@ -320,7 +320,7 @@ export class HomeComponent implements OnInit {
         var nodeDetailedTemplate =
             $(go.Node, "Auto",
               { locationSpot: go.Spot.Center },
-              {margin: 4 },  // assume uniform size and margin, all around
+              { margin: 4 },  // assume uniform size and margin, all around
               new go.Binding("row").makeTwoWay(),
               new go.Binding("column", "col").makeTwoWay(),
               new go.Binding("alignment", "align", go.Spot.parse).makeTwoWay(go.Spot.stringify),
@@ -437,14 +437,15 @@ export class HomeComponent implements OnInit {
                     // when highlighted, draw as a thick red line
                     new go.Binding("stroke", "isHighlighted", function (h) {
                         return h ? "red" : "black";
-                    })
-                        .ofObject(),
+                    }).ofObject(),
                     new go.Binding("strokeWidth", "isHighlighted", function (h) {
                         return h ? 3 : 1;
-                    })
-                        .ofObject()),
+                    }).ofObject()),
+
               new go.Binding("fromEndSegmentLength", "curviness"),
+
               new go.Binding("toEndSegmentLength", "curviness"),
+
               $(go.Shape,  // the arrowhead, at the mid point of the link
                 { toArrow: "OpenTriangle", segmentIndex: -Infinity }),
 
@@ -452,8 +453,7 @@ export class HomeComponent implements OnInit {
                     {toArrow: "Standard", strokeWidth: 0},
                     new go.Binding("fill", "isHighlighted", function (h) {
                         return h ? "red" : "black";
-                    })
-                        .ofObject())
+                    }).ofObject())
             );
 
         var detailsLinkTemplate =
@@ -463,19 +463,17 @@ export class HomeComponent implements OnInit {
                     // when highlighted, draw as a thick red line
                     new go.Binding("stroke", "isHighlighted", function (h) {
                         return "green";
-                    })
-                        .ofObject(),
-                    new go.Binding("strokeWidth", "isHighlighted", function (h) {
+                    }).ofObject(),
+
+                  new go.Binding("strokeWidth", "isHighlighted", function (h) {
                         return h ? 3 : 1;
-                    })
-                        .ofObject()),
+                    }).ofObject()),
 
                 $(go.Shape,
                     {toArrow: "Standard", strokeWidth: 0},
                     new go.Binding("fill", "isHighlighted", function (h) {
                       return "green";
-                    })
-                        .ofObject()),
+                    }).ofObject()),
 
               new go.Binding("fromEndSegmentLength", "curviness"),
               new go.Binding("toEndSegmentLength", "curviness"),
@@ -492,19 +490,16 @@ export class HomeComponent implements OnInit {
             // when highlighted, draw as a thick red line
             new go.Binding("stroke", "isHighlighted", function (h) {
               return h ? "red" : "black";
-            })
-              .ofObject(),
+            }).ofObject(),
             new go.Binding("strokeWidth", "isHighlighted", function (h) {
               return h ? 3 : 1;
-            })
-              .ofObject()),
+            }).ofObject()),
 
           $(go.Shape,
             {toArrow: "Standard", strokeWidth: 0},
             new go.Binding("fill", "isHighlighted", function (h) {
               return h ? "red" : "black";
-            })
-              .ofObject()),
+            }).ofObject()),
 
           new go.Binding("fromEndSegmentLength", "curviness"),
           new go.Binding("toEndSegmentLength", "curviness"),
@@ -515,6 +510,7 @@ export class HomeComponent implements OnInit {
         linkTemplateMap.add("simple", simpleLinkTemplate);
         linkTemplateMap.add("detailed", detailsLinkTemplate);
         linkTemplateMap.add("highLight", highLightLinkTemplate);
+
         dia.linkTemplateMap = linkTemplateMap;
         dia.linkTemplate = simpleLinkTemplate;
 

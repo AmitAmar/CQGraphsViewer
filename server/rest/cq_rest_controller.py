@@ -5,22 +5,9 @@ from flask import jsonify
 from cq_formatter import cq_formatter_manager
 from utils.general_utils import read_data
 from .bands_comparator import BandComparator
-from .rest_util import parse_parameters, get_cq_file_path
+from .rest_util import parse_parameters, get_cq_file_path, generate_colors
 
 DIRECTION_ORDER = ['dec', 'std', 'inc']
-COLORS = {0: "fuchsia",
-          1: "lightGrey",
-          2: "lightblue",
-          3: "lightgreen",
-          4: "orange",
-          5: "pink",
-          6: "gold",
-          7: "red",
-          8: "green",
-          9: "blue",
-          10: "purple",
-}
-
 
 KEY = 'key'
 TEXT = 'text'
@@ -94,7 +81,9 @@ def create_nodes_list(user_graph):
 
         if user_graph.color_specific_field_name is not None:
             specific_field_values = user_graph.quantities_options[user_graph.color_specific_field_name]
-            init_node_color(current_node, node, specific_field_values, user_graph)
+
+            colors = generate_colors(len(specific_field_values))
+            init_node_color(current_node, node, specific_field_values, user_graph, colors)
         else:
             current_node[COLOR] = DEFAULT_NODE_COLOR
 
@@ -109,12 +98,12 @@ def create_nodes_list(user_graph):
     return nodes_list
 
 
-def init_node_color(current_node, node, specific_field_values, user_graph):
+def init_node_color(current_node, node, specific_field_values, user_graph, colors):
     if user_graph.color_specific_field_name == TIME_KEY:
-        current_node[COLOR] = COLORS[specific_field_values.index(node.time)]
+        current_node[COLOR] = colors[specific_field_values.index(node.time)]
     else:
         current_node_value = node.parameters_dict[user_graph.color_specific_field_name.lower()].value
-        current_node[COLOR] = COLORS[specific_field_values.index(current_node_value)]
+        current_node[COLOR] = colors[specific_field_values.index(current_node_value)]
 
 
 def get_node_location(arrange_by_field, bands, node):

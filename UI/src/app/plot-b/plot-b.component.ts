@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as go from 'gojs';
 import {DiagramComponent} from 'gojs-angular';
 import {PlotBService} from "./plot-b.service";
@@ -19,7 +19,6 @@ export class PlotBComponent implements OnInit {
 
   public diagramModelData = {prop: 'value'};
 
-
   public initDiagram(): go.Diagram {
     // This variation on ForceDirectedLayout does not move any selected Nodes
     // but does move all other nodes (vertexes).
@@ -37,7 +36,7 @@ export class PlotBComponent implements OnInit {
     ContinuousForceDirectedLayout.prototype.doLayout = function(coll) {
       if (!this._isObserving) {
         this._isObserving = true;
-        // cacheing the network means we need to recreate it if nodes or links have been added or removed or relinked,
+        // caching the network means we need to recreate it if nodes or links have been added or removed or relinked,
         // so we need to track structural model changes to discard the saved network.
         var lay = this;
         this.diagram.addModelChangedListener(function(e) {
@@ -101,7 +100,7 @@ export class PlotBComponent implements OnInit {
           new go.Binding("text", "text"))
       );
 
-    //Prevent deleting nodes from the graph!
+    // Prevent deleting nodes from the graph!
     dia.undoManager.isEnabled = true;
     dia.model.isReadOnly = true;  // Disable adding or removing parts
 
@@ -110,19 +109,17 @@ export class PlotBComponent implements OnInit {
         // when highlighted, draw as a thick red line
         new go.Binding("stroke", "isHighlighted", function (h) {
           return "green";
-        })
-          .ofObject(),
+        }).ofObject(),
+
         new go.Binding("strokeWidth", "isHighlighted", function (h) {
           return h ? 3 : 1;
-        })
-          .ofObject()),
+        }).ofObject()),
 
       $(go.Shape,
         {toArrow: "Standard", strokeWidth: 0},
         new go.Binding("fill", "isHighlighted", function (h) {
           return "green";
-        })
-          .ofObject()),
+        }).ofObject()),
 
       new go.Binding("fromEndSegmentLength", "curviness"),
       new go.Binding("toEndSegmentLength", "curviness"),
