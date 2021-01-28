@@ -1,10 +1,14 @@
 from utils.general_utils import load_user_config
 import os
+import os.path as path
 import seaborn as sns
 
-USER_PREFERENCES_SECTION = 'USER_PREFERENCES'
+COLOR_HEX_PATTERN = '#%02x%02x%02x'
 
-CONFIG_FILE_PATH = r"C:\Users\AXA1124\PycharmProjects\CQFormatter\config.ini" #TODO !!!!!!!!!!!!!!!!!
+# Config:
+USER_PREFERENCES_SECTION = 'USER_PREFERENCES'
+project_folder = path.abspath(path.join(__file__, "../../.."))
+CONFIG_FILE_PATH = path.join(project_folder, 'config.ini')
 
 
 def parse_parameters(params):
@@ -38,6 +42,6 @@ def generate_colors(n):
 
     for color_rgb in palette:
         int_color_rgb = (int(color_rgb[0] * 255), int(color_rgb[1] * 255), int(color_rgb[2] * 255))
-        colors.append('#%02x%02x%02x' % int_color_rgb)
+        colors.append(COLOR_HEX_PATTERN % int_color_rgb)
 
     return colors
