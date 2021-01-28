@@ -223,8 +223,6 @@ def get_gml_graph():
 def get_quantities(user_graph):
     quantities_result = []
 
-    print(user_graph.quantities)
-
     for quantity in user_graph.quantities:
         quantities_result.append({QUANTITIES_NAME_KEY: quantity})
 

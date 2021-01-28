@@ -275,17 +275,16 @@ export class HomeComponent implements OnInit {
                     // when the user clicks on a Node, highlight all Links coming out of the node
                     // and all of the Nodes at the other ends of those Links.
                     click: function (e, node) {
-
                       //First, highlight row in the table:
 
-                        //@ts-ignore
-                      let table = document.getElementById('myTable');
-                      //@ts-ignore
-                      var rows = table.rows;
                       //@ts-ignore
                       var index = node.key.slice(1);
 
-                      rows[+index + 1].classList.add('highlight');
+                      //@ts-ignore
+                      let row = document.querySelector(`#myTable .state-${+index}`);
+
+                      //@ts-ignore
+                      row.classList.add('highlight');
 
                       var diagram = node.diagram;
                       diagram.startTransaction("Click simple node");
@@ -334,14 +333,13 @@ export class HomeComponent implements OnInit {
                       //First, remove highlight row in the table:
 
                       //@ts-ignore
-                      let table = document.getElementById('myTable');
-                      //@ts-ignore
-                      var rows = table.rows;
-                      //@ts-ignore
                       var index = node.key.slice(1);
 
-                      rows[+index + 1].classList.remove('highlight');
+                      //@ts-ignore
+                      let row = document.querySelector(`#myTable .state-${+index}`);
 
+                      //@ts-ignore
+                      row.classList.remove('highlight');
 
                         var diagram = node.diagram;
                         diagram.startTransaction("Click Details node");
