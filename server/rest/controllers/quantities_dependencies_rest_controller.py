@@ -1,7 +1,7 @@
 import os
 from flask import jsonify
 from constraints_formatter.cons_formatter import parse_file
-from .rest_util import get_input_file_path
+from rest.rest_util import get_input_file_path
 
 NODES = 'nodes'
 EDGES = 'edges'

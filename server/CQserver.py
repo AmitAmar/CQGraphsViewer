@@ -6,7 +6,7 @@ from flask_cors import CORS
 dirname = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(dirname)
 
-from rest import cq_rest_controller, quantities_dependencies_rest_controller
+from rest.controllers import quantities_dependencies_rest_controller, cq_rest_controller
 from rest.extented_graph import ExtendedGraph
 
 HOSTNAME = 'localhost'
