@@ -1,5 +1,5 @@
-import os
 from flask import jsonify
+
 from constraints_formatter.cons_formatter import parse_file
 from rest.rest_util import get_input_file_path
 
@@ -37,13 +37,13 @@ def create_nodes_and_edges(consts):
         # Adding nodes:
         for quantity in const.quantities:
             current_quantity = {KEY: quantity,
-                         COLOR: QUANTITY_COLOR,
-                         TEXT: quantity}
+                                COLOR: QUANTITY_COLOR,
+                                TEXT: quantity}
             if quantity not in quantities:
                 quantities[quantity] = current_quantity
 
         if not const.is_one_to_one():
-            nodes_list.append({KEY: const.relation + "_" + str(index),
+            nodes_list.append({KEY: f"{const.relation}_{str(index)}",
                                COLOR: RELATION_COLOR,
                                TEXT: const.relation})
 
@@ -56,10 +56,10 @@ def create_nodes_and_edges(consts):
         else:
             for quantity in const.quantities[: -1]:
                 edges_list.append({FROM: quantity,
-                                   TO: const.relation + "_" + str(index),
+                                   TO: f"{const.relation}_{str(index)}",
                                    CURVINESS: 4})
 
-            edges_list.append({FROM: const.relation + "_" + str(index),
+            edges_list.append({FROM: f"{const.relation}_{str(index)}",
                                TO: const.quantities[-1],
                                CURVINESS: 4})
 

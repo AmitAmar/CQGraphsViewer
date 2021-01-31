@@ -1,7 +1,9 @@
-from utils.general_utils import load_user_config
 import os
 import os.path as path
+
 import seaborn as sns
+
+from utils.general_utils import load_user_config
 
 COLOR_HEX_PATTERN = '#%02x%02x%02x'
 

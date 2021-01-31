@@ -1,12 +1,12 @@
 class BandComparator:
-    '''
+    """
         A comparison function is any callable that accept two arguments,
         compares them,
         and returns:
             1. a negative number for less-than
             2. a zero for equality
             3. a positive number for greater-than
-    '''
+    """
     def __init__(self, magnitudes_orders, direction_order):
         self.magnitudes_orders = magnitudes_orders
         self.direction_order = direction_order

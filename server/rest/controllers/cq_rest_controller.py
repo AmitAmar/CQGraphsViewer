@@ -3,9 +3,9 @@ import functools
 from flask import jsonify
 
 from cq_formatter import cq_formatter_manager
-from utils.general_utils import read_data
 from rest.bands_comparator import BandComparator
 from rest.rest_util import parse_parameters, get_cq_file_path, generate_colors
+from utils.general_utils import read_data
 
 DIRECTION_ORDER = ['dec', 'std', 'inc']
 

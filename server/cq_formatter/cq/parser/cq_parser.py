@@ -24,9 +24,9 @@ single_parameter_pattern = re.compile(SINGLE_PARAMETER_PATTERN)
 
 def parse_cq_states(raw_cq_output):
     cq_states = list()
-    cq_states_raw = raw_cq_output.split(CQ_STATE_PREFIX)
+    raw_cq_states = raw_cq_output.split(CQ_STATE_PREFIX)
 
-    for raw_str in cq_states_raw:
+    for raw_str in raw_cq_states:
         raw_str = raw_str.strip()
         if is_not_empty(raw_str):
             current_state = State()

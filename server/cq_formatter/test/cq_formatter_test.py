@@ -1,5 +1,6 @@
-import unittest
 import os
+import unittest
+
 from server.cq_formatter.cq_formatter_manager import convert_cq_to_gml
 from server.utils.general_utils import read_data
 

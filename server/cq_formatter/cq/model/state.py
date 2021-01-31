@@ -1,4 +1,4 @@
-from server.utils.general_utils import auto_str,auto_repr
+from server.utils.general_utils import auto_str, auto_repr
 from .parameter import Parameter
 
 

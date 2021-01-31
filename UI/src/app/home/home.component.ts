@@ -210,9 +210,8 @@ export class HomeComponent implements OnInit {
         while (part.elements.count > eltIdx) part.removeAt(eltIdx);
       }
 
-        const $ = go.GraphObject.make;
+      const $ = go.GraphObject.make;
 
-      // var selectedRowIndex = -1;
       const dia =
         $(go.Diagram,
           {
@@ -262,7 +261,8 @@ export class HomeComponent implements OnInit {
           $(go.Shape, { fill: null, stroke: "blue", strokeDashArray: [3, 3] })
         ));
 
-        var nodeSimpleTemplate =
+      // NODES TEMPLATES:
+        var simpleNodeTemplate =
             $(go.Node, "Auto",
               { locationSpot: go.Spot.Center },
               {margin: 30 },  // assume uniform size and margin, all around
@@ -316,7 +316,7 @@ export class HomeComponent implements OnInit {
                         new go.Binding("text", "key"))
                 ));
 
-        var nodeDetailedTemplate =
+        var detailedNodeTemplate =
             $(go.Node, "Auto",
               { locationSpot: go.Spot.Center },
               { margin: 4 },  // assume uniform size and margin, all around
@@ -384,12 +384,12 @@ export class HomeComponent implements OnInit {
             );
 
         // for each of the node categories, specify which template to use
-        dia.nodeTemplateMap.add("simple", nodeSimpleTemplate);
-        dia.nodeTemplateMap.add("detailed", nodeDetailedTemplate);
+        dia.nodeTemplateMap.add("simple", simpleNodeTemplate);
+        dia.nodeTemplateMap.add("detailed", detailedNodeTemplate);
 
         // for the default category, "", use the same template that Diagrams use by default;
         // this just shows the key value as a simple TextBlock
-        dia.nodeTemplate = nodeSimpleTemplate;
+        dia.nodeTemplate = simpleNodeTemplate;
 
       function headerStyle() {  // shared style for header cell contents
         return [
@@ -425,6 +425,8 @@ export class HomeComponent implements OnInit {
         dia.undoManager.isEnabled = true;
         dia.model.isReadOnly = true;  // Disable adding or removing parts
 
+
+      // LINKS TEMPLATES:
         var linkTemplateMap = new go.Map<string, go.Link>();
 
         var simpleLinkTemplate =

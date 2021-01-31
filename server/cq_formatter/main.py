@@ -4,9 +4,9 @@
     Written by Amit Amar (2020)
 """
 import os
-from server.cq_formatter import cq_formatter_manager
-from server.utils.general_utils import load_user_config,read_data
 
+from server.cq_formatter import cq_formatter_manager
+from server.utils.general_utils import load_user_config, read_data
 
 CONFIG_FILE_PATH = "conf/config.ini"
 USER_PREFERENCES_CONFIG_SECTION = "USER_PREFERENCES"
